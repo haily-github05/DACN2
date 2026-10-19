@@ -1,0 +1,203 @@
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: #fff8f6;
+  color: #201a17;
+  font:
+    15px system-ui,
+    -apple-system,
+    sans-serif;
+}
+.shell {
+  display: flex;
+  min-height: 100vh;
+}
+aside {
+  width: 265px;
+  flex-shrink: 0;
+  background: #fff;
+  border-right: 1px solid #eed9cf;
+  padding: 26px 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.logo {
+  color: #a23a00;
+  font-weight: 850;
+  font-size: 19px;
+  padding: 12px;
+}
+.tag {
+  font-size: 11px;
+  color: #735a51;
+  letter-spacing: 1.5px;
+  margin: 0 12px 22px;
+}
+aside button {
+  border: 0;
+  background: transparent;
+  text-align: left;
+  border-radius: 10px;
+  padding: 14px;
+  color: #735a51;
+  font-weight: 650;
+  cursor: pointer;
+}
+aside button.selected {
+  background: #fef1eb;
+  color: #a23a00;
+}
+aside small {
+  margin-top: auto;
+  color: #8a746b;
+}
+main {
+  flex: 1;
+  padding: 35px;
+  min-width: 0;
+}
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+h1 {
+  font-size: 27px;
+  margin: 0;
+}
+header p {
+  color: #735a51;
+}
+header span {
+  background: white;
+  border: 1px solid #eed9cf;
+  padding: 12px 18px;
+  border-radius: 12px;
+}
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 17px;
+  margin-bottom: 26px;
+}
+.stats article,
+.panel {
+  background: white;
+  border: 1px solid #eed9cf;
+  border-radius: 16px;
+  padding: 22px;
+}
+.stats article p {
+  color: #735a51;
+  margin: 0 0 12px;
+}
+.stats strong {
+  color: #a23a00;
+  font-size: 25px;
+}
+.panelHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+.panel h2 {
+  font-size: 19px;
+}
+.actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+input {
+  border: 1px solid #eed9cf;
+  padding: 12px;
+  border-radius: 9px;
+  min-width: 220px;
+}
+button {
+  cursor: pointer;
+}
+button:not(aside button) {
+  border: 0;
+  border-radius: 9px;
+  background: #a23a00;
+  color: white;
+  padding: 11px 15px;
+  font-weight: 700;
+}
+.light {
+  background: #fef1eb !important;
+  color: #a23a00 !important;
+}
+.danger {
+  background: #fff0ee !important;
+  color: #b03429 !important;
+  margin-left: 7px;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+th {
+  text-align: left;
+  color: #735a51;
+  background: #fff8f6;
+  font-size: 12px;
+}
+th,
+td {
+  padding: 15px;
+  border-bottom: 1px solid #f2e5df;
+}
+td {
+  font-size: 13px;
+}
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: #0007;
+  display: grid;
+  place-items: center;
+}
+.dialog {
+  width: min(480px, 92vw);
+  background: white;
+  padding: 26px;
+  border-radius: 18px;
+}
+.dialog label {
+  display: block;
+  margin: 15px 0;
+  font-size: 13px;
+  font-weight: 700;
+}
+.dialog input {
+  display: block;
+  width: 100%;
+  margin-top: 7px;
+}
+.dialog p {
+  color: #735a51;
+  font-size: 12px;
+}
+@media (max-width: 900px) {
+  aside {
+    width: 180px;
+  }
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .panelHead {
+    flex-direction: column;
+    align-items: start;
+  }
+  main {
+    padding: 15px;
+  }
+}
