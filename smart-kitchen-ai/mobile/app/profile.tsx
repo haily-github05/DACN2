@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -10,9 +9,9 @@ import {
   TextInput,
   Modal,
   Switch,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
 import {
   UserRound,
   Pencil,
@@ -40,23 +39,23 @@ import {
   X,
   Check,
   ShoppingBasket,
-} from 'lucide-react-native';
+} from "lucide-react-native";
 
-import AppHeader from '../components/AppHeader';
-import BottomNav from '../components/BottomNav';
+import AppHeader from "../components/AppHeader";
+import BottomNav from "../components/BottomNav";
 
 const C = {
-  orange: '#A23A00',
-  orangeLight: '#D86A2E',
-  cream: '#FFF8F6',
-  peach: '#FEF1EB',
-  peachDark: '#FBE3D5',
-  dark: '#201A17',
-  muted: '#735A51',
-  border: '#EED9CF',
-  white: '#FFFFFF',
-  green: '#397C57',
-  greenLight: '#E9F5EB',
+  orange: "#A23A00",
+  orangeLight: "#D86A2E",
+  cream: "#FFF8F6",
+  peach: "#FEF1EB",
+  peachDark: "#FBE3D5",
+  dark: "#201A17",
+  muted: "#735A51",
+  border: "#EED9CF",
+  white: "#FFFFFF",
+  green: "#397C57",
+  greenLight: "#E9F5EB",
 };
 
 type IconComponent = React.ComponentType<{
@@ -68,17 +67,16 @@ type IconComponent = React.ComponentType<{
 export default function ProfileScreen() {
   const router = useRouter();
 
-  const [name, setName] = useState('Người dùng Smart Kitchen');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
+  const [name, setName] = useState("Người dùng Smart Kitchen");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
 
   const [draftName, setDraftName] = useState(name);
   const [draftEmail, setDraftEmail] = useState(email);
   const [draftPhone, setDraftPhone] = useState(phone);
 
   const [editVisible, setEditVisible] = useState(false);
-  const [notificationsEnabled, setNotificationsEnabled] =
-    useState(true);
+  const [notificationsEnabled, setNotificationsEnabled] = useState(true);
 
   // Dữ liệu minh họa, thay bằng API khi có backend
   const stats = {
@@ -101,7 +99,7 @@ export default function ProfileScreen() {
 
   const saveProfile = () => {
     if (!draftName.trim()) {
-      Alert.alert('Thiếu thông tin', 'Vui lòng nhập họ tên.');
+      Alert.alert("Thiếu thông tin", "Vui lòng nhập họ tên.");
       return;
     }
 
@@ -110,35 +108,28 @@ export default function ProfileScreen() {
     setPhone(draftPhone.trim());
     setEditVisible(false);
 
-    Alert.alert(
-      'Thành công',
-      'Thông tin đã được cập nhật trên giao diện.'
-    );
+    Alert.alert("Thành công", "Thông tin đã được cập nhật trên giao diện.");
   };
 
   const showComingSoon = (feature: string) => {
     Alert.alert(
       feature,
-      'Chức năng này sẽ được kết nối khi hoàn thiện dữ liệu và hệ thống tài khoản.'
+      "Chức năng này sẽ được kết nối khi hoàn thiện dữ liệu và hệ thống tài khoản.",
     );
   };
 
   const logout = () => {
-    Alert.alert(
-      'Đăng xuất',
-      'Bạn muốn đăng xuất khỏi Smart Kitchen AI?',
-      [
-        { text: 'Hủy', style: 'cancel' },
-        {
-          text: 'Đăng xuất',
-          style: 'destructive',
-          onPress: () => {
-            // TODO: Xóa token / phiên đăng nhập tại đây.
-            router.replace('/' as any);
-          },
+    Alert.alert("Đăng xuất", "Bạn muốn đăng xuất khỏi Smart Kitchen AI?", [
+      { text: "Hủy", style: "cancel" },
+      {
+        text: "Đăng xuất",
+        style: "destructive",
+        onPress: () => {
+          // TODO: Xóa token / phiên đăng nhập tại đây.
+          router.replace("/" as any);
         },
-      ]
-    );
+      },
+    ]);
   };
 
   const initials = name
@@ -146,7 +137,7 @@ export default function ProfileScreen() {
     .split(/\s+/)
     .slice(-2)
     .map((word) => word.charAt(0).toUpperCase())
-    .join('');
+    .join("");
 
   const MenuItem = ({
     icon: Icon,
@@ -172,15 +163,12 @@ export default function ProfileScreen() {
 
       <View style={styles.menuText}>
         <Text style={styles.menuTitle}>{title}</Text>
-        {subtitle ? (
-          <Text style={styles.menuSubtitle}>{subtitle}</Text>
-        ) : null}
+        {subtitle ? <Text style={styles.menuSubtitle}>{subtitle}</Text> : null}
       </View>
 
       {right ?? <ChevronRight size={18} color="#A38D82" />}
     </Pressable>
   );
-  
 
   return (
     <SafeAreaView style={styles.screen} edges={[]}>
@@ -203,7 +191,7 @@ export default function ProfileScreen() {
 
           <Pressable
             style={styles.settingsButton}
-            onPress={() => showComingSoon('Cài đặt nâng cao')}
+            onPress={() => showComingSoon("Cài đặt nâng cao")}
           >
             <Settings size={21} color={C.orange} />
           </Pressable>
@@ -213,9 +201,7 @@ export default function ProfileScreen() {
         <View style={styles.profileCard}>
           <View style={styles.profileTop}>
             <View style={styles.avatar}>
-              <Text style={styles.avatarText}>
-                {initials || 'SK'}
-              </Text>
+              <Text style={styles.avatarText}>{initials || "SK"}</Text>
               <View style={styles.avatarStatus}>
                 <Check size={11} color={C.white} />
               </View>
@@ -232,14 +218,11 @@ export default function ProfileScreen() {
               </View>
 
               <Text style={styles.profileMeta}>
-                {email || 'Thêm email để hoàn thiện hồ sơ'}
+                {email || "Thêm email để hoàn thiện hồ sơ"}
               </Text>
             </View>
 
-            <Pressable
-              style={styles.editButton}
-              onPress={openEdit}
-            >
+            <Pressable style={styles.editButton} onPress={openEdit}>
               <Pencil size={16} color={C.orange} />
             </Pressable>
           </View>
@@ -279,9 +262,7 @@ export default function ProfileScreen() {
         {/* ACHIEVEMENTS */}
         <View style={styles.sectionHeading}>
           <View>
-            <Text style={styles.sectionTitle}>
-              🏆 Thành tích của bạn
-            </Text>
+            <Text style={styles.sectionTitle}>🏆 Thành tích của bạn</Text>
             <Text style={styles.sectionSubtitle}>
               Hành trình vào bếp mỗi ngày
             </Text>
@@ -293,30 +274,18 @@ export default function ProfileScreen() {
             <View style={styles.achievementIcon}>
               <Flame size={21} color={C.orange} />
             </View>
-            <Text style={styles.achievementNumber}>
-              {stats.streak} ngày
-            </Text>
-            <Text style={styles.achievementName}>
-              Chuỗi vào bếp
-            </Text>
-            <Text style={styles.achievementHint}>
-              Tiếp tục duy trì!
-            </Text>
+            <Text style={styles.achievementNumber}>{stats.streak} ngày</Text>
+            <Text style={styles.achievementName}>Chuỗi vào bếp</Text>
+            <Text style={styles.achievementHint}>Tiếp tục duy trì!</Text>
           </View>
 
           <View style={styles.achievementCard}>
             <View style={styles.achievementIcon}>
               <ChefHat size={21} color={C.orange} />
             </View>
-            <Text style={styles.achievementNumber}>
-              {stats.cooked} món
-            </Text>
-            <Text style={styles.achievementName}>
-              Đầu bếp tại gia
-            </Text>
-            <Text style={styles.achievementHint}>
-              Càng nấu càng giỏi
-            </Text>
+            <Text style={styles.achievementNumber}>{stats.cooked} món</Text>
+            <Text style={styles.achievementName}>Đầu bếp tại gia</Text>
+            <Text style={styles.achievementHint}>Càng nấu càng giỏi</Text>
           </View>
 
           <View style={styles.achievementCard}>
@@ -328,31 +297,20 @@ export default function ProfileScreen() {
             >
               <Leaf size={21} color={C.green} />
             </View>
-            <Text style={styles.achievementNumber}>
-              Sống xanh
-            </Text>
-            <Text style={styles.achievementName}>
-              Yêu thực phẩm
-            </Text>
-            <Text style={styles.achievementHint}>
-              Hạn chế lãng phí
-            </Text>
+            <Text style={styles.achievementNumber}>Sống xanh</Text>
+            <Text style={styles.achievementName}>Yêu thực phẩm</Text>
+            <Text style={styles.achievementHint}>Hạn chế lãng phí</Text>
           </View>
         </View>
 
         {/* AI FEATURE */}
-        <Pressable
-          style={styles.aiCard}
-          onPress={() => navigate('/recipes')}
-        >
+        <Pressable style={styles.aiCard} onPress={() => navigate("/recipes")}>
           <View style={styles.aiIcon}>
             <Sparkles size={22} color={C.white} />
           </View>
 
           <View style={styles.aiInfo}>
-            <Text style={styles.aiTitle}>
-              Bạn muốn nấu gì hôm nay?
-            </Text>
+            <Text style={styles.aiTitle}>Bạn muốn nấu gì hôm nay?</Text>
             <Text style={styles.aiDescription}>
               Khám phá món ngon từ nguyên liệu có sẵn.
             </Text>
@@ -366,9 +324,7 @@ export default function ProfileScreen() {
         {/* MY KITCHEN */}
         <View style={styles.sectionHeading}>
           <View>
-            <Text style={styles.sectionTitle}>
-              🍳 Góc bếp của tôi
-            </Text>
+            <Text style={styles.sectionTitle}>🍳 Góc bếp của tôi</Text>
             <Text style={styles.sectionSubtitle}>
               Quản lý công thức và thực phẩm
             </Text>
@@ -380,7 +336,7 @@ export default function ProfileScreen() {
             icon={Heart}
             title="Công thức yêu thích"
             subtitle="Khám phá những món ăn bạn yêu thích"
-            onPress={() => navigate('/recipes')}
+            onPress={() => navigate("/recipes")}
           />
 
           <View style={styles.menuDivider} />
@@ -389,9 +345,7 @@ export default function ProfileScreen() {
             icon={Bookmark}
             title="Bộ sưu tập đã lưu"
             subtitle="Xem các công thức đã đánh dấu"
-            onPress={() =>
-              showComingSoon('Bộ sưu tập đã lưu')
-            }
+            onPress={() => showComingSoon("Bộ sưu tập đã lưu")}
           />
 
           <View style={styles.menuDivider} />
@@ -400,9 +354,7 @@ export default function ProfileScreen() {
             icon={Clock3}
             title="Lịch sử nấu ăn"
             subtitle="Những món bạn đã thực hiện"
-            onPress={() =>
-              showComingSoon('Lịch sử nấu ăn')
-            }
+            onPress={() => showComingSoon("Lịch sử nấu ăn")}
           />
 
           <View style={styles.menuDivider} />
@@ -411,7 +363,7 @@ export default function ProfileScreen() {
             icon={ShoppingBasket}
             title="Kho thực phẩm"
             subtitle="Theo dõi nguyên liệu trong bếp"
-            onPress={() => navigate('/pantry')}
+            onPress={() => navigate("/pantry")}
           />
 
           <View style={styles.menuDivider} />
@@ -420,7 +372,7 @@ export default function ProfileScreen() {
             icon={CalendarDays}
             title="Thực đơn của tôi"
             subtitle="Lên kế hoạch ăn uống mỗi ngày"
-            onPress={() => navigate('/meal-plan')}
+            onPress={() => navigate("/meal-plan")}
           />
 
           <View style={styles.menuDivider} />
@@ -429,7 +381,7 @@ export default function ProfileScreen() {
             icon={UsersRound}
             title="Bài viết cộng đồng"
             subtitle="Khám phá và chia sẻ món ngon"
-            onPress={() => navigate('/community')}
+            onPress={() => navigate("/community")}
           />
         </View>
 
@@ -437,8 +389,7 @@ export default function ProfileScreen() {
         <View style={styles.sectionHeading}>
           <View>
             <Text style={styles.sectionTitle}>
-              <Settings size={17} color={C.orange} />{' '}
-              Thiết lập & Tài khoản
+              <Settings size={17} color={C.orange} /> Thiết lập & Tài khoản
             </Text>
             <Text style={styles.sectionSubtitle}>
               Quản lý thông tin cá nhân
@@ -460,20 +411,16 @@ export default function ProfileScreen() {
             icon={Bell}
             title="Thông báo"
             subtitle="Bật hoặc tắt thông báo ứng dụng"
-            onPress={() =>
-              setNotificationsEnabled(!notificationsEnabled)
-            }
+            onPress={() => setNotificationsEnabled(!notificationsEnabled)}
             right={
               <Switch
                 value={notificationsEnabled}
                 onValueChange={setNotificationsEnabled}
                 trackColor={{
-                  false: '#E6D9D1',
-                  true: '#E7AD8B',
+                  false: "#E6D9D1",
+                  true: "#E7AD8B",
                 }}
-                thumbColor={
-                  notificationsEnabled ? C.orange : '#FFFFFF'
-                }
+                thumbColor={notificationsEnabled ? C.orange : "#FFFFFF"}
               />
             }
           />
@@ -484,11 +431,8 @@ export default function ProfileScreen() {
             icon={ShieldCheck}
             title="Bảo mật tài khoản"
             subtitle="Quản lý thông tin đăng nhập"
-            onPress={() =>
-              showComingSoon('Bảo mật tài khoản')
-            }
+            onPress={() => showComingSoon("Bảo mật tài khoản")}
           />
-
 
           <View style={styles.menuDivider} />
 
@@ -503,15 +447,11 @@ export default function ProfileScreen() {
         </View>
 
         <View style={styles.footer}>
-          <Text style={styles.footerBrand}>
-            Smart Kitchen AI
-          </Text>
+          <Text style={styles.footerBrand}>Smart Kitchen AI</Text>
           <Text style={styles.footerText}>
             Bếp thông minh, cuộc sống tiện nghi 💛
           </Text>
-          <Text style={styles.version}>
-            Phiên bản giao diện 1.0
-          </Text>
+          <Text style={styles.version}>Phiên bản giao diện 1.0</Text>
         </View>
       </ScrollView>
 
@@ -528,9 +468,7 @@ export default function ProfileScreen() {
           <View style={styles.modalCard}>
             <View style={styles.modalHeader}>
               <View>
-                <Text style={styles.modalTitle}>
-                  Chỉnh sửa hồ sơ
-                </Text>
+                <Text style={styles.modalTitle}>Chỉnh sửa hồ sơ</Text>
                 <Text style={styles.modalSubtitle}>
                   Cập nhật thông tin của bạn
                 </Text>
@@ -564,9 +502,7 @@ export default function ProfileScreen() {
               autoCapitalize="none"
             />
 
-            <Text style={styles.inputLabel}>
-              Số điện thoại
-            </Text>
+            <Text style={styles.inputLabel}>Số điện thoại</Text>
             <TextInput
               style={styles.input}
               value={draftPhone}
@@ -576,14 +512,9 @@ export default function ProfileScreen() {
               keyboardType="phone-pad"
             />
 
-            <Pressable
-              style={styles.saveButton}
-              onPress={saveProfile}
-            >
+            <Pressable style={styles.saveButton} onPress={saveProfile}>
               <Check size={19} color={C.white} />
-              <Text style={styles.saveButtonText}>
-                Lưu thay đổi
-              </Text>
+              <Text style={styles.saveButtonText}>Lưu thay đổi</Text>
             </Pressable>
           </View>
         </View>
@@ -609,22 +540,22 @@ const styles = StyleSheet.create({
   },
 
   pageHeading: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     marginBottom: 19,
   },
 
   eyebrow: {
     fontSize: 10,
     color: C.orange,
-    fontWeight: '800',
+    fontWeight: "800",
     letterSpacing: 1,
   },
 
   pageTitle: {
     fontSize: 25,
-    fontWeight: '800',
+    fontWeight: "800",
     color: C.dark,
     marginTop: 6,
   },
@@ -642,8 +573,8 @@ const styles = StyleSheet.create({
     backgroundColor: C.white,
     borderWidth: 1,
     borderColor: C.border,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   profileCard: {
@@ -655,8 +586,8 @@ const styles = StyleSheet.create({
   },
 
   profileTop: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 12,
   },
 
@@ -667,19 +598,19 @@ const styles = StyleSheet.create({
     backgroundColor: C.peachDark,
     borderWidth: 3,
     borderColor: C.white,
-    alignItems: 'center',
-    justifyContent: 'center',
-    position: 'relative',
+    alignItems: "center",
+    justifyContent: "center",
+    position: "relative",
   },
 
   avatarText: {
     fontSize: 23,
-    fontWeight: '800',
+    fontWeight: "800",
     color: C.orange,
   },
 
   avatarStatus: {
-    position: 'absolute',
+    position: "absolute",
     right: -2,
     bottom: 0,
     width: 20,
@@ -688,8 +619,8 @@ const styles = StyleSheet.create({
     backgroundColor: C.green,
     borderWidth: 2,
     borderColor: C.white,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   profileInfo: {
@@ -699,14 +630,14 @@ const styles = StyleSheet.create({
 
   profileName: {
     fontSize: 16,
-    fontWeight: '800',
+    fontWeight: "800",
     color: C.dark,
   },
 
   memberBadge: {
-    alignSelf: 'flex-start',
-    flexDirection: 'row',
-    alignItems: 'center',
+    alignSelf: "flex-start",
+    flexDirection: "row",
+    alignItems: "center",
     gap: 5,
     backgroundColor: C.greenLight,
     borderRadius: 20,
@@ -717,7 +648,7 @@ const styles = StyleSheet.create({
   memberBadgeText: {
     color: C.green,
     fontSize: 9,
-    fontWeight: '700',
+    fontWeight: "700",
   },
 
   profileMeta: {
@@ -730,14 +661,14 @@ const styles = StyleSheet.create({
     height: 32,
     borderRadius: 10,
     backgroundColor: C.peach,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   statsRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-around',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-around",
     borderTopWidth: 1,
     borderTopColor: C.border,
     marginTop: 19,
@@ -747,13 +678,13 @@ const styles = StyleSheet.create({
 
   statItem: {
     flex: 1,
-    alignItems: 'center',
+    alignItems: "center",
     gap: 5,
   },
 
   statNumber: {
     fontSize: 18,
-    fontWeight: '800',
+    fontWeight: "800",
     color: C.dark,
   },
 
@@ -769,8 +700,8 @@ const styles = StyleSheet.create({
   },
 
   profileTip: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 9,
     backgroundColor: C.greenLight,
     borderRadius: 12,
@@ -781,7 +712,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 11,
     color: C.green,
-    fontWeight: '600',
+    fontWeight: "600",
     lineHeight: 17,
   },
 
@@ -792,7 +723,7 @@ const styles = StyleSheet.create({
 
   sectionTitle: {
     fontSize: 17,
-    fontWeight: '800',
+    fontWeight: "800",
     color: C.dark,
   },
 
@@ -803,7 +734,7 @@ const styles = StyleSheet.create({
   },
 
   achievementRow: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 9,
   },
 
@@ -822,20 +753,20 @@ const styles = StyleSheet.create({
     height: 35,
     borderRadius: 10,
     backgroundColor: C.peach,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: 13,
   },
 
   achievementNumber: {
     fontSize: 13,
-    fontWeight: '800',
+    fontWeight: "800",
     color: C.dark,
   },
 
   achievementName: {
     fontSize: 10,
-    fontWeight: '700',
+    fontWeight: "700",
     color: C.dark,
     marginTop: 5,
   },
@@ -848,12 +779,12 @@ const styles = StyleSheet.create({
   },
 
   aiCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     backgroundColor: C.peach,
     borderRadius: 17,
     borderWidth: 1,
-    borderColor: '#E7C7B7',
+    borderColor: "#E7C7B7",
     padding: 14,
     gap: 11,
     marginTop: 21,
@@ -864,8 +795,8 @@ const styles = StyleSheet.create({
     height: 43,
     borderRadius: 13,
     backgroundColor: C.orange,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   aiInfo: {
@@ -874,7 +805,7 @@ const styles = StyleSheet.create({
 
   aiTitle: {
     fontSize: 13,
-    fontWeight: '800',
+    fontWeight: "800",
     color: C.dark,
   },
 
@@ -890,8 +821,8 @@ const styles = StyleSheet.create({
     height: 28,
     borderRadius: 9,
     backgroundColor: C.orange,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   menuCard: {
@@ -900,12 +831,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: C.border,
     paddingHorizontal: 14,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
 
   menuItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingVertical: 14,
     gap: 12,
     minHeight: 66,
@@ -915,8 +846,8 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   menuText: {
@@ -926,7 +857,7 @@ const styles = StyleSheet.create({
 
   menuTitle: {
     fontSize: 12,
-    fontWeight: '800',
+    fontWeight: "800",
     color: C.dark,
   },
 
@@ -938,19 +869,19 @@ const styles = StyleSheet.create({
 
   menuDivider: {
     height: 1,
-    backgroundColor: '#F4EAE5',
+    backgroundColor: "#F4EAE5",
     marginLeft: 52,
   },
 
   footer: {
-    alignItems: 'center',
+    alignItems: "center",
     paddingTop: 31,
     gap: 7,
   },
 
   footerBrand: {
     fontSize: 15,
-    fontWeight: '800',
+    fontWeight: "800",
     color: C.orange,
   },
 
@@ -961,13 +892,13 @@ const styles = StyleSheet.create({
 
   version: {
     fontSize: 10,
-    color: '#A48E83',
+    color: "#A48E83",
   },
 
   modalOverlay: {
     flex: 1,
-    justifyContent: 'flex-end',
-    backgroundColor: 'rgba(32,26,23,0.45)',
+    justifyContent: "flex-end",
+    backgroundColor: "rgba(32,26,23,0.45)",
   },
 
   modalCard: {
@@ -979,15 +910,15 @@ const styles = StyleSheet.create({
   },
 
   modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 23,
   },
 
   modalTitle: {
     fontSize: 19,
-    fontWeight: '800',
+    fontWeight: "800",
     color: C.dark,
   },
 
@@ -1002,13 +933,13 @@ const styles = StyleSheet.create({
     height: 35,
     borderRadius: 11,
     backgroundColor: C.peach,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   inputLabel: {
     fontSize: 12,
-    fontWeight: '700',
+    fontWeight: "700",
     color: C.dark,
     marginBottom: 8,
   },
@@ -1029,16 +960,16 @@ const styles = StyleSheet.create({
     height: 49,
     borderRadius: 13,
     backgroundColor: C.orange,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     gap: 9,
     marginTop: 6,
   },
 
   saveButtonText: {
     fontSize: 14,
-    fontWeight: '800',
+    fontWeight: "800",
     color: C.white,
   },
 });

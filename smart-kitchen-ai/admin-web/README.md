@@ -1,4 +1,4 @@
-# Admin Web (Figma trang 29–37)
+# Admin Web
 
 Chạy: `npm install` sau đó `npm run dev`. Mở địa chỉ Vite hiển thị trong Terminal.
 

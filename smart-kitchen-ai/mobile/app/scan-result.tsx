@@ -1,7 +1,6 @@
-
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import AppHeader from "../components/AppHeader";
-import BottomNav from '../components/BottomNav';
+import BottomNav from "../components/BottomNav";
 import {
   View,
   Text,
@@ -10,9 +9,9 @@ import {
   Pressable,
   StyleSheet,
   Alert,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
 
 import {
   ArrowLeft,
@@ -26,18 +25,17 @@ import {
   Compass,
   CalendarDays,
   UserRound,
-} from 'lucide-react-native';
-
+} from "lucide-react-native";
 
 const C = {
-  orange: '#A23A00',
-  cream: '#FFF8F6',
-  peach: '#FEF1EB',
-  white: '#FFFFFF',
-  dark: '#201A17',
-  muted: '#735A51',
-  border: '#EED9CF',
-  green: '#39845A',
+  orange: "#A23A00",
+  cream: "#FFF8F6",
+  peach: "#FEF1EB",
+  white: "#FFFFFF",
+  dark: "#201A17",
+  muted: "#735A51",
+  border: "#EED9CF",
+  green: "#39845A",
 };
 
 type Ingredient = {
@@ -51,27 +49,27 @@ type Ingredient = {
 
 const initialIngredients: Ingredient[] = [
   {
-    id: '1',
-    emoji: '🍅',
-    name: 'Cà chua',
-    quantity: '500',
-    unit: 'g',
+    id: "1",
+    emoji: "🍅",
+    name: "Cà chua",
+    quantity: "500",
+    unit: "g",
     confidence: 96,
   },
   {
-    id: '2',
-    emoji: '🥚',
-    name: 'Trứng gà',
-    quantity: '6',
-    unit: 'quả',
+    id: "2",
+    emoji: "🥚",
+    name: "Trứng gà",
+    quantity: "6",
+    unit: "quả",
     confidence: 94,
   },
   {
-    id: '3',
-    emoji: '🥬',
-    name: 'Cải xanh',
-    quantity: '300',
-    unit: 'g',
+    id: "3",
+    emoji: "🥬",
+    name: "Cải xanh",
+    quantity: "300",
+    unit: "g",
     confidence: 91,
   },
 ];
@@ -86,15 +84,13 @@ export default function ScanResultScreen() {
 
   const updateIngredient = (
     id: string,
-    field: 'name' | 'quantity' | 'unit',
-    value: string
+    field: "name" | "quantity" | "unit",
+    value: string,
   ) => {
     setIngredients((current) =>
       current.map((item) =>
-        item.id === id
-          ? { ...item, [field]: value }
-          : item
-      )
+        item.id === id ? { ...item, [field]: value } : item,
+      ),
     );
   };
 
@@ -103,10 +99,10 @@ export default function ScanResultScreen() {
       ...current,
       {
         id: Date.now().toString(),
-        emoji: '🥗',
-        name: '',
-        quantity: '1',
-        unit: 'g',
+        emoji: "🥗",
+        name: "",
+        quantity: "1",
+        unit: "g",
         confidence: null,
       },
     ]);
@@ -114,16 +110,14 @@ export default function ScanResultScreen() {
   };
 
   const removeIngredient = (id: string) => {
-    setIngredients((current) =>
-      current.filter((item) => item.id !== id)
-    );
+    setIngredients((current) => current.filter((item) => item.id !== id));
   };
 
   const confirmSave = () => {
     if (ingredients.length === 0) {
       Alert.alert(
-        'Chưa có nguyên liệu',
-        'Vui lòng thêm ít nhất một nguyên liệu.'
+        "Chưa có nguyên liệu",
+        "Vui lòng thêm ít nhất một nguyên liệu.",
       );
       return;
     }
@@ -134,45 +128,37 @@ export default function ScanResultScreen() {
         !item.unit.trim() ||
         !item.quantity.trim() ||
         !Number.isFinite(Number(item.quantity)) ||
-        Number(item.quantity) <= 0
+        Number(item.quantity) <= 0,
     );
 
     if (invalid) {
       Alert.alert(
-        'Thông tin chưa hợp lệ',
-        'Vui lòng nhập tên, số lượng lớn hơn 0 và đơn vị cho tất cả nguyên liệu.'
+        "Thông tin chưa hợp lệ",
+        "Vui lòng nhập tên, số lượng lớn hơn 0 và đơn vị cho tất cả nguyên liệu.",
       );
       return;
     }
 
     Alert.alert(
-      'Xác nhận nguyên liệu',
-      'Dữ liệu đã hợp lệ. Chức năng lưu vào kho sẽ được kết nối ở bước tiếp theo.',
+      "Xác nhận nguyên liệu",
+      "Dữ liệu đã hợp lệ. Chức năng lưu vào kho sẽ được kết nối ở bước tiếp theo.",
       [
-        { text: 'Đóng' },
+        { text: "Đóng" },
         {
-          text: 'Về trang chủ',
-          onPress: () => router.replace('/home'),
+          text: "Về trang chủ",
+          onPress: () => router.replace("/home"),
         },
-      ]
+      ],
     );
   };
 
   const notReady = (name: string) => {
-    Alert.alert(
-      name,
-      'Màn hình này sẽ được xây dựng tiếp theo.'
-    );
+    Alert.alert(name, "Màn hình này sẽ được xây dựng tiếp theo.");
   };
 
   return (
-    <SafeAreaView
-      style={styles.safe}
-      edges={[]}>
-      <AppHeader
-        showNotification
-        unreadCount={3}
-      />
+    <SafeAreaView style={styles.safe} edges={[]}>
+      <AppHeader showNotification unreadCount={3} />
 
       <ScrollView
         style={styles.scroll}
@@ -182,16 +168,11 @@ export default function ScanResultScreen() {
       >
         {/* TIÊU ĐỀ */}
         <View style={styles.heading}>
-          <Pressable
-            style={styles.backButton}
-            onPress={() => router.back()}
-          >
+          <Pressable style={styles.backButton} onPress={() => router.back()}>
             <ArrowLeft size={22} color={C.orange} />
           </Pressable>
 
-          <Text style={styles.title}>
-            Kết quả nhận diện
-          </Text>
+          <Text style={styles.title}>Kết quả nhận diện</Text>
         </View>
 
         <Text style={styles.subtitle}>
@@ -209,8 +190,8 @@ export default function ScanResultScreen() {
           </View>
 
           <Text style={styles.aiDescription}>
-            Bạn có thể sửa tên, đơn vị hoặc số lượng
-            để đảm bảo dữ liệu trong kho chính xác.
+            Bạn có thể sửa tên, đơn vị hoặc số lượng để đảm bảo dữ liệu trong
+            kho chính xác.
           </Text>
         </View>
 
@@ -231,7 +212,7 @@ export default function ScanResultScreen() {
                       placeholder="Tên nguyên liệu"
                       placeholderTextColor="#A18B81"
                       onChangeText={(value) =>
-                        updateIngredient(item.id, 'name', value)
+                        updateIngredient(item.id, "name", value)
                       }
                     />
 
@@ -241,7 +222,7 @@ export default function ScanResultScreen() {
                         value={item.quantity}
                         keyboardType="decimal-pad"
                         onChangeText={(value) =>
-                          updateIngredient(item.id, 'quantity', value)
+                          updateIngredient(item.id, "quantity", value)
                         }
                       />
 
@@ -250,7 +231,7 @@ export default function ScanResultScreen() {
                         value={item.unit}
                         placeholder="Đơn vị"
                         onChangeText={(value) =>
-                          updateIngredient(item.id, 'unit', value)
+                          updateIngredient(item.id, "unit", value)
                         }
                       />
                     </View>
@@ -263,15 +244,13 @@ export default function ScanResultScreen() {
                   </>
                 ) : (
                   <>
-                    <Text style={styles.ingredientName}>
-                      {item.name}
-                    </Text>
+                    <Text style={styles.ingredientName}>{item.name}</Text>
 
                     <Text style={styles.ingredientDetails}>
                       {item.quantity} {item.unit}
                       {item.confidence !== null
                         ? `   ·   Tin cậy ${item.confidence}%`
-                        : '   ·   Thêm thủ công'}
+                        : "   ·   Thêm thủ công"}
                     </Text>
                   </>
                 )}
@@ -302,30 +281,20 @@ export default function ScanResultScreen() {
             )}
 
             <Text style={styles.actionText}>
-              {editing ? 'Hoàn tất sửa' : 'Sửa số lượng'}
+              {editing ? "Hoàn tất sửa" : "Sửa số lượng"}
             </Text>
           </Pressable>
 
-          <Pressable
-            style={styles.addButton}
-            onPress={addIngredient}
-          >
+          <Pressable style={styles.addButton} onPress={addIngredient}>
             <Plus size={18} color={C.orange} />
-            <Text style={styles.actionText}>
-              Thêm dòng
-            </Text>
+            <Text style={styles.actionText}>Thêm dòng</Text>
           </Pressable>
         </View>
 
         {/* XÁC NHẬN */}
-        <Pressable
-          style={styles.confirmButton}
-          onPress={confirmSave}
-        >
+        <Pressable style={styles.confirmButton} onPress={confirmSave}>
           <Check size={21} color={C.white} />
-          <Text style={styles.confirmText}>
-            Xác nhận và lưu vào kho
-          </Text>
+          <Text style={styles.confirmText}>Xác nhận và lưu vào kho</Text>
         </Pressable>
       </ScrollView>
 
@@ -349,18 +318,18 @@ const styles = StyleSheet.create({
     paddingBottom: 25,
   },
   heading: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 13,
   },
   backButton: {
     width: 25,
     height: 36,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   title: {
     fontSize: 20,
-    fontWeight: '800',
+    fontWeight: "800",
     color: C.dark,
   },
   subtitle: {
@@ -377,13 +346,13 @@ const styles = StyleSheet.create({
     borderColor: C.border,
   },
   aiHeading: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 9,
   },
   aiTitle: {
     fontSize: 14,
-    fontWeight: '800',
+    fontWeight: "800",
     color: C.orange,
   },
   aiDescription: {
@@ -403,8 +372,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: C.border,
     backgroundColor: C.white,
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 13,
   },
   emojiBox: {
@@ -412,8 +381,8 @@ const styles = StyleSheet.create({
     height: 54,
     backgroundColor: C.peach,
     borderRadius: 13,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   emoji: {
     fontSize: 28,
@@ -423,7 +392,7 @@ const styles = StyleSheet.create({
   },
   ingredientName: {
     fontSize: 15,
-    fontWeight: '800',
+    fontWeight: "800",
     color: C.dark,
   },
   ingredientDetails: {
@@ -437,11 +406,11 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     fontSize: 14,
     color: C.dark,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   editRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 9,
     marginTop: 7,
   },
@@ -474,7 +443,7 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   actionRow: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 12,
     marginTop: 22,
   },
@@ -485,9 +454,9 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 1,
     borderColor: C.border,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     gap: 8,
   },
   addButton: {
@@ -497,30 +466,29 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 1,
     borderColor: C.border,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     gap: 8,
   },
   actionText: {
     fontSize: 12,
     color: C.orange,
-    fontWeight: '800',
+    fontWeight: "800",
   },
   confirmButton: {
     marginTop: 23,
     height: 54,
     borderRadius: 13,
     backgroundColor: C.orange,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     gap: 9,
   },
   confirmText: {
     color: C.white,
     fontSize: 14,
-    fontWeight: '800',
+    fontWeight: "800",
   },
-  
 });

@@ -1,96 +1,200 @@
-
-import React, { useState } from 'react';
-
+import React, { useMemo, useState } from "react";
 import {
   View,
   Text,
-  TextInput,
   ScrollView,
   Pressable,
+  TextInput,
   StyleSheet,
+  Image,
+  Alert,
   Keyboard,
-} from 'react-native';
-
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
-
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
 import {
   Search,
   Sparkles,
-  Camera,
-  Plus,
-  ShoppingCart,
   ArrowRight,
-  ChevronRight,
-  TriangleAlert,
-  UsersRound,
-  MessageCircle,
-} from 'lucide-react-native';
+  Refrigerator,
+  AlertTriangle,
+  ScanLine,
+  Plus,
+  CalendarDays,
+  ShoppingCart,
+  Clock3,
+  Flame,
+  ChefHat,
+  Users,
+  Leaf,
+  X,
+  Heart,
+} from "lucide-react-native";
 
-import AppHeader from '../components/AppHeader';
-import BottomNav from '../components/BottomNav';
+import AppHeader from "../components/AppHeader";
+import BottomNav from "../components/BottomNav";
+import FloatingAIAssistant from "../components/FloatingAIAssistant";
 
 const C = {
-  orange: '#A23A00',
-  cream: '#FFF8F6',
-  peach: '#FEF1EB',
-  dark: '#201A17',
-  muted: '#735A51',
-  border: '#EED9CF',
-  white: '#FFFFFF',
-  green: '#39845A',
+  orange: "#A23A00",
+  deepOrange: "#842D00",
+  cream: "#FFF8F6",
+  peach: "#FEF1EB",
+  white: "#FFFFFF",
+  dark: "#201A17",
+  muted: "#735A51",
+  border: "#EED9CF",
+  green: "#397C57",
+  greenLight: "#E9F5EB",
 };
 
-const recipes = [
+type Recipe = {
+  id: string;
+  name: string;
+  minutes: number;
+  calories: number;
+  badge: string;
+  image: string;
+};
+
+const RECIPES: Recipe[] = [
   {
-    emoji: '🍣',
-    name: 'Cá hồi áp chảo',
-    match: '92% phù hợp',
-    missing: 'Thiếu: 1 quả chanh',
-    time: '20 phút · Dễ nấu',
+    id: "1",
+    name: "Ức gà sốt tiêu đen",
+    minutes: 15,
+    calories: 320,
+    badge: "Khớp 100%",
+    image:
+      "https://images.unsplash.com/photo-1532550907401-a500c9a57435?w=600&auto=format&fit=crop",
   },
   {
-    emoji: '🥣',
-    name: 'Canh bí đỏ',
-    match: '88% phù hợp',
-    missing: 'Đủ nguyên liệu',
-    time: '25 phút · Dễ nấu',
+    id: "2",
+    name: "Trứng cuộn rau củ",
+    minutes: 10,
+    calories: 240,
+    badge: "Nấu nhanh",
+    image:
+      "https://images.unsplash.com/photo-1525351484163-7529414344d8?w=600&auto=format&fit=crop",
+  },
+  {
+    id: "3",
+    name: "Salad rau củ",
+    minutes: 12,
+    calories: 210,
+    badge: "Ăn lành mạnh",
+    image:
+      "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&auto=format&fit=crop",
   },
 ];
 
+function getGreeting() {
+  const hour = new Date().getHours();
+
+  if (hour < 11) {
+    return {
+      title: "CHÀO BUỔI SÁNG ☀️",
+      question: "Hôm nay mình nấu gì ngon?",
+    };
+  }
+
+  if (hour < 17) {
+    return {
+      title: "CHÀO BUỔI CHIỀU 🌤️",
+      question: "Bữa tiếp theo nấu món gì?",
+    };
+  }
+
+  return {
+    title: "CHÀO BUỔI TỐI 🌙",
+    question: "Tối nay ăn gì thật ngon?",
+  };
+}
+
 export default function HomeScreen() {
   const router = useRouter();
-  const [search, setSearch] = useState('');
+
+  const [search, setSearch] = useState("");
+  const [favorites, setFavorites] = useState<string[]>([]);
+
+  const greeting = useMemo(() => getGreeting(), []);
 
   const goTo = (path: string) => {
     Keyboard.dismiss();
     router.push(path as any);
   };
 
-  const openRecipe = (name: string) => {
-    router.push({
-      pathname: '/recipe-detail',
-      params: { name },
-    } as any);
-  };
-
   const searchRecipes = () => {
+    const keyword = search.trim();
+
+    if (!keyword) {
+      Alert.alert(
+        "Tìm kiếm món ăn",
+        "Hãy nhập tên món ăn hoặc nguyên liệu bạn muốn tìm.",
+      );
+      return;
+    }
+
     Keyboard.dismiss();
 
     router.push({
-      pathname: '/recipes',
-      params: {
-        search: search.trim(),
-      },
-    } as any);
+      pathname: "/recipes" as any,
+      params: { search: keyword },
+    });
   };
 
+  const openRecipe = (recipe: Recipe) => {
+    router.push({
+      pathname: "/recipe-detail" as any,
+      params: {
+        id: recipe.id,
+        name: recipe.name,
+      },
+    });
+  };
+
+  const toggleFavorite = (id: string) => {
+    setFavorites((current) =>
+      current.includes(id)
+        ? current.filter((item) => item !== id)
+        : [...current, id],
+    );
+  };
+
+  const quickActions = [
+    {
+      title: "Quét nguyên liệu",
+      subtitle: "Nhận diện thực phẩm",
+      icon: ScanLine,
+      path: "/scan",
+      background: C.peach,
+    },
+    {
+      title: "Thêm thủ công",
+      subtitle: "Cập nhật kho nhanh",
+      icon: Plus,
+      path: "/add-ingredient",
+      background: C.peach,
+    },
+    {
+      title: "Lập thực đơn",
+      subtitle: "Kế hoạch 7 ngày",
+      icon: CalendarDays,
+      path: "/meal-plan",
+      background: C.greenLight,
+    },
+    {
+      title: "Danh sách mua",
+      subtitle: "Đi chợ thông minh",
+      icon: ShoppingCart,
+      path: "/shopping-list",
+      background: C.peach,
+    },
+  ];
+
   return (
-    <SafeAreaView style={styles.safe} edges={[]}>
-      <AppHeader
-        showNotification
-        unreadCount={3}
-      />
+    <SafeAreaView style={styles.screen} edges={["left", "right"]}>
+      {/* HEADER CHUNG */}
+      <AppHeader />
 
       <ScrollView
         style={styles.scroll}
@@ -99,836 +203,758 @@ export default function HomeScreen() {
         keyboardShouldPersistTaps="handled"
       >
         {/* LỜI CHÀO */}
-        <View style={styles.greeting}>
-          <View>
-            <Text style={styles.hello}>
-              Chào buổi sáng 👋
-            </Text>
+        <View style={styles.greetingSection}>
+          <Text style={styles.eyebrow}>{greeting.title}</Text>
 
-            <Text style={styles.subtitle}>
-              Hôm nay mình cùng nấu món ngon nhé!
-            </Text>
-          </View>
+          <Text style={styles.greetingTitle}>{greeting.question}</Text>
+
+          <Text style={styles.greetingDescription}>
+            Khám phá món ngon từ những gì bạn đang có
+          </Text>
         </View>
 
         {/* TÌM KIẾM */}
-        <View style={styles.searchBox}>
-          <Search size={20} color={C.muted} />
+        <View style={styles.searchContainer}>
+          <Search size={20} color={C.orange} />
 
           <TextInput
             style={styles.searchInput}
-            placeholder="Tìm món ăn, công thức, nguyên liệu..."
-            placeholderTextColor="#A18B81"
             value={search}
             onChangeText={setSearch}
+            placeholder="Tìm món ăn, nguyên liệu, công thức..."
+            placeholderTextColor="#A18B81"
             returnKeyType="search"
             onSubmitEditing={searchRecipes}
           />
 
-          {search.trim().length > 0 && (
-            <Pressable onPress={searchRecipes}>
-              <ArrowRight
-                size={20}
-                color={C.orange}
-              />
+          {search.length > 0 ? (
+            <Pressable onPress={() => setSearch("")} hitSlop={8}>
+              <X size={18} color={C.muted} />
+            </Pressable>
+          ) : (
+            <Pressable onPress={() => goTo("/recipes")} hitSlop={8}>
+              <ArrowRight size={19} color={C.orange} />
             </Pressable>
           )}
         </View>
 
-        {/* BANNER AI */}
-        <View style={styles.banner}>
-          <View style={styles.bannerBadge}>
-            <Sparkles size={15} color="#FFE0BA" />
+        {/* CHEF AI */}
+        <View style={styles.aiCard}>
+          <View style={styles.aiDecoration} />
 
-            <Text style={styles.bannerBadgeText}>
-              SMART KITCHEN AI
-            </Text>
+          <View style={styles.aiTopRow}>
+            <View style={styles.aiBadge}>
+              <Sparkles size={13} color={C.white} />
+              <Text style={styles.aiBadgeText}>CHEF AI GỢI Ý</Text>
+            </View>
+
+            <View style={styles.aiEmojiCircle}>
+              <Text style={styles.aiEmoji}>🍲</Text>
+            </View>
           </View>
 
-          <Text style={styles.bannerTitle}>
-            Hôm nay ăn gì?
+          <Text style={styles.aiTitle}>
+            Có gì trong tủ lạnh,{"\n"}nấu ngon ngay!
           </Text>
 
-          <Text style={styles.bannerDescription}>
-            Gợi ý món từ thực phẩm bạn đang có
+          <Text style={styles.aiDescription}>
+            AI giúp bạn chọn món phù hợp,{"\n"}
+            ưu tiên nguyên liệu sắp hết hạn.
           </Text>
 
-          <Pressable
-            style={styles.bannerButton}
-            onPress={() => goTo('/recipes')}
-          >
-            <Text style={styles.bannerButtonText}>
-              Khám phá món ăn
-            </Text>
-
-            <ArrowRight
-              size={16}
-              color={C.orange}
-            />
+          <Pressable style={styles.aiButton} onPress={() => goTo("/recipes")}>
+            <Sparkles size={17} color={C.orange} />
+            <Text style={styles.aiButtonText}>Khám phá món ăn với AI</Text>
+            <ArrowRight size={18} color={C.orange} />
           </Pressable>
-
-          <Text style={styles.bannerEmoji}>
-            🍲
-          </Text>
         </View>
 
         {/* KHO THỰC PHẨM */}
-        <View style={styles.sectionHeading}>
-          <Text style={styles.sectionTitle}>
-            Kho thực phẩm của bạn
-          </Text>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Kho thực phẩm của bạn</Text>
 
-          <Pressable onPress={() => goTo('/pantry')}>
-            <Text style={styles.sectionLink}>
-              Xem kho →
-            </Text>
+          <Pressable style={styles.sectionLink} onPress={() => goTo("/pantry")}>
+            <Text style={styles.sectionLinkText}>Xem kho</Text>
+            <ArrowRight size={15} color={C.orange} />
           </Pressable>
         </View>
 
-        <View style={styles.stats}>
-          <Pressable
-            style={styles.statCard}
-            onPress={() => goTo('/pantry')}
-          >
-            <Text style={styles.statNumber}>
-              12
-            </Text>
+        <Pressable style={styles.pantryCard} onPress={() => goTo("/pantry")}>
+          <View style={styles.pantryTop}>
+            <View style={styles.pantryIconBox}>
+              <Refrigerator size={27} color={C.orange} />
+            </View>
 
-            <Text style={styles.statLabel}>
-              Nguyên liệu
-            </Text>
-          </Pressable>
+            <View style={styles.pantryInfo}>
+              <Text style={styles.pantryNumber}>12</Text>
+              <Text style={styles.pantryLabel}>Nguyên liệu đang có</Text>
+            </View>
 
-          <Pressable
-            style={styles.statCard}
-            onPress={() => goTo('/pantry')}
-          >
-            <Text
-              style={[
-                styles.statNumber,
-                { color: '#C17B22' },
-              ]}
-            >
-              03
-            </Text>
-
-            <Text style={styles.statLabel}>
-              Sắp hết hạn
-            </Text>
-          </Pressable>
-
-          <Pressable
-            style={styles.statCard}
-            onPress={() => goTo('/shopping-list')}
-          >
-            <Text style={styles.statNumber}>
-              02
-            </Text>
-
-            <Text style={styles.statLabel}>
-              Cần bổ sung
-            </Text>
-          </Pressable>
-        </View>
-
-        {/* CẢNH BÁO HẾT HẠN */}
-        <Pressable
-          style={styles.expiryCard}
-          onPress={() => goTo('/pantry')}
-        >
-          <View style={styles.expiryHeader}>
-            <TriangleAlert
-              size={19}
-              color="#B87418"
-            />
-
-            <Text style={styles.expiryTitle}>
-              Thực phẩm sắp hết hạn
-            </Text>
+            <ArrowRight size={19} color={C.orange} />
           </View>
 
-          <Text style={styles.expiryDescription}>
-            Rau cải: 1 ngày • Cà chua: 2 ngày
-          </Text>
+          <View style={styles.pantryDivider} />
 
-          <Text style={styles.expiryLink}>
-            Xem và ưu tiên sử dụng →
-          </Text>
+          <View style={styles.expiryRow}>
+            <View style={styles.expiryIcon}>
+              <AlertTriangle size={17} color={C.orange} />
+            </View>
+
+            <Text style={styles.expiryText}>3 nguyên liệu sắp hết hạn</Text>
+
+            <ArrowRight size={16} color={C.orange} />
+          </View>
         </Pressable>
 
-        {/* THÊM NGUYÊN LIỆU */}
-        <Text style={styles.sectionTitle}>
-          Thêm nguyên liệu vào kho
-        </Text>
+        {/* THAO TÁC NHANH */}
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Tiện ích cho căn bếp</Text>
+        </View>
 
-        <View style={styles.quickActions}>
-          <Pressable
-            style={styles.actionCard}
-            onPress={() => goTo('/scan')}
-          >
-            <View style={styles.actionIcon}>
-              <Camera
-                size={25}
-                color={C.orange}
-              />
-            </View>
+        <View style={styles.quickGrid}>
+          {quickActions.map((action) => {
+            const Icon = action.icon;
 
-            <Text style={styles.actionTitle}>
-              Quét bằng AI
-            </Text>
+            return (
+              <Pressable
+                key={action.path}
+                style={styles.quickCard}
+                onPress={() => goTo(action.path)}
+              >
+                <View
+                  style={[
+                    styles.quickIconBox,
+                    { backgroundColor: action.background },
+                  ]}
+                >
+                  <Icon size={23} color={C.orange} />
+                </View>
 
-            <Text style={styles.actionSub}>
-              Chụp ảnh hoặc tải ảnh
-            </Text>
-          </Pressable>
+                <Text style={styles.quickTitle}>{action.title}</Text>
 
-          <Pressable
-            style={styles.actionCard}
-            onPress={() => goTo('/add-ingredient')}
-          >
-            <View style={styles.actionIcon}>
-              <Plus
-                size={25}
-                color={C.orange}
-              />
-            </View>
-
-            <Text style={styles.actionTitle}>
-              Nhập thủ công
-            </Text>
-
-            <Text style={styles.actionSub}>
-              Nhập hoặc chọn danh mục
-            </Text>
-          </Pressable>
+                <Text style={styles.quickSubtitle}>{action.subtitle}</Text>
+              </Pressable>
+            );
+          })}
         </View>
 
         {/* GỢI Ý MÓN ĂN */}
-        <View style={styles.sectionHeading}>
-          <Text style={styles.sectionTitle}>
-            Gợi ý món ăn phù hợp
-          </Text>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Hôm nay ăn gì?</Text>
 
           <Pressable
-            onPress={() => goTo('/recipes')}
+            style={styles.sectionLink}
+            onPress={() => goTo("/recipes")}
           >
-            <Text style={styles.sectionLink}>
-              Xem tất cả →
-            </Text>
+            <Text style={styles.sectionLinkText}>Xem tất cả</Text>
+            <ArrowRight size={15} color={C.orange} />
           </Pressable>
         </View>
 
-        {recipes.map((recipe) => (
-          <Pressable
-            key={recipe.name}
-            style={styles.recipeCard}
-            onPress={() => openRecipe(recipe.name)}
-          >
-            <View style={styles.recipeImage}>
-              <Text style={styles.recipeEmoji}>
-                {recipe.emoji}
-              </Text>
-            </View>
-
-            <View style={styles.recipeContent}>
-              <Text style={styles.recipeTitle}>
-                {recipe.name}
-              </Text>
-
-              <Text style={styles.recipeMatch}>
-                ✦ {recipe.match}
-              </Text>
-
-              <Text style={styles.recipeMissing}>
-                {recipe.missing}
-              </Text>
-
-              <Text style={styles.recipeTime}>
-                {recipe.time}
-              </Text>
-            </View>
-
-            <ChevronRight
-              size={20}
-              color={C.muted}
-            />
-          </Pressable>
-        ))}
-
-        {/* CỘNG ĐỒNG ẨM THỰC */}
-        <View style={styles.communitySection}>
-          <View style={styles.sectionHeading}>
-            <Text style={styles.sectionTitle}>
-              Cộng đồng ẩm thực
-            </Text>
-
-            <Pressable onPress={() => goTo('/community')}>
-              <Text style={styles.sectionLink}>
-                Xem tất cả →
-              </Text>
-            </Pressable>
-          </View>
-
-          <Pressable
-            style={styles.communityCard}
-            onPress={() => goTo('/community')}
-          >
-            <View style={styles.communityTop}>
-              <View style={styles.communityIcon}>
-                <UsersRound size={25} color={C.orange} />
-              </View>
-
-              <View style={styles.communityInfo}>
-                <Text style={styles.communityBadge}>
-                  GÓC CHIA SẺ MÓN NGON
-                </Text>
-
-                <Text style={styles.communityTitle}>
-                  Hôm nay bạn nấu món gì? 🍳
-                </Text>
-              </View>
-            </View>
-
-            <Text style={styles.communityDescription}>
-              Chia sẻ công thức, khám phá món ngon và
-              kết nối với những người có cùng đam mê nấu ăn.
-            </Text>
-
-            <View style={styles.communityFooter}>
-              <View style={styles.communityMembers}>
-                <MessageCircle size={16} color={C.muted} />
-
-                <Text style={styles.communityMembersText}>
-                  Cùng chia sẻ bí quyết vào bếp
-                </Text>
-              </View>
-
-              <View style={styles.communityArrow}>
-                <ArrowRight size={18} color={C.white} />
-              </View>
-            </View>
-          </Pressable>
-        </View>
-
-        {/* THỰC ĐƠN HÔM NAY */}
-        <View style={styles.sectionHeading}>
-          <Text style={styles.sectionTitle}>
-            Thực đơn hôm nay
-          </Text>
-
-          <Pressable
-            onPress={() => goTo('/meal-plan')}
-          >
-            <Text style={styles.sectionLink}>
-              Xem tuần →
-            </Text>
-          </Pressable>
-        </View>
-
-        <Pressable
-          style={styles.menuCard}
-          onPress={() => goTo('/meal-plan')}
-        >
-          {[
-            ['☀️ Bữa sáng', 'Bánh mì trứng'],
-            ['🌤️ Bữa trưa', 'Cơm + canh bí đỏ'],
-            ['🌙 Bữa tối', 'Cá hồi áp chảo'],
-          ].map((meal, index) => (
-            <View
-              key={meal[0]}
-              style={[
-                styles.mealRow,
-                index < 2 && styles.mealDivider,
-              ]}
-            >
-              <Text style={styles.mealLabel}>
-                {meal[0]}
-              </Text>
-
-              <Text style={styles.mealName}>
-                {meal[1]}
-              </Text>
-            </View>
-          ))}
-        </Pressable>
-
-        {/* DANH SÁCH MUA SẮM */}
-        <Text style={styles.sectionTitle}>
-          Danh sách mua sắm
+        <Text style={styles.sectionDescription}>
+          Gợi ý món ngon, dễ làm cho bạn
         </Text>
 
-        <Pressable
-          style={styles.shoppingCard}
-          onPress={() => goTo('/shopping-list')}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.recipeList}
+          style={styles.recipeScroll}
         >
-          <View style={styles.shoppingIcon}>
-            <ShoppingCart
-              size={23}
-              color={C.orange}
-            />
+          {RECIPES.map((recipe) => {
+            const isFavorite = favorites.includes(recipe.id);
+
+            return (
+              <View key={recipe.id} style={styles.recipeCard}>
+                <Pressable
+                  style={styles.recipeImageWrapper}
+                  onPress={() => openRecipe(recipe)}
+                >
+                  <Image
+                    source={{ uri: recipe.image }}
+                    style={styles.recipeImage}
+                    resizeMode="cover"
+                  />
+
+                  <View style={styles.recipeBadge}>
+                    <Text style={styles.recipeBadgeText}>{recipe.badge}</Text>
+                  </View>
+                </Pressable>
+
+                <Pressable
+                  style={styles.heartButton}
+                  onPress={() => toggleFavorite(recipe.id)}
+                >
+                  <Heart
+                    size={17}
+                    color={isFavorite ? "#E54848" : C.muted}
+                    fill={isFavorite ? "#E54848" : "transparent"}
+                  />
+                </Pressable>
+
+                <Pressable onPress={() => openRecipe(recipe)}>
+                  <Text style={styles.recipeName} numberOfLines={2}>
+                    {recipe.name}
+                  </Text>
+                </Pressable>
+
+                <View style={styles.recipeMeta}>
+                  <Clock3 size={12} color={C.muted} />
+                  <Text style={styles.recipeMetaText}>
+                    {recipe.minutes} phút
+                  </Text>
+
+                  <Flame size={12} color={C.orange} />
+                  <Text style={styles.recipeMetaText}>
+                    {recipe.calories} kcal
+                  </Text>
+                </View>
+
+                <Pressable
+                  style={styles.recipeLink}
+                  onPress={() => openRecipe(recipe)}
+                >
+                  <Text style={styles.recipeLinkText}>Xem công thức</Text>
+                  <ArrowRight size={14} color={C.orange} />
+                </Pressable>
+              </View>
+            );
+          })}
+        </ScrollView>
+
+        {/* CẢNH BÁO CHỐNG LÃNG PHÍ */}
+        <Pressable style={styles.tipCard} onPress={() => goTo("/pantry")}>
+          <View style={styles.tipIcon}>
+            <Leaf size={24} color={C.green} />
           </View>
 
-          <View style={{ flex: 1 }}>
-            <Text style={styles.shoppingTitle}>
-              3 nguyên liệu cần mua
+          <View style={styles.tipContent}>
+            <Text style={styles.tipTitle}>Đừng để thực phẩm bị lãng phí</Text>
+
+            <Text style={styles.tipDescription}>
+              Ưu tiên sử dụng nguyên liệu gần hết hạn để bữa ăn luôn tươi ngon.
             </Text>
 
-            <Text style={styles.shoppingDescription}>
-              Chanh · Sữa · Hành lá
-            </Text>
+            <View style={styles.tipLink}>
+              <Text style={styles.tipLinkText}>Xem nguyên liệu</Text>
+              <ArrowRight size={14} color={C.orange} />
+            </View>
           </View>
-
-          <ChevronRight
-            size={20}
-            color={C.orange}
-          />
         </Pressable>
+
+        {/* CỘNG ĐỒNG */}
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Góc bếp cộng đồng</Text>
+        </View>
+
+        <Pressable
+          style={styles.communityCard}
+          onPress={() => goTo("/community")}
+        >
+          <View style={styles.communityImageBox}>
+            <Text style={styles.communityEmoji}>👩‍🍳</Text>
+          </View>
+
+          <View style={styles.communityContent}>
+            <Text style={styles.communityEyebrow}>CHIA SẺ CÔNG THỨC</Text>
+
+            <Text style={styles.communityTitle}>
+              Cùng nhau nấu ngon mỗi ngày
+            </Text>
+
+            <Text style={styles.communityDescription}>
+              Học hỏi mẹo bếp và khám phá công thức mới.
+            </Text>
+
+            <View style={styles.communityLink}>
+              <Users size={15} color={C.orange} />
+              <Text style={styles.communityLinkText}>Khám phá cộng đồng</Text>
+              <ArrowRight size={14} color={C.orange} />
+            </View>
+          </View>
+        </Pressable>
+
+        {/* CUỐI TRANG */}
+        <View style={styles.footer}>
+          <ChefHat size={17} color={C.orange} />
+          <Text style={styles.footerText}>
+            Smart Kitchen AI – Nấu ngon, sống xanh
+          </Text>
+        </View>
       </ScrollView>
 
-      <BottomNav />
+      <View style={{ position: "relative" }}>
+        <FloatingAIAssistant />
+        <BottomNav />
+      </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  safe: {
+  screen: {
     flex: 1,
     backgroundColor: C.cream,
   },
-
   scroll: {
     flex: 1,
   },
-
   content: {
-    paddingHorizontal: 20,
-    paddingTop: 24,
-    paddingBottom: 35,
+    paddingTop: 18,
+    paddingBottom: 24,
   },
 
-  greeting: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+  // GREETING
+  greetingSection: {
+    paddingHorizontal: 18,
   },
-
-  hello: {
-    fontSize: 22,
-    fontWeight: '800',
+  eyebrow: {
+    fontSize: 10,
+    fontWeight: "800",
+    color: C.orange,
+    letterSpacing: 0.8,
+    marginBottom: 8,
+  },
+  greetingTitle: {
+    fontSize: 23,
+    fontWeight: "800",
     color: C.dark,
+    lineHeight: 31,
   },
-
-  subtitle: {
-    fontSize: 13,
+  greetingDescription: {
+    fontSize: 12,
     color: C.muted,
-    marginTop: 7,
+    marginTop: 6,
+    lineHeight: 18,
   },
 
-  searchBox: {
-    height: 52,
+  // SEARCH
+  searchContainer: {
+    marginHorizontal: 16,
+    marginTop: 18,
+    marginBottom: 16,
+    minHeight: 49,
+    borderRadius: 14,
     backgroundColor: C.white,
     borderWidth: 1,
     borderColor: C.border,
-    borderRadius: 14,
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 15,
+    flexDirection: "row",
+    alignItems: "center",
     gap: 10,
-    marginTop: 23,
-    marginBottom: 23,
+    paddingHorizontal: 14,
   },
-
   searchInput: {
     flex: 1,
-    fontSize: 13,
+    fontSize: 12,
     color: C.dark,
+    paddingVertical: 12,
   },
 
-  banner: {
-    minHeight: 166,
+  // AI
+  aiCard: {
+    marginHorizontal: 16,
     backgroundColor: C.orange,
-    borderRadius: 19,
-    padding: 19,
-    overflow: 'hidden',
+    borderRadius: 20,
+    padding: 15,
+    overflow: "hidden",
+    marginBottom: 23,
   },
-
-  bannerBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  aiDecoration: {
+    position: "absolute",
+    width: 165,
+    height: 165,
+    borderRadius: 83,
+    backgroundColor: C.deepOrange,
+    right: -80,
+    top: -70,
+    opacity: 0.55,
+  },
+  aiTopRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 7,
+  },
+  aiBadge: {
+    flexDirection: "row",
+    alignItems: "center",
     gap: 6,
+    backgroundColor: C.deepOrange,
+    borderRadius: 20,
+    paddingHorizontal: 11,
+    paddingVertical: 8,
   },
-
-  bannerBadgeText: {
-    fontSize: 11,
-    fontWeight: '700',
-    color: '#FFE0BA',
-  },
-
-  bannerTitle: {
-    fontSize: 25,
-    fontWeight: '800',
+  aiBadgeText: {
+    fontSize: 10,
+    fontWeight: "800",
     color: C.white,
-    marginTop: 13,
+    letterSpacing: 0.4,
   },
-
-  bannerDescription: {
+  aiEmojiCircle: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: "rgba(255,255,255,0.15)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  aiEmoji: {
+    fontSize: 36,
+  },
+  aiTitle: {
+    fontSize: 23,
+    lineHeight: 30,
+    fontWeight: "800",
+    color: C.white,
+    marginTop: -4,
+  },
+  aiDescription: {
     fontSize: 12,
-    color: '#FFE4D3',
-    marginTop: 6,
-    maxWidth: '78%',
+    lineHeight: 19,
+    color: "#FFE9DD",
+    marginTop: 9,
+    marginBottom: 17,
   },
-
-  bannerButton: {
-    marginTop: 14,
-    alignSelf: 'flex-start',
+  aiButton: {
+    minHeight: 43,
     backgroundColor: C.white,
-    paddingHorizontal: 13,
-    paddingVertical: 9,
-    borderRadius: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
+    borderRadius: 11,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    paddingHorizontal: 10,
   },
-
-  bannerButtonText: {
+  aiButtonText: {
     fontSize: 12,
+    fontWeight: "800",
     color: C.orange,
-    fontWeight: '800',
   },
 
-  bannerEmoji: {
-    position: 'absolute',
-    right: 12,
-    bottom: 20,
-    fontSize: 64,
-  },
-
-  sectionHeading: {
-    marginTop: 27,
-    marginBottom: 13,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+  // SECTION
+  sectionHeader: {
+    marginHorizontal: 18,
+    marginBottom: 12,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     gap: 8,
   },
-
   sectionTitle: {
     fontSize: 17,
-    fontWeight: '800',
+    fontWeight: "800",
     color: C.dark,
     flexShrink: 1,
   },
-
   sectionLink: {
-    fontSize: 12,
-    color: C.orange,
-    fontWeight: '700',
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 3,
   },
-
-  stats: {
-    flexDirection: 'row',
-    gap: 10,
-  },
-
-  statCard: {
-    flex: 1,
-    backgroundColor: C.white,
-    borderWidth: 1,
-    borderColor: C.border,
-    borderRadius: 14,
-    paddingVertical: 18,
-    alignItems: 'center',
-  },
-
-  statNumber: {
-    fontSize: 27,
-    fontWeight: '800',
+  sectionLinkText: {
+    fontSize: 11,
+    fontWeight: "800",
     color: C.orange,
   },
-
-  statLabel: {
+  sectionDescription: {
+    marginHorizontal: 18,
     fontSize: 11,
     color: C.muted,
-    marginTop: 7,
-    textAlign: 'center',
-  },
-
-  expiryCard: {
-    backgroundColor: '#FFF0DA',
-    borderWidth: 1,
-    borderColor: '#F4D9AB',
-    borderRadius: 14,
-    padding: 15,
-    marginTop: 15,
-    marginBottom: 27,
-  },
-
-  expiryHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-
-  expiryTitle: {
-    fontSize: 14,
-    fontWeight: '800',
-    color: '#8F5C15',
-  },
-
-  expiryDescription: {
-    color: '#8F6B39',
-    fontSize: 12,
-    marginTop: 9,
-  },
-
-  expiryLink: {
-    color: '#A36517',
-    fontSize: 12,
-    fontWeight: '700',
-    marginTop: 10,
-  },
-
-  quickActions: {
-    flexDirection: 'row',
-    gap: 12,
-    marginTop: 14,
-  },
-
-  actionCard: {
-    flex: 1,
-    backgroundColor: C.white,
-    borderRadius: 15,
-    borderWidth: 1,
-    borderColor: C.border,
-    padding: 14,
-    minHeight: 128,
-  },
-
-  actionIcon: {
-    width: 43,
-    height: 43,
-    backgroundColor: C.peach,
-    borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
+    marginTop: -4,
     marginBottom: 12,
   },
 
-  actionTitle: {
-    fontSize: 13,
-    fontWeight: '800',
+  // PANTRY
+  pantryCard: {
+    marginHorizontal: 16,
+    marginBottom: 25,
+    backgroundColor: C.white,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: C.border,
+    padding: 14,
+  },
+  pantryTop: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 11,
+  },
+  pantryIconBox: {
+    width: 48,
+    height: 48,
+    backgroundColor: C.peach,
+    borderRadius: 13,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  pantryInfo: {
+    flex: 1,
+  },
+  pantryNumber: {
+    fontSize: 26,
+    fontWeight: "800",
     color: C.dark,
   },
-
-  actionSub: {
+  pantryLabel: {
     fontSize: 11,
+    color: C.muted,
+    marginTop: 1,
+  },
+  pantryDivider: {
+    height: 1,
+    backgroundColor: C.border,
+    marginVertical: 13,
+  },
+  expiryRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  expiryIcon: {
+    width: 28,
+    height: 28,
+    borderRadius: 8,
+    backgroundColor: C.peach,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  expiryText: {
+    flex: 1,
+    fontSize: 12,
+    fontWeight: "800",
+    color: C.orange,
+  },
+
+  // QUICK ACTIONS
+  quickGrid: {
+    marginHorizontal: 16,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    rowGap: 10,
+    marginBottom: 25,
+  },
+  quickCard: {
+    width: "48.5%",
+    minHeight: 111,
+    borderRadius: 15,
+    borderWidth: 1,
+    borderColor: C.border,
+    backgroundColor: C.white,
+    padding: 12,
+  },
+  quickIconBox: {
+    width: 42,
+    height: 42,
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 9,
+  },
+  quickTitle: {
+    fontSize: 12,
+    fontWeight: "800",
+    color: C.dark,
+  },
+  quickSubtitle: {
+    fontSize: 10,
     color: C.muted,
     marginTop: 5,
   },
 
-  recipeCard: {
-    backgroundColor: C.white,
-    borderWidth: 1,
-    borderColor: C.border,
-    borderRadius: 15,
-    padding: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 13,
-    marginBottom: 11,
+  // RECIPES
+  recipeScroll: {
+    marginBottom: 22,
   },
-
-  recipeImage: {
-    width: 83,
-    height: 87,
-    borderRadius: 12,
-    backgroundColor: C.peach,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  recipeEmoji: {
-    fontSize: 38,
-  },
-
-  recipeContent: {
-    flex: 1,
-    gap: 4,
-  },
-
-  recipeTitle: {
-    fontSize: 14,
-    fontWeight: '800',
-    color: C.dark,
-  },
-
-  recipeMatch: {
-    fontSize: 11,
-    fontWeight: '700',
-    color: C.green,
-  },
-
-  recipeMissing: {
-    fontSize: 11,
-    color: C.muted,
-  },
-
-  recipeTime: {
-    fontSize: 11,
-    color: C.muted,
-  },
-
-  menuCard: {
-    backgroundColor: C.white,
-    borderWidth: 1,
-    borderColor: C.border,
-    borderRadius: 15,
-    paddingHorizontal: 14,
-    marginBottom: 27,
-  },
-
-  mealRow: {
-    minHeight: 49,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: 10,
-  },
-
-  mealDivider: {
-    borderBottomWidth: 1,
-    borderBottomColor: C.border,
-  },
-
-  mealLabel: {
-    color: C.muted,
-    fontSize: 12,
-  },
-
-  mealName: {
-    color: C.dark,
-    fontSize: 12,
-    fontWeight: '700',
-    flexShrink: 1,
-    textAlign: 'right',
-  },
-
-  shoppingCard: {
-    marginTop: 13,
-    backgroundColor: C.white,
-    borderWidth: 1,
-    borderColor: C.border,
-    borderRadius: 15,
-    padding: 15,
-    flexDirection: 'row',
-    alignItems: 'center',
+  recipeList: {
+    paddingHorizontal: 16,
     gap: 12,
   },
-
-  shoppingIcon: {
-    width: 43,
-    height: 43,
-    borderRadius: 12,
+  recipeCard: {
+    width: 175,
+    borderRadius: 15,
+    borderWidth: 1,
+    borderColor: C.border,
+    backgroundColor: C.white,
+    padding: 9,
+  },
+  recipeImageWrapper: {
+    height: 105,
+    borderRadius: 11,
+    overflow: "hidden",
     backgroundColor: C.peach,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
-
-  shoppingTitle: {
+  recipeImage: {
+    width: "100%",
+    height: "100%",
+  },
+  recipeBadge: {
+    position: "absolute",
+    left: 7,
+    top: 7,
+    borderRadius: 8,
+    backgroundColor: C.white,
+    paddingHorizontal: 8,
+    paddingVertical: 5,
+  },
+  recipeBadgeText: {
+    fontSize: 9,
+    fontWeight: "800",
+    color: C.green,
+  },
+  heartButton: {
+    position: "absolute",
+    top: 17,
+    right: 17,
+    width: 29,
+    height: 29,
+    borderRadius: 15,
+    backgroundColor: C.white,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  recipeName: {
+    fontSize: 12,
+    fontWeight: "800",
     color: C.dark,
-    fontSize: 13,
-    fontWeight: '800',
+    lineHeight: 17,
+    marginTop: 10,
+    minHeight: 34,
   },
-
-  shoppingDescription: {
-    color: C.muted,
-    fontSize: 11,
+  recipeMeta: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
     marginTop: 6,
   },
-
-  communitySection: {
-    marginTop: 8,
-    marginBottom: 4,
+  recipeMetaText: {
+    fontSize: 9,
+    color: C.muted,
+  },
+  recipeLink: {
+    marginTop: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+  },
+  recipeLinkText: {
+    fontSize: 11,
+    fontWeight: "800",
+    color: C.orange,
   },
 
+  // ANTI-WASTE TIP
+  tipCard: {
+    marginHorizontal: 16,
+    marginBottom: 25,
+    padding: 14,
+    backgroundColor: C.greenLight,
+    borderRadius: 16,
+    flexDirection: "row",
+    gap: 12,
+  },
+  tipIcon: {
+    width: 42,
+    height: 42,
+    borderRadius: 12,
+    backgroundColor: C.white,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  tipContent: {
+    flex: 1,
+  },
+  tipTitle: {
+    fontSize: 13,
+    fontWeight: "800",
+    color: C.green,
+    lineHeight: 19,
+  },
+  tipDescription: {
+    fontSize: 11,
+    color: C.green,
+    lineHeight: 17,
+    marginTop: 5,
+  },
+  tipLink: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    marginTop: 10,
+  },
+  tipLinkText: {
+    fontSize: 11,
+    fontWeight: "800",
+    color: C.orange,
+  },
+
+  // COMMUNITY
   communityCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 18,
+    marginHorizontal: 16,
+    backgroundColor: C.white,
+    borderRadius: 16,
     borderWidth: 1,
-    borderColor: '#EED9CF',
-    padding: 17,
-    overflow: 'hidden',
-  },
-
-  communityTop: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    borderColor: C.border,
+    padding: 12,
+    flexDirection: "row",
     gap: 13,
   },
-
-  communityIcon: {
-    width: 56,
-    height: 56,
-    borderRadius: 16,
-    backgroundColor: '#FEF1EB',
-    alignItems: 'center',
-    justifyContent: 'center',
+  communityImageBox: {
+    width: 91,
+    minHeight: 126,
+    borderRadius: 12,
+    backgroundColor: C.peach,
+    alignItems: "center",
+    justifyContent: "center",
   },
-
-  communityInfo: {
+  communityEmoji: {
+    fontSize: 42,
+  },
+  communityContent: {
     flex: 1,
-    gap: 7,
+    justifyContent: "center",
   },
-
-  communityBadge: {
-    fontSize: 10,
-    fontWeight: '800',
-    color: '#A23A00',
-    letterSpacing: 0.6,
+  communityEyebrow: {
+    fontSize: 9,
+    fontWeight: "800",
+    color: C.orange,
+    letterSpacing: 0.5,
   },
-
   communityTitle: {
     fontSize: 15,
-    fontWeight: '800',
-    color: '#201A17',
+    lineHeight: 21,
+    fontWeight: "800",
+    color: C.dark,
+    marginTop: 7,
   },
-
   communityDescription: {
-    fontSize: 12,
-    color: '#735A51',
-    lineHeight: 19,
-    marginTop: 14,
+    fontSize: 10,
+    color: C.muted,
+    lineHeight: 15,
+    marginTop: 6,
+  },
+  communityLink: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    marginTop: 10,
+  },
+  communityLinkText: {
+    fontSize: 10,
+    fontWeight: "800",
+    color: C.orange,
   },
 
-  communityFooter: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginTop: 16,
-    paddingTop: 13,
-    borderTopWidth: 1,
-    borderTopColor: '#F4E7E1',
-  },
-
-  communityMembers: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  // FOOTER
+  footer: {
+    marginTop: 23,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
     gap: 7,
-    flex: 1,
   },
-
-  communityMembersText: {
-    fontSize: 11,
-    color: '#735A51',
+  footerText: {
+    fontSize: 10,
+    color: C.muted,
   },
-
-  communityArrow: {
-    width: 34,
-    height: 34,
-    borderRadius: 11,
-    backgroundColor: '#A23A00',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
 });
