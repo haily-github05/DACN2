@@ -23,6 +23,8 @@ import {
   ArrowRight,
   ChevronRight,
   TriangleAlert,
+  UsersRound,
+  MessageCircle,
 } from 'lucide-react-native';
 
 import AppHeader from '../components/AppHeader';
@@ -352,6 +354,61 @@ export default function HomeScreen() {
             />
           </Pressable>
         ))}
+
+        {/* CỘNG ĐỒNG ẨM THỰC */}
+        <View style={styles.communitySection}>
+          <View style={styles.sectionHeading}>
+            <Text style={styles.sectionTitle}>
+              Cộng đồng ẩm thực
+            </Text>
+
+            <Pressable onPress={() => goTo('/community')}>
+              <Text style={styles.sectionLink}>
+                Xem tất cả →
+              </Text>
+            </Pressable>
+          </View>
+
+          <Pressable
+            style={styles.communityCard}
+            onPress={() => goTo('/community')}
+          >
+            <View style={styles.communityTop}>
+              <View style={styles.communityIcon}>
+                <UsersRound size={25} color={C.orange} />
+              </View>
+
+              <View style={styles.communityInfo}>
+                <Text style={styles.communityBadge}>
+                  GÓC CHIA SẺ MÓN NGON
+                </Text>
+
+                <Text style={styles.communityTitle}>
+                  Hôm nay bạn nấu món gì? 🍳
+                </Text>
+              </View>
+            </View>
+
+            <Text style={styles.communityDescription}>
+              Chia sẻ công thức, khám phá món ngon và
+              kết nối với những người có cùng đam mê nấu ăn.
+            </Text>
+
+            <View style={styles.communityFooter}>
+              <View style={styles.communityMembers}>
+                <MessageCircle size={16} color={C.muted} />
+
+                <Text style={styles.communityMembersText}>
+                  Cùng chia sẻ bí quyết vào bếp
+                </Text>
+              </View>
+
+              <View style={styles.communityArrow}>
+                <ArrowRight size={18} color={C.white} />
+              </View>
+            </View>
+          </Pressable>
+        </View>
 
         {/* THỰC ĐƠN HÔM NAY */}
         <View style={styles.sectionHeading}>
@@ -788,4 +845,90 @@ const styles = StyleSheet.create({
     fontSize: 11,
     marginTop: 6,
   },
+
+  communitySection: {
+    marginTop: 8,
+    marginBottom: 4,
+  },
+
+  communityCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: '#EED9CF',
+    padding: 17,
+    overflow: 'hidden',
+  },
+
+  communityTop: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 13,
+  },
+
+  communityIcon: {
+    width: 56,
+    height: 56,
+    borderRadius: 16,
+    backgroundColor: '#FEF1EB',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  communityInfo: {
+    flex: 1,
+    gap: 7,
+  },
+
+  communityBadge: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: '#A23A00',
+    letterSpacing: 0.6,
+  },
+
+  communityTitle: {
+    fontSize: 15,
+    fontWeight: '800',
+    color: '#201A17',
+  },
+
+  communityDescription: {
+    fontSize: 12,
+    color: '#735A51',
+    lineHeight: 19,
+    marginTop: 14,
+  },
+
+  communityFooter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 16,
+    paddingTop: 13,
+    borderTopWidth: 1,
+    borderTopColor: '#F4E7E1',
+  },
+
+  communityMembers: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 7,
+    flex: 1,
+  },
+
+  communityMembersText: {
+    fontSize: 11,
+    color: '#735A51',
+  },
+
+  communityArrow: {
+    width: 34,
+    height: 34,
+    borderRadius: 11,
+    backgroundColor: '#A23A00',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
 });
