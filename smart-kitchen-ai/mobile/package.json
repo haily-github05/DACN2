@@ -1,11 +1,12 @@
 {
   "name": "smart-kitchen-ai",
   "version": "1.0.0",
- "main": "expo-router/entry",
+  "main": "expo-router/entry",
   "dependencies": {
     "expo": "^57.0.30",
     "expo-constants": "~57.0.22",
     "expo-image": "~57.0.5",
+    "expo-image-picker": "~57.0.20",
     "expo-linking": "~57.0.13",
     "expo-router": "~57.0.28",
     "expo-status-bar": "~57.0.1",
@@ -18,7 +19,7 @@
     "react-native-svg": "15.15.4"
   },
   "devDependencies": {
-    "@types/react": "~19.3.0",
+    "@types/react": "~19.2.4",
     "typescript": "~6.0.3"
   },
   "scripts": {
