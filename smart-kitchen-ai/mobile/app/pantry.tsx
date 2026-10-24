@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import {
   View,
   Text,
@@ -9,7 +9,9 @@ import {
   Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
+import Constants from "expo-constants";
+import { getCurrentUserId } from "../lib/auth";
 import {
   ArrowLeft,
   Plus,
@@ -156,12 +158,94 @@ const LOCATIONS: {
   { key: "Ngăn đông", icon: Snowflake },
   { key: "Đồ khô", icon: Package },
 ];
+const API_URL = (
+  process.env.EXPO_PUBLIC_API_URL?.trim() ||
+  `http://${Constants.expoConfig?.hostUri?.split(":")[0]}:3000`
+).replace(/\/+$/, "");
 
+const getEmoji = (category: string) => {
+  const icons: Record<string, string> = {
+    Thịt: "🥩",
+    Trứng: "🥚",
+    "Rau củ": "🥦",
+    "Hải sản": "🐟",
+    Sữa: "🥛",
+    "Ngũ cốc": "🍚",
+    Nấm: "🍄",
+    Đậu: "🫘",
+    "Trái cây": "🍎",
+    "Gia vị": "🧄",
+  };
+
+  return icons[category] || "🥗";
+};
+
+const loadPantryFromMySQL = async (): Promise<Ingredient[]> => {
+  const userId = await getCurrentUserId();
+
+  const response = await fetch(`${API_URL}/api/pantry/${userId}`);
+  const result = await response.json();
+
+  if (!response.ok || result.success !== true) {
+    throw new Error(result.message || "Không thể tải kho thực phẩm");
+  }
+
+  return result.data.map((item: any) => ({
+    id: Number(item.id),
+    name: item.name,
+    description: item.category || "Nguyên liệu trong kho",
+    quantity: `${Number(item.quantity)}${item.unit ? ` ${item.unit}` : ""}`,
+    location: item.location === "Nhiệt độ phòng" ? "Đồ khô" : item.location,
+    daysLeft: item.daysLeft === null ? 9999 : Number(item.daysLeft),
+    emoji: getEmoji(item.category),
+    category: item.category || "Khác",
+  }));
+};
 export default function PantryScreen() {
   const router = useRouter();
 
-  const [ingredients, setIngredients] =
-    useState<Ingredient[]>(INITIAL_INGREDIENTS);
+  const [ingredients, setIngredients] = useState<Ingredient[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useFocusEffect(
+    useCallback(() => {
+      let active = true;
+
+      const loadData = async () => {
+        try {
+          setLoading(true);
+
+          const data = await loadPantryFromMySQL();
+
+          if (active) {
+            setIngredients(data);
+          }
+        } catch (error) {
+          console.error("Lỗi tải kho:", error);
+
+          if (active) {
+            setIngredients([]);
+            Alert.alert(
+              "Lỗi",
+              error instanceof Error
+                ? error.message
+                : "Không thể tải dữ liệu kho",
+            );
+          }
+        } finally {
+          if (active) {
+            setLoading(false);
+          }
+        }
+      };
+
+      loadData();
+
+      return () => {
+        active = false;
+      };
+    }, []),
+  );
 
   const [search, setSearch] = useState("");
   const [selectedLocation, setSelectedLocation] =
@@ -516,7 +600,17 @@ export default function PantryScreen() {
             );
           })}
         </ScrollView>
-
+        {loading && (
+          <Text
+            style={{
+              textAlign: "center",
+              color: C.orange,
+              marginVertical: 12,
+            }}
+          >
+            Đang tải kho thực phẩm...
+          </Text>
+        )}
         {/* INGREDIENT LIST */}
         <View style={styles.listHeader}>
           <Text style={styles.listTitle}>Danh sách nguyên liệu</Text>

@@ -59,6 +59,7 @@ app.get("/api/recipes", async (req, res) => {
     });
   }
 });
+
 // API lấy sở thích ăn uống đã lưu từ MySQL
 app.get("/api/users/:userId/preferences", async (req, res) => {
   try {
@@ -129,6 +130,7 @@ app.get("/api/users/:userId/preferences", async (req, res) => {
     });
   }
 });
+
 // API lưu thiết lập khẩu vị
 app.put("/api/users/:userId/preferences", async (req, res) => {
   try {
@@ -226,7 +228,66 @@ app.put("/api/users/:userId/preferences", async (req, res) => {
   }
 });
 
-// Xử lý API không tồn tại
+// ============================================
+// API KHO THỰC PHẨM - LẤY DỮ LIỆU THEO USER
+// ============================================
+
+app.get("/api/pantry/:userId", async (req, res) => {
+  try {
+    const userId = Number(req.params.userId);
+
+    if (!Number.isSafeInteger(userId) || userId <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: "ID người dùng không hợp lệ",
+      });
+    }
+
+    const [rows] = await db.query(
+      `SELECT
+        p.pantry_item_id AS id,
+        p.user_id,
+        i.ingredient_id,
+        i.name,
+        i.category,
+        p.quantity,
+        p.unit,
+        p.storage_location AS location,
+        p.purchase_date,
+        p.expiry_date,
+        i.image_url,
+        DATEDIFF(p.expiry_date, CURDATE()) AS daysLeft
+      FROM pantry_items p
+      INNER JOIN ingredients i
+        ON p.ingredient_id = i.ingredient_id
+      WHERE p.user_id = ?
+      ORDER BY p.expiry_date ASC, p.pantry_item_id ASC`,
+      [userId]
+    );
+
+    return res.json({
+      success: true,
+      data: rows,
+    });
+  } catch (error) {
+    console.error("LỖI LẤY KHO THỰC PHẨM:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Không thể tải kho thực phẩm",
+      ...(process.env.NODE_ENV !== "production" && {
+        error: error.sqlMessage || error.message,
+        code: error.code,
+      }),
+    });
+  }
+});
+
+// ============================================
+// XỬ LÝ API KHÔNG TỒN TẠI
+// PHẢI ĐẶT SAU TẤT CẢ CÁC API
+// ============================================
+
 app.use("/api", (req, res) => {
   res.status(404).json({
     success: false,

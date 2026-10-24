@@ -38,11 +38,16 @@ cd DACN2
 ## 3. Chạy ứng dụng Mobile (Expo)
 
 Từ thư mục gốc repository, mở Terminal:
-
+Terminal 1: 
 ```bash
 cd smart-kitchen-ai/mobile
 npm install
 npx expo start -c
+```
+Terminal 2: 
+```bash
+cd ~/Documents/github/DACN2/smart-kitchen-ai/backend
+node server.js
 ```
 
 > Nếu thư mục vừa tải không có đường dẫn `smart-kitchen-ai/mobile`, hãy tìm thư mục chứa `package.json` của ứng dụng Expo và chạy lệnh trong thư mục đó.
