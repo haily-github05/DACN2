@@ -12,6 +12,7 @@ import {
   Platform,
 } from "react-native";
 import { useRouter } from "expo-router";
+import { registerWithApi } from "../lib/api";
 import {
   ArrowLeft,
   ChefHat,
@@ -24,6 +25,7 @@ import {
   CheckCircle2,
   Sparkles,
 } from "lucide-react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const C = {
   orange: "#A23A00",
@@ -37,6 +39,13 @@ const C = {
 
 export default function RegisterScreen() {
   const router = useRouter();
+  const goBack = () => {
+    if (router.canGoBack()) {
+      router.back();
+    } else {
+      router.replace("/intro");
+    }
+  };
 
   const [phone, setPhone] = useState("");
   const [name, setName] = useState("");
@@ -45,13 +54,15 @@ export default function RegisterScreen() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [agree, setAgree] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const strong =
     password.length >= 8 &&
     /\d/.test(password) &&
     /[^A-Za-z0-9]/.test(password);
 
-  const register = () => {
+  const validateRegistration = () => {
+    if (isSubmitting) return;
     const normalizedPhone = phone.replace(/\s/g, "");
 
     if (!/^(0[35789]\d{8}|[35789]\d{8})$/.test(normalizedPhone)) {
@@ -88,6 +99,83 @@ export default function RegisterScreen() {
     );
   };
 
+  const submitRegistration = async () => {
+    if (isSubmitting) return;
+    const normalizedPhone = phone.replace(/\s/g, "");
+    if (
+      !/^(0[35789]\d{8}|[35789]\d{8})$/.test(normalizedPhone) ||
+      name.trim().length < 2 ||
+      !strong ||
+      password !== confirm ||
+      !agree
+    ) {
+      validateRegistration();
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const result = await registerWithApi({
+        full_name: name.trim(),
+        phone: normalizedPhone.startsWith("0")
+          ? normalizedPhone
+          : `0${normalizedPhone}`,
+        password,
+      });
+
+      const user = (
+        result as {
+          data?: {
+            user_id: number;
+            full_name: string;
+            phone: string;
+          };
+        }
+      ).data;
+
+      if (!user?.user_id) {
+        throw new Error(
+          "Đã tạo tài khoản nhưng backend chưa trả về user_id. " +
+            "Cần kiểm tra API đăng ký.",
+        );
+      }
+
+      await AsyncStorage.setItem("authUser", JSON.stringify(user));
+
+      setPhone("");
+      setName("");
+      setPassword("");
+      setConfirm("");
+      setAgree(false);
+      setShowPassword(false);
+      setShowConfirm(false);
+
+      if (Platform.OS === "web") {
+        router.replace("/onboarding-preferences");
+      } else {
+        Alert.alert(
+          "Đăng ký thành công",
+          "Hãy thiết lập khẩu vị cá nhân để Smart Kitchen AI gợi ý món ăn phù hợp.",
+          [
+            {
+              text: "Thiết lập ngay",
+              onPress: () => router.replace("/onboarding-preferences"),
+            },
+          ],
+        );
+      }
+    } catch (error) {
+      Alert.alert(
+        "Không thể đăng ký",
+        error instanceof Error
+          ? `${error.message}\n\nKiểm tra backend đang chạy, MySQL đã bật và iPhone cùng Wi-Fi với máy tính.`
+          : "Không kết nối được máy chủ. Hãy kiểm tra backend và kết nối mạng.",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <KeyboardAvoidingView
       style={s.safe}
@@ -100,7 +188,7 @@ export default function RegisterScreen() {
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        <Pressable style={s.back} onPress={() => router.back()}>
+        <Pressable style={s.back} onPress={goBack}>
           <ArrowLeft size={22} color={C.orange} />
         </Pressable>
 
@@ -230,8 +318,14 @@ export default function RegisterScreen() {
           </Text>
         </Pressable>
 
-        <Pressable style={s.primary} onPress={register}>
-          <Text style={s.primaryText}>Tạo tài khoản</Text>
+        <Pressable
+          style={s.primary}
+          onPress={submitRegistration}
+          disabled={isSubmitting}
+        >
+          <Text style={s.primaryText}>
+            {isSubmitting ? "Đang tạo tài khoản..." : "Tạo tài khoản"}
+          </Text>
         </Pressable>
 
         <View style={s.bottom}>

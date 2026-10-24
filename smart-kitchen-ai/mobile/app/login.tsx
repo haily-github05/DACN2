@@ -12,6 +12,8 @@ import {
   Platform,
 } from "react-native";
 import { useRouter } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { loginWithApi } from "../lib/api";
 import {
   ArrowLeft,
   ChefHat,
@@ -44,11 +46,16 @@ export default function LoginScreen() {
   const [otpSent, setOtpSent] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [remember, setRemember] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [feedback, setFeedback] = useState<{
+    type: "success" | "error";
+    message: string;
+  } | null>(null);
 
   const validPhone = () =>
     /^(0[35789]\d{8}|[35789]\d{8})$/.test(phone.replace(/\s/g, ""));
 
-  const submit = () => {
+  const submitOtpFlow = () => {
     if (!validPhone()) {
       Alert.alert("Thông báo", "Vui lòng nhập số điện thoại hợp lệ.");
       return;
@@ -81,6 +88,57 @@ export default function LoginScreen() {
       "Thông tin hợp lệ",
       "Cần kết nối backend để xác thực tài khoản và đăng nhập.",
     );
+  };
+
+  const submitLogin = async () => {
+    if (isSubmitting) return;
+    setFeedback(null);
+    if (!validPhone()) {
+      setFeedback({ type: "error", message: "Vui lòng nhập số điện thoại hợp lệ." });
+      Alert.alert("Thông báo", "Vui lòng nhập số điện thoại hợp lệ.");
+      return;
+    }
+    if (mode === "otp") {
+      submitOtpFlow();
+      return;
+    }
+    if (!password) {
+      setFeedback({ type: "error", message: "Vui lòng nhập mật khẩu." });
+      Alert.alert("Thông báo", "Vui lòng nhập mật khẩu.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const user = await loginWithApi({
+        phone: phone.replace(/\s/g, "").replace(/^(?!0)/, "0"),
+        password,
+      });
+      if (remember) {
+        await AsyncStorage.setItem("authUser", JSON.stringify(user));
+      } else {
+        await AsyncStorage.removeItem("authUser");
+      }
+      setPassword("");
+      setFeedback({ type: "success", message: `Đăng nhập thành công. Xin chào ${user.full_name}!` });
+      if (Platform.OS === "web") {
+        setTimeout(() => router.replace("/home"), 1200);
+      }
+      Alert.alert("Đăng nhập thành công", `Xin chào ${user.full_name}!`, [
+        { text: "Tiếp tục", onPress: () => router.replace("/home") },
+      ]);
+    } catch (error) {
+      setFeedback({
+        type: "error",
+        message: error instanceof Error ? error.message : "Đăng nhập thất bại. Vui lòng thử lại.",
+      });
+      Alert.alert(
+        "Không thể đăng nhập",
+        error instanceof Error ? error.message : "Vui lòng thử lại sau.",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -237,6 +295,14 @@ export default function LoginScreen() {
           </>
         )}
 
+        {feedback && (
+          <View style={[s.feedback, feedback.type === "success" ? s.feedbackSuccess : s.feedbackError]}>
+            <Text style={[s.feedbackText, feedback.type === "success" ? s.feedbackSuccessText : s.feedbackErrorText]}>
+              {feedback.message}
+            </Text>
+          </View>
+        )}
+
         <Pressable style={s.rememberRow} onPress={() => setRemember(!remember)}>
           <View style={[s.checkbox, remember && s.checked]}>
             {remember && <Text style={s.checkMark}>✓</Text>}
@@ -244,9 +310,13 @@ export default function LoginScreen() {
           <Text style={s.rememberText}>Ghi nhớ phiên đăng nhập</Text>
         </Pressable>
 
-        <Pressable style={s.primary} onPress={submit}>
+        <Pressable style={s.primary} onPress={submitLogin} disabled={isSubmitting}>
           <Text style={s.primaryText}>
-            {mode === "password" ? "Đăng nhập" : "Xác nhận OTP"}
+            {mode === "password"
+              ? isSubmitting
+                ? "Đang đăng nhập..."
+                : "Đăng nhập"
+              : "Xác nhận OTP"}
           </Text>
           <ArrowRight size={19} color={C.white} />
         </Pressable>
@@ -395,6 +465,12 @@ const s = StyleSheet.create({
   verticalLine: { width: 1, height: 22, backgroundColor: C.border },
   sendOtp: { alignSelf: "flex-end", marginBottom: 10 },
   sendOtpText: { color: C.orange, fontSize: 13, fontWeight: "700" },
+  feedback: { borderRadius: 10, padding: 12, marginBottom: 14 },
+  feedbackSuccess: { backgroundColor: "#E9F5EC" },
+  feedbackError: { backgroundColor: "#FDECEA" },
+  feedbackText: { fontSize: 13, lineHeight: 19 },
+  feedbackSuccessText: { color: "#246B3C" },
+  feedbackErrorText: { color: "#A12622" },
   rememberRow: {
     flexDirection: "row",
     alignItems: "center",
