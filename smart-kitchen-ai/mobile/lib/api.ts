@@ -97,7 +97,7 @@ export async function loginWithApi(
 }
 
 export type UserPreferences = {
-  avatar: string | null;
+  avatar?: string | null;
   diet: string;
   tastes: string[];
   region: string;
@@ -135,28 +135,40 @@ export async function saveUserPreferences(
 
   return result;
 }
-//home 
-export type HomeRecipe = {
-  recipe_id: number;
-  name: string;
-  description: string | null;
-  estimated_cost: number | string | null;
-};
 
-export async function getHomeRecipes(): Promise<HomeRecipe[]> {
+export async function uploadUserAvatar(
+  userId: number,
+  imageUri: string
+): Promise<string> {
   const baseUrl = getApiBaseUrl();
 
-  const response = await fetch(`${baseUrl}/api/recipes`);
+  const formData = new FormData();
 
-  if (!response.ok) {
-    throw new Error(`Không thể tải món ăn (${response.status})`);
+  formData.append("avatar", {
+    uri: imageUri,
+    name: `avatar_${userId}.jpg`,
+    type: "image/jpeg",
+  } as any);
+
+  const response = await fetch(
+    `${baseUrl}/api/users/${userId}/avatar`,
+    {
+      method: "POST",
+      body: formData,
+    }
+  );
+
+  const result = await response.json().catch(() => null);
+
+  if (!response.ok || !result?.success || !result?.avatar_url) {
+    throw new Error(
+      result?.message || "Không thể tải ảnh đại diện lên server"
+    );
   }
 
-  const result = await response.json();
+  const avatarUrl: string = result.avatar_url;
 
-  if (!Array.isArray(result)) {
-    throw new Error("Dữ liệu món ăn từ backend không hợp lệ");
-  }
-
-  return result;
+  return avatarUrl.startsWith("/")
+    ? `${baseUrl}${avatarUrl}`
+    : avatarUrl;
 }

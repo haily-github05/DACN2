@@ -14,6 +14,7 @@ import {
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { loginWithApi } from "../lib/api";
+import { saveAuthUser } from "../lib/auth";
 import {
   ArrowLeft,
   ChefHat,
@@ -114,11 +115,7 @@ export default function LoginScreen() {
         phone: phone.replace(/\s/g, "").replace(/^(?!0)/, "0"),
         password,
       });
-      if (remember) {
-        await AsyncStorage.setItem("authUser", JSON.stringify(user));
-      } else {
-        await AsyncStorage.removeItem("authUser");
-      }
+      await saveAuthUser(user, remember);
       setPassword("");
       setFeedback({ type: "success", message: `Đăng nhập thành công. Xin chào ${user.full_name}!` });
       if (Platform.OS === "web") {

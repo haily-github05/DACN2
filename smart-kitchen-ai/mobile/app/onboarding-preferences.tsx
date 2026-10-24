@@ -6,23 +6,21 @@ import {
   Pressable,
   StyleSheet,
   Alert,
-  Image,
   ActivityIndicator,
   TextInput,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as ImagePicker from "expo-image-picker";
 import AppHeader from "../components/AppHeader";
 import BottomNav from "../components/BottomNav";
 import { saveUserPreferences } from "../lib/api";
+import { getAuthUser } from "../lib/auth";
+import { getUserPreferences } from "../lib/preferencesApi";
 import {
   ArrowLeft,
   ArrowRight,
   Sparkles,
-  Camera,
-  UserRound,
   UtensilsCrossed,
   Flame,
   MapPin,
@@ -47,7 +45,6 @@ const C = {
 };
 export const PREF_KEY = "smart-kitchen-user-preferences-v1";
 type Pref = {
-  avatar: string | null;
   diet: string;
   tastes: string[];
   region: string;
@@ -59,7 +56,6 @@ type Pref = {
   completed: boolean;
 };
 const DEFAULT: Pref = {
-  avatar: null,
   diet: "Bình thường",
   tastes: [],
   region: "Miền Trung",
@@ -160,41 +156,88 @@ function Chips({
 }
 export default function OnboardingPreferences() {
   const router = useRouter();
+  const { from } = useLocalSearchParams<{ from?: string }>();
+  const isEditing = from === "profile";
   const [p, setP] = useState<Pref>(DEFAULT);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [moreAllergy, setMoreAllergy] = useState(false);
   const [moreDislike, setMoreDislike] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const GUEST_KEY = `${PREF_KEY}-guest`;
   const [customAllergy, setCustomAllergy] = useState("");
   const [customDislike, setCustomDislike] = useState("");
-  const [avatarMenu, setAvatarMenu] = useState(false);
+  const [customBudget, setCustomBudget] = useState("");
+
+  const formatMoney = (value: number) =>
+    new Intl.NumberFormat("vi-VN").format(value);
+
+  const handleCustomBudget = (text: string) => {
+    const digits = text.replace(/\D/g, "");
+    const amount = Number(digits);
+
+    setCustomBudget(digits);
+
+    setP((prev) => ({
+      ...prev,
+      budget: amount,
+    }));
+  };
+
   useEffect(() => {
-    let alive = true;
-    const loadPreferences = async () => {
+    let active = true;
+    async function loadPreferences() {
+      setLoading(true);
+      setLoadError(null);
       try {
-        const rawUser = await AsyncStorage.getItem("authUser");
-        if (!rawUser) return;
-        const user = JSON.parse(rawUser);
-        const userId = Number(user.user_id);
-        if (!Number.isSafeInteger(userId) || userId <= 0) {
-          return;
-        }
-        const raw = await AsyncStorage.getItem(`${PREF_KEY}-${userId}`);
-        if (raw && alive) {
-          setP({
+        const user = await getAuthUser();
+        if (!active) return;
+        const userId = Number(user?.user_id);
+        const hasAccount = Number.isSafeInteger(userId) && userId > 0;
+
+        if (hasAccount) {
+          // Đã đăng nhập: luôn đọc lựa chọn hiện tại từ MySQL.
+          // Không tự thay bằng mặc định nếu server gặp lỗi.
+          const remote = await getUserPreferences(userId);
+          if (!active) return;
+          const current: Pref = {
             ...DEFAULT,
-            ...JSON.parse(raw),
-          });
+            diet: remote.diet ?? DEFAULT.diet,
+            tastes: Array.isArray(remote.tastes) ? remote.tastes : [],
+            region: remote.region ?? DEFAULT.region,
+            budget: Number(remote.budget ?? DEFAULT.budget),
+            people: Number(remote.people ?? DEFAULT.people),
+            cookTime: Number(remote.cookTime ?? DEFAULT.cookTime),
+            allergies: Array.isArray(remote.allergies) ? remote.allergies : [],
+            dislikes: Array.isArray(remote.dislikes) ? remote.dislikes : [],
+            completed: true,
+          };
+          setP(current);
+          await AsyncStorage.setItem(
+            `${PREF_KEY}-${userId}`,
+            JSON.stringify(current),
+          );
+        } else {
+          // Chưa đăng nhập: chỉ lấy dữ liệu từng chọn trên thiết bị.
+          const raw = await AsyncStorage.getItem(GUEST_KEY);
+          if (active)
+            setP(raw ? { ...DEFAULT, ...JSON.parse(raw) } : { ...DEFAULT });
         }
       } catch (error) {
-        console.warn("Không đọc được khẩu vị:", error);
+        if (active) {
+          setLoadError(
+            error instanceof Error
+              ? error.message
+              : "Không thể tải sở thích ăn uống.",
+          );
+        }
       } finally {
-        if (alive) setLoading(false);
+        if (active) setLoading(false);
       }
-    };
+    }
     loadPreferences();
     return () => {
-      alive = false;
+      active = false;
     };
   }, []);
   const set = <K extends keyof Pref>(key: K, value: Pref[K]) => {
@@ -202,6 +245,30 @@ export default function OnboardingPreferences() {
       ...old,
       [key]: value,
     }));
+  };
+  const addCustomItem = (
+    type: "allergies" | "dislikes",
+    input: string,
+    clearInput: () => void,
+  ) => {
+    const value = input.trim().replace(/\s+/g, " ");
+
+    if (!value) return;
+
+    setP((prev) => {
+      const exists = prev[type].some(
+        (item) => item.toLowerCase() === value.toLowerCase(),
+      );
+
+      if (exists) return prev;
+
+      return {
+        ...prev,
+        [type]: [...prev[type], value],
+      };
+    });
+
+    clearInput();
   };
   const toggle = (key: "tastes" | "allergies" | "dislikes", value: string) => {
     setP((old) => ({
@@ -211,81 +278,58 @@ export default function OnboardingPreferences() {
         : [...old[key], value],
     }));
   };
-  const addCustom = (key: "allergies" | "dislikes", text: string) => {
-    const value = text.trim().replace(/\s+/g, " ");
-
-    if (!value) return;
-
-    setP((old) => ({
-      ...old,
-      [key]: old[key].some((item) => item.toLowerCase() === value.toLowerCase())
-        ? old[key]
-        : [...old[key], value],
-    }));
-
-    if (key === "allergies") {
-      setCustomAllergy("");
-    } else {
-      setCustomDislike("");
-    }
-  };
-  const chooseImage = async () => {
-    try {
-      const permission =
-        await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (!permission.granted) {
-        Alert.alert("Cần quyền ảnh", "Hãy cấp quyền truy cập thư viện ảnh.");
-        return;
-      }
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ["images"],
-        allowsEditing: true,
-        aspect: [1, 1],
-        quality: 0.7,
-      });
-      if (!result.canceled) {
-        set("avatar", result.assets[0].uri);
-      }
-    } catch {
-      Alert.alert("Lỗi", "Không chọn được ảnh.");
-    }
-  };
   const finish = async (skip = false) => {
-    if (saving) return;
+    if (saving || loadError) return;
+    if (skip && isEditing) {
+      router.back();
+      return;
+    }
     setSaving(true);
     try {
-      const rawUser = await AsyncStorage.getItem("authUser");
-      if (!rawUser) {
-        throw new Error("Chưa tìm thấy thông tin tài khoản");
+      const user = await getAuthUser();
+      const userId = Number(user?.user_id);
+      const hasAccount = Number.isSafeInteger(userId) && userId > 0;
+      const updatedPreferences: Pref = { ...p, completed: !skip };
+
+      if (hasAccount) {
+        // Đã đăng nhập: lưu MySQL trước, cache chỉ cập nhật sau khi API thành công.
+        if (!skip) await saveUserPreferences(userId, updatedPreferences);
+        await AsyncStorage.setItem(
+          `${PREF_KEY}-${userId}`,
+          JSON.stringify(updatedPreferences),
+        );
+      } else {
+        // Chưa đăng nhập: tuyệt đối không gọi API yêu cầu user_id.
+        // Lưu riêng trên máy để giữ các lựa chọn trong luồng bắt đầu.
+        await AsyncStorage.setItem(
+          GUEST_KEY,
+          JSON.stringify(updatedPreferences),
+        );
       }
-      const user = JSON.parse(rawUser);
-      const userId = Number(user.user_id);
-      if (!Number.isSafeInteger(userId) || userId <= 0) {
-        throw new Error("Không xác định được tài khoản người dùng");
-      }
-      // Chỉ lưu vào MySQL khi người dùng nhấn Hoàn tất
-      if (!skip) {
-        await saveUserPreferences(userId, p);
-      }
-      // Lưu trạng thái thiết lập trên thiết bị
-      await AsyncStorage.setItem(
-        `${PREF_KEY}-${userId}`,
-        JSON.stringify({
-          ...p,
-          completed: !skip,
-          skipped: skip,
-        }),
-      );
-      router.replace("/home");
+      router.replace(isEditing ? "/profile" : "/home");
     } catch (error) {
       Alert.alert(
-        "Không thể hoàn tất",
+        "Không thể lưu thiết lập",
         error instanceof Error ? error.message : "Có lỗi xảy ra",
       );
     } finally {
       setSaving(false);
     }
   };
+  if (loadError) {
+    return (
+      <SafeAreaView style={styles.center}>
+        <Text
+          style={{ color: C.dark, textAlign: "center", paddingHorizontal: 25 }}
+        >
+          Không tải được sở thích ăn uống: {loadError}
+        </Text>
+        <Pressable style={{ marginTop: 20 }} onPress={() => router.back()}>
+          <Text style={{ color: C.orange, fontWeight: "700" }}>Quay lại</Text>
+        </Pressable>
+      </SafeAreaView>
+    );
+  }
   if (loading) {
     return (
       <SafeAreaView style={styles.center}>
@@ -294,7 +338,7 @@ export default function OnboardingPreferences() {
     );
   }
   return (
-    <SafeAreaView style={styles.screen} edges={["top", "bottom"]}>
+    <SafeAreaView style={styles.screen} edges={[]}>
       {/* HEADER CHUNG */}
       <AppHeader />
       {/* TIÊU ĐỀ TRANG 37 */}
@@ -302,15 +346,13 @@ export default function OnboardingPreferences() {
         <Pressable style={styles.back} onPress={() => router.back()}>
           <ArrowLeft size={20} color={C.dark} />
         </Pressable>
-        <Text style={styles.pageTitle}>Thiết lập khẩu vị cá nhân</Text>
-        <Pressable onPress={() => finish(true)} disabled={saving}>
-          <Text style={styles.skip}>Bỏ qua</Text>
-        </Pressable>
+        <Text style={styles.pageTitle}>
+          {isEditing
+            ? "Chỉnh sửa sở thích ăn uống"
+            : "Thiết lập khẩu vị cá nhân"}
+        </Text>
       </View>
-      {/* PROGRESS */}
-      <View style={styles.progress}>
-        <View style={styles.progressFill} />
-      </View>
+
       <ScrollView
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
@@ -330,55 +372,6 @@ export default function OnboardingPreferences() {
             </Text>
           </View>
         </View>
-        {/* ẢNH ĐẠI DIỆN */}
-        <Card
-          title="Ảnh đại diện của bạn"
-          icon={<UserRound color={C.accent} size={17} />}
-          note="(Tùy chọn)"
-        >
-          <View style={styles.avatarRow}>
-            <Pressable style={styles.avatar} onPress={chooseImage}>
-              {p.avatar?.startsWith("file:") ||
-              p.avatar?.startsWith("content:") ? (
-                <Image source={{ uri: p.avatar }} style={styles.avatarImg} />
-              ) : p.avatar ? (
-                <Text style={{ fontSize: 32 }}>{p.avatar}</Text>
-              ) : (
-                <Camera color={C.accent} size={27} />
-              )}
-            </Pressable>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.avatarTitle}>Tải ảnh đại diện</Text>
-              <Text style={styles.hint}>Hoặc chọn avatar có sẵn</Text>
-              <View style={styles.avatarActions}>
-                <Pressable style={styles.smallButton} onPress={chooseImage}>
-                  <Text style={styles.smallButtonText}>Tải từ thư viện</Text>
-                </Pressable>
-                <Pressable
-                  style={styles.smallButton}
-                  onPress={() => setAvatarMenu((v) => !v)}
-                >
-                  <Text style={styles.smallButtonText}>Chọn avatar</Text>
-                </Pressable>
-              </View>
-            </View>
-          </View>
-          {avatarMenu ? (
-            <View style={styles.avatarOptions}>
-              {["👩‍🍳", "👨‍🍳", "🥑", "🍅"].map((value) => (
-                <Pressable
-                  key={value}
-                  onPress={() => {
-                    set("avatar", value);
-                    setAvatarMenu(false);
-                  }}
-                >
-                  <Text style={{ fontSize: 28 }}>{value}</Text>
-                </Pressable>
-              ))}
-            </View>
-          ) : null}
-        </Card>
         {/* CHẾ ĐỘ ĂN */}
         <Card
           title="Chế độ ăn uống chính"
@@ -419,6 +412,7 @@ export default function OnboardingPreferences() {
         </Card>
         {/* NGÂN SÁCH VÀ SỐ NGƯỜI */}
         <View style={styles.halves}>
+
           <View style={[styles.card, styles.half]}>
             <View style={styles.titleRow}>
               <Wallet color={C.accent} size={16} />
@@ -433,10 +427,22 @@ export default function OnboardingPreferences() {
               }}
             >
               <Text style={styles.valueText}>
-                {p.budget.toLocaleString("vi-VN")} đ ⌄
+                {p.budget.toLocaleString("vi-VN")} đ
               </Text>
             </Pressable>
+            <TextInput
+            style={styles.valueBox}
+            placeholder="Nhập ngân sách..."
+            placeholderTextColor="#948780"
+            keyboardType="numeric"
+            value={p.budget > 0 ? String(p.budget) : ""}
+            onChangeText={(text) => {
+              const amount = Number(text.replace(/\D/g, ""));
+              set("budget", amount);
+            }}
+          />
           </View>
+
           <View style={[styles.card, styles.half]}>
             <View style={styles.titleRow}>
               <Users color={C.accent} size={16} />
@@ -512,6 +518,58 @@ export default function OnboardingPreferences() {
             onSelect={(value) => toggle("allergies", value)}
             multi
           />
+          <View style={styles.customInputRow}>
+            <TextInput
+              style={styles.customInput}
+              placeholder="Nhập thực phẩm dị ứng khác..."
+              placeholderTextColor="#9B8A82"
+              value={customAllergy}
+              onChangeText={setCustomAllergy}
+              returnKeyType="done"
+              onSubmitEditing={() =>
+                addCustomItem("allergies", customAllergy, () =>
+                  setCustomAllergy(""),
+                )
+              }
+            />
+
+            <Pressable
+              style={styles.addCustomButton}
+              onPress={() =>
+                addCustomItem("allergies", customAllergy, () =>
+                  setCustomAllergy(""),
+                )
+              }
+            >
+              <Text style={styles.addCustomButtonText}>+ Thêm</Text>
+            </Pressable>
+          </View>
+
+          <View style={styles.customTags}>
+            {p.allergies
+              .filter(
+                (item) =>
+                  !ALLERGIES.some(
+                    (option) => option.toLowerCase() === item.toLowerCase(),
+                  ),
+              )
+              .map((item) => (
+                <Pressable
+                  key={item}
+                  style={styles.customTag}
+                  onPress={() =>
+                    setP((prev) => ({
+                      ...prev,
+                      allergies: prev.allergies.filter(
+                        (value) => value !== item,
+                      ),
+                    }))
+                  }
+                >
+                  <Text style={styles.customTagText}>{item} ×</Text>
+                </Pressable>
+              ))}
+          </View>
           <Pressable onPress={() => setMoreAllergy((v) => !v)}>
             <Text style={styles.more}>
               {moreAllergy ? "Thu gọn" : "+ Thêm khác"}
@@ -529,6 +587,57 @@ export default function OnboardingPreferences() {
             onSelect={(value) => toggle("dislikes", value)}
             multi
           />
+          <View style={styles.customInputRow}>
+            <TextInput
+              style={styles.customInput}
+              placeholder="Nhập nguyên liệu không thích..."
+              placeholderTextColor="#9B8A82"
+              value={customDislike}
+              onChangeText={setCustomDislike}
+              returnKeyType="done"
+              onSubmitEditing={() =>
+                addCustomItem("dislikes", customDislike, () =>
+                  setCustomDislike(""),
+                )
+              }
+            />
+
+            <Pressable
+              style={styles.addCustomButton}
+              onPress={() =>
+                addCustomItem("dislikes", customDislike, () =>
+                  setCustomDislike(""),
+                )
+              }
+            >
+              <Text style={styles.addCustomButtonText}>+ Thêm</Text>
+            </Pressable>
+          </View>
+
+          <View style={styles.customTags}>
+            {p.dislikes
+              .filter(
+                (item) =>
+                  !DISLIKES.some(
+                    (option) => option.toLowerCase() === item.toLowerCase(),
+                  ),
+              )
+              .map((item) => (
+                <Pressable
+                  key={item}
+                  style={styles.customTag}
+                  onPress={() =>
+                    setP((prev) => ({
+                      ...prev,
+                      dislikes: prev.dislikes.filter((value) => value !== item),
+                    }))
+                  }
+                >
+                  <Text style={styles.customTagText}>{item} ×</Text>
+                </Pressable>
+              ))}
+          </View>
+
           <Pressable onPress={() => setMoreDislike((v) => !v)}>
             <Text style={styles.more}>
               {moreDislike ? "Thu gọn" : "+ Thêm khác"}
@@ -552,7 +661,9 @@ export default function OnboardingPreferences() {
           ) : (
             <>
               <Text style={styles.finishText}>
-                Hoàn tất & Khám phá Smart Kitchen
+                {isEditing
+                  ? "Lưu thay đổi"
+                  : "Hoàn tất & Khám phá Smart Kitchen"}
               </Text>
               <ArrowRight size={18} color={C.white} />
             </>
@@ -567,6 +678,17 @@ export default function OnboardingPreferences() {
   );
 }
 const styles = StyleSheet.create({
+  hintBlock: {
+    fontSize: 12,
+    color: "#735A51",
+    lineHeight: 19,
+    marginBottom: 12,
+  },
+  hint: {
+    fontSize: 11,
+    color: C.muted,
+    fontWeight: "500",
+  },
   screen: {
     flex: 1,
     backgroundColor: C.cream,
@@ -617,18 +739,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: C.gray,
   },
-  progress: {
-    height: 5,
-    marginHorizontal: 24,
-    backgroundColor: "#E6DDD8",
-    borderRadius: 4,
-  },
-  progressFill: {
-    height: 5,
-    width: "86%",
-    backgroundColor: C.accent,
-    borderRadius: 4,
-  },
+
   content: {
     padding: 20,
     gap: 18,
@@ -691,65 +802,6 @@ const styles = StyleSheet.create({
   note: {
     fontSize: 10,
     color: C.gray,
-  },
-  avatarRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 16,
-  },
-  avatar: {
-    width: 66,
-    height: 66,
-    borderRadius: 33,
-    backgroundColor: "#FFF2E9",
-    borderWidth: 1,
-    borderStyle: "dashed",
-    borderColor: "#F9AD76",
-    alignItems: "center",
-    justifyContent: "center",
-    overflow: "hidden",
-  },
-  avatarImg: {
-    width: 66,
-    height: 66,
-    borderRadius: 33,
-  },
-  avatarTitle: {
-    fontSize: 12,
-    fontWeight: "700",
-    color: C.dark,
-  },
-  hint: {
-    fontSize: 10,
-    color: C.gray,
-    marginTop: 4,
-  },
-  hintBlock: {
-    fontSize: 11,
-    color: C.muted,
-    marginBottom: 13,
-  },
-  avatarActions: {
-    flexDirection: "row",
-    gap: 7,
-    marginTop: 10,
-    flexWrap: "wrap",
-  },
-  smallButton: {
-    borderWidth: 1,
-    borderColor: C.border,
-    paddingHorizontal: 9,
-    paddingVertical: 8,
-    borderRadius: 10,
-  },
-  smallButtonText: {
-    fontSize: 10,
-    color: C.orange,
-  },
-  avatarOptions: {
-    flexDirection: "row",
-    gap: 16,
-    marginTop: 15,
   },
   chips: {
     flexDirection: "row",
@@ -901,5 +953,56 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     color: C.dark,
     marginHorizontal: 8,
+  },
+  customInputRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    marginTop: 14,
+  },
+
+  customInput: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: "#E7D6CD",
+    borderRadius: 12,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    fontSize: 14,
+    color: "#201A17",
+    backgroundColor: "#FFFFFF",
+  },
+
+  addCustomButton: {
+    backgroundColor: "#F05A0A",
+    paddingHorizontal: 16,
+    paddingVertical: 13,
+    borderRadius: 12,
+  },
+
+  addCustomButtonText: {
+    color: "#FFFFFF",
+    fontWeight: "700",
+  },
+
+  customTags: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+    marginTop: 12,
+  },
+
+  customTag: {
+    backgroundColor: "#FFF0E6",
+    borderWidth: 1,
+    borderColor: "#F05A0A",
+    paddingHorizontal: 12,
+    paddingVertical: 9,
+    borderRadius: 20,
+  },
+
+  customTagText: {
+    color: "#A23A00",
+    fontWeight: "600",
   },
 });

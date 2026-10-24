@@ -1,39 +1,140 @@
-const express = require('express');
-const cors = require('cors');
-const db = require('./src/config/db');
-require('dotenv').config();
 
-// --- 1. GỌI FILE ĐỊNH TUYẾN ĐĂNG KÝ ---
-const authRoutes = require('./src/routes/authRoutes');
+const express = require("express");
+const cors = require("cors");
+const path = require("path");
+const db = require("./src/config/db");
+
+require("dotenv").config();
+
+// Import routes
+const authRoutes = require("./src/routes/authRoutes");
+const homeRoutes = require("./src/routes/homeRoutes");
+const profileRoutes = require("./src/routes/profileRoutes");
 
 const app = express();
+const PORT = process.env.PORT || 3000;
 
+// Middleware
 app.use(cors());
 app.use(express.json());
 
-app.get('/api/health', (req, res) => {
-  res.json({ success: true, message: 'Backend is reachable' });
+// Cho phép truy cập ảnh đã upload
+app.use(
+  "/uploads",
+  express.static(path.join(__dirname, "uploads"))
+);
+
+// API kiểm tra backend
+app.get("/api/health", (req, res) => {
+  res.json({
+    success: true,
+    message: "Backend is reachable",
+  });
 });
 
-// API lấy món ăn cũ (Giữ nguyên)
-app.get('/api/recipes', async (req, res) => {
+// API đăng nhập và đăng ký
+app.use("/api/auth", authRoutes);
+
+// API lấy thông tin và chỉnh sửa hồ sơ
+app.use("/api/profile", profileRoutes);
+
+// API trang chủ
+app.use("/api/home", homeRoutes);
+
+// API lấy danh sách món ăn
+app.get("/api/recipes", async (req, res) => {
   try {
-    const [rows] = await db.query("SELECT recipe_id, name, description, estimated_cost FROM recipes");
+    const [rows] = await db.query(
+      `SELECT recipe_id, name, description, estimated_cost
+       FROM recipes`
+    );
+
     res.json(rows);
   } catch (error) {
-    res.status(500).json({ success: false, message: 'Lỗi máy chủ' });
+    console.error("Lỗi lấy món ăn:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Lỗi máy chủ",
+    });
   }
 });
+// API lấy sở thích ăn uống đã lưu từ MySQL
+app.get("/api/users/:userId/preferences", async (req, res) => {
+  try {
+    const userId = Number(req.params.userId);
 
-// --- 2. CẤU HÌNH ĐƯỜNG DẪN API CHÍNH CHO ĐĂNG NHẬP/ĐĂNG KÝ ---
-app.use('/api/auth', authRoutes);
-// 
+    if (!Number.isSafeInteger(userId) || userId <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: "ID người dùng không hợp lệ",
+      });
+    }
 
+    const [rows] = await db.query(
+      `SELECT
+        diet_type,
+        taste_preference,
+        region_preference,
+        budget_per_day,
+        default_servings,
+        max_cooking_time,
+        allergies,
+        disliked_ingredients
+      FROM users
+      WHERE user_id = ?`,
+      [userId]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Không tìm thấy người dùng",
+      });
+    }
+
+    const user = rows[0];
+
+    const parseArray = (value) => {
+      if (Array.isArray(value)) return value;
+      if (!value) return [];
+
+      try {
+        const parsed = JSON.parse(value);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    };
+
+    return res.json({
+      success: true,
+      data: {
+        diet: user.diet_type ?? "",
+        tastes: parseArray(user.taste_preference),
+        region: user.region_preference ?? "",
+        budget: Number(user.budget_per_day ?? 0),
+        people: Number(user.default_servings ?? 1),
+        cookTime: Number(user.max_cooking_time ?? 30),
+        allergies: parseArray(user.allergies),
+        dislikes: parseArray(user.disliked_ingredients),
+      },
+    });
+  } catch (error) {
+    console.error("LỖI LẤY SỞ THÍCH:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Không thể lấy sở thích ăn uống từ MySQL",
+    });
+  }
+});
+// API lưu thiết lập khẩu vị
 app.put("/api/users/:userId/preferences", async (req, res) => {
   try {
     const userId = Number(req.params.userId);
+
     const {
-      avatar,
       diet,
       tastes,
       region,
@@ -58,7 +159,9 @@ app.put("/api/users/:userId/preferences", async (req, res) => {
       !Array.isArray(allergies) ||
       !Array.isArray(dislikes) ||
       ![budget, people, cookTime].every(
-        (value) => typeof value === "number" && Number.isFinite(value)
+        (value) =>
+          typeof value === "number" &&
+          Number.isFinite(value)
       ) ||
       budget < 0 ||
       !Number.isInteger(people) ||
@@ -72,9 +175,10 @@ app.put("/api/users/:userId/preferences", async (req, res) => {
       });
     }
 
+    // Không cập nhật avatar_url ở đây.
+    // Avatar được quản lý riêng bởi API Profile.
     const [result] = await db.query(
       `UPDATE users SET
-        avatar_url = ?,
         diet_type = ?,
         taste_preference = ?,
         region_preference = ?,
@@ -85,7 +189,6 @@ app.put("/api/users/:userId/preferences", async (req, res) => {
         disliked_ingredients = ?
        WHERE user_id = ?`,
       [
-        avatar?.startsWith("http") ? avatar : null,
         diet,
         JSON.stringify(tastes),
         region,
@@ -110,10 +213,7 @@ app.put("/api/users/:userId/preferences", async (req, res) => {
       message: "Đã lưu khẩu vị cá nhân vào MySQL",
     });
   } catch (error) {
-    console.error("❌ LỖI LƯU KHẨU VỊ MYSQL:");
-    console.error("Mã lỗi:", error.code);
-    console.error("Thông báo:", error.sqlMessage || error.message);
-    console.error("SQL:", error.sql);
+    console.error("LỖI LƯU KHẨU VỊ MYSQL:", error);
 
     return res.status(500).json({
       success: false,
@@ -126,7 +226,17 @@ app.put("/api/users/:userId/preferences", async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`🚀 Server Backend AI Food đang chạy tại: http://localhost:${PORT}`);
+// Xử lý API không tồn tại
+app.use("/api", (req, res) => {
+  res.status(404).json({
+    success: false,
+    message: `Không tìm thấy API: ${req.method} ${req.originalUrl}`,
+  });
+});
+
+// Khởi động backend
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(
+    `🚀 Server Backend AI Food đang chạy tại: http://localhost:${PORT}`
+  );
 });
