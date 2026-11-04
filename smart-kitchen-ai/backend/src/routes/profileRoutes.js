@@ -1,3 +1,5 @@
+// Backend: API trang Cá nhân và Chỉnh sửa hồ sơ, gồm thống kê hoạt động.
+const { getProfileStats } = require("../services/profileStatsService");
 const express = require("express");
 const multer = require("multer");
 const path = require("path");
@@ -18,7 +20,8 @@ router.get("/:userId", async (req, res) => {
         if (!id) return res.status(400).json({ success: false, message: "ID không hợp lệ" });
         const [rows] = await db.query("SELECT user_id, full_name, email, phone, avatar_url FROM users WHERE user_id = ?", [id]);
         if (!rows.length) return res.status(404).json({ success: false, message: "Không tìm thấy tài khoản" });
-        res.json({ success: true, data: rows[0] });
+        const stats = await getProfileStats(id);
+        res.json({ success: true, data: { ...rows[0], stats } });
     } catch (e) { console.error(e); res.status(500).json({ success: false, message: "Lỗi tải hồ sơ" }); }
 });
 

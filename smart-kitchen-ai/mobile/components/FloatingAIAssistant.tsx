@@ -1,3 +1,4 @@
+// Thành phần: Cửa sổ chat trợ lý AI nổi dùng chung; hiện trả lời bằng logic mẫu.
 
 import React, { useState, useRef, useEffect } from 'react';
 import {
@@ -240,7 +241,8 @@ export default function FloatingAIAssistant() {
   ]);
   const [loading, setLoading] = useState(false);
 
-  const scrollRef = useRef<ScrollView>(null);
+  const messageId = useRef(0);
+  const scrollRef = useRef<React.ComponentRef<typeof ScrollView>>(null);
 
   useEffect(() => {
     if (visible) {
@@ -261,7 +263,7 @@ export default function FloatingAIAssistant() {
     setInput('');
 
     const userMessage: ChatMessage = {
-      id: `user-${Date.now()}`,
+      id: `user-${++messageId.current}`,
       role: 'user',
       content: question,
     };
@@ -269,7 +271,7 @@ export default function FloatingAIAssistant() {
     const response = getLocalResponse(question);
 
     const assistantMessage: ChatMessage = {
-      id: `assistant-${Date.now()}`,
+      id: `assistant-${++messageId.current}`,
       role: 'assistant',
       content: response.content,
       action: response.action,

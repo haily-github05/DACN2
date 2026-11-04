@@ -1,3 +1,4 @@
+// Trang: Thiết lập khẩu vị — chế độ ăn, dị ứng, nguyên liệu không thích và ngân sách.
 import React, { useEffect, useState } from "react";
 import {
   View,

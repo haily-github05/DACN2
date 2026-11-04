@@ -1,3 +1,5 @@
+// Trang: Kết quả quét mẫu — chỉnh sửa, xác nhận và lưu nguyên liệu vào kho.
+import { kitchenRequest } from "../lib/kitchenApi";
 import React, { useState } from "react";
 import AppHeader from "../components/AppHeader";
 import BottomNav from "../components/BottomNav";
@@ -80,6 +82,7 @@ export default function ScanResultScreen() {
   const [ingredients, setIngredients] =
     useState<Ingredient[]>(initialIngredients);
 
+  const [saving, setSaving] = useState(false);
   const [editing, setEditing] = useState(false);
 
   const updateIngredient = (
@@ -113,7 +116,8 @@ export default function ScanResultScreen() {
     setIngredients((current) => current.filter((item) => item.id !== id));
   };
 
-  const confirmSave = () => {
+  const confirmSave = async () => {
+    if (saving) return;
     if (ingredients.length === 0) {
       Alert.alert(
         "Chưa có nguyên liệu",
@@ -139,17 +143,13 @@ export default function ScanResultScreen() {
       return;
     }
 
-    Alert.alert(
-      "Xác nhận nguyên liệu",
-      "Dữ liệu đã hợp lệ. Chức năng lưu vào kho sẽ được kết nối ở bước tiếp theo.",
-      [
-        { text: "Đóng" },
-        {
-          text: "Về trang chủ",
-          onPress: () => router.replace("/home"),
-        },
-      ],
-    );
+    setSaving(true);
+    try {
+      await kitchenRequest("pantry/batch", "POST", { items: ingredients });
+      Alert.alert("Đã lưu vào kho", "Hãy cập nhật hạn sử dụng và vị trí bảo quản trong kho.", [{ text: "Về kho", onPress: () => router.replace("/pantry") }]);
+      setIngredients([]);
+    } catch (error) { Alert.alert("Không thể lưu", error instanceof Error ? error.message : "Vui lòng thử lại"); }
+    finally { setSaving(false); }
   };
 
   const notReady = (name: string) => {
@@ -158,7 +158,7 @@ export default function ScanResultScreen() {
 
   return (
     <SafeAreaView style={styles.safe} edges={[]}>
-      <AppHeader showNotification unreadCount={3} />
+      <AppHeader showNotification />
 
       <ScrollView
         style={styles.scroll}

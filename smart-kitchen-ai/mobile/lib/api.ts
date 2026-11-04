@@ -1,3 +1,4 @@
+// Chức năng: Kết nối HTTP đến backend — địa chỉ API, đăng nhập, đăng ký và các yêu cầu dùng chung.
 
 import Constants from "expo-constants";
 
@@ -11,12 +12,13 @@ type RegisterInput = AuthInput & {
 };
 
 export type AuthUser = {
+  token?: string;
   user_id: number;
   full_name: string;
   phone: string;
 };
 
-function getApiBaseUrl(): string {
+export function getApiBaseUrl(): string {
   const configuredUrl = process.env.EXPO_PUBLIC_API_URL?.trim();
 
   if (configuredUrl) {
@@ -171,4 +173,25 @@ export async function uploadUserAvatar(
   return avatarUrl.startsWith("/")
     ? `${baseUrl}${avatarUrl}`
     : avatarUrl;
+}
+
+export async function apiRequest<T>(endpoint: string, method = "GET", body?: unknown): Promise<T> {
+  const base = getApiBaseUrl();
+  const { getAuthUser } = await import("./auth");
+  const user = await getAuthUser();
+  let response: Response;
+  try {
+    response = await fetch(`${base}${endpoint}`, {
+      method,
+      headers: { "Content-Type": "application/json", ...(user?.token ? { Authorization: `Bearer ${user.token}` } : {}) },
+      ...(body === undefined ? {} : { body: JSON.stringify(body) }),
+    });
+  } catch {
+    throw new Error(`Không kết nối được backend tại ${base}`);
+  }
+  const result = await response.json().catch(() => null);
+  if (!response.ok || result?.success !== true) {
+    throw new Error(result?.message || `Yêu cầu thất bại (HTTP ${response.status})`);
+  }
+  return result.data as T;
 }

@@ -1,21 +1,26 @@
-import React, { useMemo, useState } from "react";
+// Trang: Danh sách công thức — lọc theo nguyên liệu có sẵn và thời gian nấu.
+import IngredientCatalogResults from "../components/IngredientCatalogResults";
+import { matchesSearch } from "../lib/search";
+import SearchField from "../components/SearchField";
+import FoodImage from "../components/FoodImage";
+import { useRecipeFavorites } from "../hooks/useRecipeFavorites";
+import { getRecipes } from "../lib/kitchenApi";
+import React, { useCallback, useMemo, useState } from "react";
 import {
+  Alert,
   View,
   Text,
   ScrollView,
   Pressable,
-  TextInput,
   StyleSheet,
-  Image,
   Keyboard,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useRouter, useLocalSearchParams } from "expo-router";
+import { useFocusEffect, useRouter, useLocalSearchParams } from "expo-router";
 import {
   ArrowLeft,
   ArrowRight,
   Search,
-  X,
   SlidersHorizontal,
   Sparkles,
   Clock3,
@@ -51,88 +56,13 @@ type Recipe = {
   description: string;
   image: string;
   minutes: number;
-  calories: number;
+  calories: number | null;
   match: number;
   category: string;
   ingredients: string[];
 };
 
 type FilterType = "all" | "full" | "quick" | "missing";
-
-const RECIPES: Recipe[] = [
-  {
-    id: "1",
-    name: "Ức gà áp chảo sốt tiêu đen",
-    description: "Thơm ngon, giàu protein, dễ chế biến.",
-    image:
-      "https://images.unsplash.com/photo-1532550907401-a500c9a57435?w=800&auto=format&fit=crop",
-    minutes: 25,
-    calories: 420,
-    match: 100,
-    category: "Món chính",
-    ingredients: ["Ức gà", "Tỏi", "Tiêu đen", "Dầu ô liu"],
-  },
-  {
-    id: "2",
-    name: "Trứng cuộn rau củ",
-    description: "Bữa sáng nhanh gọn và bổ dưỡng.",
-    image:
-      "https://images.unsplash.com/photo-1525351484163-7529414344d8?w=800&auto=format&fit=crop",
-    minutes: 10,
-    calories: 240,
-    match: 100,
-    category: "Bữa sáng",
-    ingredients: ["Trứng gà", "Cà rốt", "Hành lá"],
-  },
-  {
-    id: "3",
-    name: "Salad rau củ",
-    description: "Thanh mát, nhiều chất xơ và vitamin.",
-    image:
-      "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&auto=format&fit=crop",
-    minutes: 12,
-    calories: 210,
-    match: 80,
-    category: "Ăn lành mạnh",
-    ingredients: ["Xà lách", "Cà chua", "Dưa leo"],
-  },
-  {
-    id: "4",
-    name: "Cơm chiên trứng",
-    description: "Tận dụng cơm nguội, tiết kiệm thực phẩm.",
-    image:
-      "https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=800&auto=format&fit=crop",
-    minutes: 15,
-    calories: 390,
-    match: 90,
-    category: "Món chính",
-    ingredients: ["Cơm", "Trứng gà", "Hành lá"],
-  },
-  {
-    id: "5",
-    name: "Mì Ý sốt cà chua",
-    description: "Món Ý dễ nấu với nguyên liệu quen thuộc.",
-    image:
-      "https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=800&auto=format&fit=crop",
-    minutes: 30,
-    calories: 480,
-    match: 60,
-    category: "Món chính",
-    ingredients: ["Mì Ý", "Cà chua", "Tỏi"],
-  },
-  {
-    id: "6",
-    name: "Bánh mì trứng",
-    description: "Bữa sáng đơn giản, tiện lợi và ngon miệng.",
-    image:
-      "https://images.unsplash.com/photo-1525351484163-7529414344d8?w=800&auto=format&fit=crop",
-    minutes: 8,
-    calories: 310,
-    match: 100,
-    category: "Bữa sáng",
-    ingredients: ["Bánh mì", "Trứng gà"],
-  },
-];
 
 const FILTERS: {
   id: FilterType;
@@ -144,29 +74,30 @@ const FILTERS: {
   { id: "missing", label: "Cần mua thêm" },
 ];
 
-export default function RecipesScreen() {
+function RecipesContent({ initialSearch }: { initialSearch: string }) {
   const router = useRouter();
-  const params = useLocalSearchParams<{ search?: string }>();
-
-  const initialSearch = typeof params.search === "string" ? params.search : "";
-
+  const [RECIPES, setRecipes] = useState<Recipe[]>([]);
+  const [loading, setLoading] = useState(true);
+  useFocusEffect(useCallback(() => {
+    let active = true;
+    setLoading(true);
+    setRecipes([]);
+    getRecipes()
+      .then(rows => {
+        if (active) setRecipes(rows.map(r => ({ ...r, ingredients: r.ingredients.map(i => i.name) })));
+      })
+      .catch(error => { if (active) Alert.alert("Không thể tải công thức", error.message); })
+      .finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
+  }, []));
   const [search, setSearch] = useState(initialSearch);
   const [filter, setFilter] = useState<FilterType>("all");
-  const [favorites, setFavorites] = useState<string[]>([]);
+  const { favorites, toggleFavorite } = useRecipeFavorites();
   const [featuredIndex, setFeaturedIndex] = useState(0);
 
   const filteredRecipes = useMemo(() => {
-    const keyword = search.trim().toLocaleLowerCase("vi-VN");
-
     return RECIPES.filter((recipe) => {
-      const matchesSearch =
-        !keyword ||
-        recipe.name.toLocaleLowerCase("vi-VN").includes(keyword) ||
-        recipe.category.toLocaleLowerCase("vi-VN").includes(keyword) ||
-        recipe.ingredients.some((ingredient) =>
-          ingredient.toLocaleLowerCase("vi-VN").includes(keyword),
-        );
-
+      const matchesQuery = matchesSearch(search, recipe.name, recipe.description, recipe.category, ...recipe.ingredients);
       let matchesFilter = true;
 
       if (filter === "full") {
@@ -177,13 +108,15 @@ export default function RecipesScreen() {
         matchesFilter = recipe.match < 100;
       }
 
-      return matchesSearch && matchesFilter;
+      return matchesQuery && matchesFilter;
     });
-  }, [search, filter]);
+  }, [search, filter, RECIPES]);
 
   const featuredRecipes = RECIPES.filter((recipe) => recipe.match === 100);
 
-  const featured = featuredRecipes[featuredIndex % featuredRecipes.length];
+  const featured = featuredRecipes.length > 0
+    ? featuredRecipes[featuredIndex % featuredRecipes.length]
+    : null;
 
   const goBack = () => {
     Keyboard.dismiss();
@@ -207,13 +140,6 @@ export default function RecipesScreen() {
     });
   };
 
-  const toggleFavorite = (id: string) => {
-    setFavorites((previous) =>
-      previous.includes(id)
-        ? previous.filter((item) => item !== id)
-        : [...previous, id],
-    );
-  };
 
   const refreshFeatured = () => {
     setFeaturedIndex((previous) => previous + 1);
@@ -265,25 +191,7 @@ export default function RecipesScreen() {
       >
         {/* THANH TÌM KIẾM */}
         <View style={styles.searchRow}>
-          <View style={styles.searchBox}>
-            <Search size={19} color={C.orange} />
-
-            <TextInput
-              style={styles.searchInput}
-              placeholder="Tìm món ăn, nguyên liệu..."
-              placeholderTextColor="#A18B81"
-              value={search}
-              onChangeText={setSearch}
-              returnKeyType="search"
-              onSubmitEditing={Keyboard.dismiss}
-            />
-
-            {search.length > 0 && (
-              <Pressable onPress={() => setSearch("")}>
-                <X size={17} color={C.muted} />
-              </Pressable>
-            )}
-          </View>
+          <SearchField value={search} onChangeText={setSearch} placeholder="Tìm món ăn, nguyên liệu..." style={styles.searchBox} inputStyle={styles.searchInput} />
 
           <Pressable style={styles.filterButton} onPress={cycleFilter}>
             <SlidersHorizontal size={21} color={C.orange} />
@@ -333,19 +241,21 @@ export default function RecipesScreen() {
           <ArrowRight size={18} color={C.orange} />
         </Pressable>
 
+        <IngredientCatalogResults query={search} style={{ marginHorizontal: 15, marginTop: 0, marginBottom: 16 }} />
         {/* GỢI Ý NỔI BẬT */}
         <View style={styles.sectionHeader}>
           <View style={styles.sectionTitleRow}>
             <Sparkles size={18} color={C.orange} />
-            <Text style={styles.sectionTitle}>Chef AI đề xuất</Text>
+            <Text style={styles.sectionTitle}>Gợi ý theo kho thực phẩm</Text>
           </View>
 
-          <Pressable style={styles.refreshButton} onPress={refreshFeatured}>
+          <Pressable disabled={!featured} style={styles.refreshButton} onPress={refreshFeatured}>
             <RefreshCw size={15} color={C.orange} />
             <Text style={styles.refreshText}>Đổi món</Text>
           </Pressable>
         </View>
 
+        {featured ? (
         <View style={styles.featuredCard}>
           <View style={styles.featuredTopRow}>
             <View style={styles.featuredBadge}>
@@ -383,8 +293,8 @@ export default function RecipesScreen() {
               </Text>
             </View>
 
-            <Image
-              source={{ uri: featured.image }}
+            <FoodImage
+              uri={featured.image}
               style={styles.featuredImage}
               resizeMode="cover"
             />
@@ -399,7 +309,7 @@ export default function RecipesScreen() {
 
               <Flame size={14} color="#FFE8DB" />
               <Text style={styles.featuredMetaText}>
-                {featured.calories} kcal
+                {featured.calories ?? "—"} kcal/khẩu phần
               </Text>
             </View>
 
@@ -412,6 +322,14 @@ export default function RecipesScreen() {
             </Pressable>
           </View>
         </View>
+
+        ) : (
+          <Text style={styles.sectionDescription}>
+            {loading
+              ? "Đang tải công thức…"
+              : "Chưa có món đủ nguyên liệu trong kho. Bạn có thể chọn công thức bên dưới."}
+          </Text>
+        )}
 
         {/* DANH SÁCH MÓN ĂN */}
         <View style={styles.sectionHeader}>
@@ -431,7 +349,7 @@ export default function RecipesScreen() {
           <View style={styles.emptyCard}>
             <Search size={30} color={C.orange} />
 
-            <Text style={styles.emptyTitle}>Chưa tìm thấy món phù hợp</Text>
+            <Text style={styles.emptyTitle}>Chưa có công thức phù hợp</Text>
 
             <Text style={styles.emptyDescription}>
               Thử tìm bằng tên nguyên liệu khác hoặc xóa bộ lọc.
@@ -454,8 +372,8 @@ export default function RecipesScreen() {
             return (
               <View key={recipe.id} style={styles.recipeCard}>
                 <Pressable onPress={() => openRecipe(recipe)}>
-                  <Image
-                    source={{ uri: recipe.image }}
+                  <FoodImage
+                    uri={recipe.image}
                     style={styles.recipeImage}
                     resizeMode="cover"
                   />
@@ -519,7 +437,7 @@ export default function RecipesScreen() {
 
                     <Flame size={13} color={C.orange} />
                     <Text style={styles.recipeMetaText}>
-                      {recipe.calories} kcal
+                      {recipe.calories ?? "—"} kcal/khẩu phần
                     </Text>
                   </View>
 
@@ -578,6 +496,12 @@ export default function RecipesScreen() {
       <BottomNav />
     </SafeAreaView>
   );
+}
+
+export default function RecipesScreen() {
+  const params = useLocalSearchParams<{ search?: string }>();
+  const initialSearch = typeof params.search === "string" ? params.search : "";
+  return <RecipesContent key={initialSearch} initialSearch={initialSearch} />;
 }
 
 const styles = StyleSheet.create({

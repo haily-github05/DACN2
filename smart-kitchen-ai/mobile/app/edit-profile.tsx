@@ -1,3 +1,4 @@
+// Trang: Chỉnh sửa hồ sơ cá nhân.
 import React, { useCallback, useState } from "react";
 import {
   ActivityIndicator,
@@ -247,7 +248,7 @@ export default function EditProfileScreen() {
 
   return (
     <SafeAreaView style={styles.screen} edges={[]}>
-      <AppHeader showNotification unreadCount={3} />
+      <AppHeader showNotification />
       <View style={styles.header}>
         <Pressable
           style={styles.back}

@@ -1,3 +1,4 @@
+// Backend: Khởi động Express, đăng ký API và phục vụ ảnh trong thư mục uploads.
 
 const express = require("express");
 const cors = require("cors");
@@ -17,6 +18,8 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+app.use("/uploads/posts", require("./src/routes/postMediaAccess"));
 
 // Cho phép truy cập ảnh đã upload
 app.use(
@@ -41,11 +44,15 @@ app.use("/api/profile", profileRoutes);
 // API trang chủ
 app.use("/api/home", homeRoutes);
 
+app.use("/api/kitchen", require("./src/routes/postImageRoutes"));
+app.use("/api/kitchen", require("./src/routes/ingredientImageRoutes"));
+app.use("/api/kitchen", require("./src/routes/kitchenRoutes"));
+
 // API lấy danh sách món ăn
 app.get("/api/recipes", async (req, res) => {
   try {
     const [rows] = await db.query(
-      `SELECT recipe_id, name, description, estimated_cost
+      `SELECT recipe_id, name, description, estimated_cost, calories
        FROM recipes`
     );
 
@@ -253,9 +260,10 @@ app.get("/api/pantry/:userId", async (req, res) => {
         p.quantity,
         p.unit,
         p.storage_location AS location,
-        p.purchase_date,
-        p.expiry_date,
-        i.image_url,
+        COALESCE(p.image_url, i.image_url) AS image_url,
+        p.note, p.created_at,
+        DATE_FORMAT(p.purchase_date, '%Y-%m-%d') AS purchase_date,
+        DATE_FORMAT(p.expiry_date, '%Y-%m-%d') AS expiry_date,
         DATEDIFF(p.expiry_date, CURDATE()) AS daysLeft
       FROM pantry_items p
       INNER JOIN ingredients i
@@ -295,9 +303,17 @@ app.use("/api", (req, res) => {
   });
 });
 
-// Khởi động backend
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(
-    `🚀 Server Backend AI Food đang chạy tại: http://localhost:${PORT}`
+// Khởi động backend; chỉ thông báo thành công khi đã chiếm được cổng.
+const server = app.listen(PORT, "0.0.0.0");
+server.on("listening", () => {
+  console.log(`🚀 Server Backend AI Food đang chạy tại: http://localhost:${PORT}`);
+});
+server.on("error", (error) => {
+  console.error(
+    error.code === "EADDRINUSE"
+      ? `Cổng ${PORT} đang được backend khác sử dụng. Hãy dừng tiến trình cũ rồi chạy lại.`
+      : `Không thể khởi động backend: ${error.message}`
   );
+  process.exitCode = 1;
+  db.end().catch((dbError) => console.error("Không thể đóng kết nối MySQL:", dbError.message));
 });

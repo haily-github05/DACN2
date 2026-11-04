@@ -1,3 +1,4 @@
+// Trang: Chỉnh sửa thông tin nguyên liệu trong kho.
 import React, { useCallback, useState } from "react";
 import {
   View,
@@ -20,6 +21,7 @@ import {
   Check,
   Package,
 } from "lucide-react-native";
+import DateField from "../components/DateField";
 import BottomNav from "../components/BottomNav";
 import {
   Ingredient,
@@ -300,16 +302,8 @@ export default function EditIngredient() {
           </View>
           <View style={s.card}>
             <Text style={s.section}>Thời gian sử dụng</Text>
-            <Field
-              label="Ngày mua (YYYY-MM-DD)"
-              value={purchaseDate}
-              onChangeText={setPurchaseDate}
-            />
-            <Field
-              label="Hạn sử dụng (YYYY-MM-DD)"
-              value={expiryDate}
-              onChangeText={setExpiryDate}
-            />
+            <DateField title="Ngày mua" label="Ngày mua" value={purchaseDate} onChangeText={setPurchaseDate} maxDate={expiryDate} />
+            <DateField title="Hạn sử dụng" label="Hạn sử dụng" value={expiryDate} onChangeText={setExpiryDate} minDate={purchaseDate} />
           </View>
           <View style={s.card}>
             <Text style={s.section}>Ghi chú</Text>

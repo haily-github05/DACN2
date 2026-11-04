@@ -1,3 +1,4 @@
+// Backend: Xử lý dữ liệu tài khoản và mật khẩu.
 const db = require('../config/db');
 const bcrypt = require('bcryptjs');
 

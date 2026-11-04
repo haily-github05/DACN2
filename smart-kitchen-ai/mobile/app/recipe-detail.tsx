@@ -1,15 +1,18 @@
-import React, { useMemo, useState } from "react";
+// Trang: Chi tiết công thức — nguyên liệu, khẩu phần, calo và hướng dẫn.
+import FoodImage from "../components/FoodImage";
+import { useRecipeFavorites } from "../hooks/useRecipeFavorites";
+import { getRecipes } from "../lib/kitchenApi";
+import React, { useCallback, useState } from "react";
 import {
   View,
   Text,
   ScrollView,
   Pressable,
   StyleSheet,
-  Image,
   Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import {
   ArrowLeft,
   Heart,
@@ -24,7 +27,6 @@ import {
   ChefHat,
   ChevronRight,
   Play,
-  RotateCcw,
   CheckCircle2,
   Leaf,
 } from "lucide-react-native";
@@ -58,117 +60,14 @@ type RecipeData = {
   description: string;
   image: string;
   minutes: number;
-  calories: number;
+  calories: number | null;
+  defaultServings: number;
+  preferenceInfo?: { ingredientDataAvailable: boolean; dislikedIngredients: string[] };
   ingredients: Ingredient[];
   steps: {
     title: string;
     description: string;
   }[];
-};
-
-const DEFAULT_RECIPE: RecipeData = {
-  name: "Ức gà áp chảo sốt tiêu đen",
-  description: "Mềm thơm, đậm vị, dễ làm ngay tại nhà.",
-  image:
-    "https://images.unsplash.com/photo-1532550907401-a500c9a57435?w=900&auto=format&fit=crop",
-  minutes: 25,
-  calories: 420,
-  ingredients: [
-    { id: "1", name: "Ức gà", amount: 300, unit: "g", available: true },
-    { id: "2", name: "Tiêu đen", amount: 1, unit: "thìa", available: true },
-    { id: "3", name: "Tỏi", amount: 2, unit: "tép", available: true },
-    { id: "4", name: "Dầu ô liu", amount: 1, unit: "thìa", available: true },
-    {
-      id: "5",
-      name: "Bông cải xanh",
-      amount: 150,
-      unit: "g",
-      available: false,
-    },
-  ],
-  steps: [
-    {
-      title: "Sơ chế nguyên liệu",
-      description:
-        "Rửa sạch ức gà, thấm khô bằng khăn giấy. Băm nhỏ tỏi và chuẩn bị gia vị.",
-    },
-    {
-      title: "Ướp gia vị",
-      description:
-        "Ướp ức gà với tỏi, tiêu đen và một ít dầu ô liu trong khoảng 10 phút.",
-    },
-    {
-      title: "Áp chảo chín vàng",
-      description:
-        "Làm nóng chảo, áp chảo gà khoảng 5–7 phút mỗi mặt. Kiểm tra thịt chín kỹ trước khi dùng.",
-    },
-    {
-      title: "Trình bày và thưởng thức",
-      description:
-        "Để thịt nghỉ khoảng 3 phút, sau đó thái lát và dùng cùng rau củ.",
-    },
-  ],
-};
-
-const OTHER_RECIPES: Record<string, Partial<RecipeData>> = {
-  "Trứng cuộn rau củ": {
-    description: "Bữa sáng nhanh gọn, đầy màu sắc và bổ dưỡng.",
-    image:
-      "https://images.unsplash.com/photo-1525351484163-7529414344d8?w=900&auto=format&fit=crop",
-    minutes: 10,
-    calories: 240,
-    ingredients: [
-      { id: "1", name: "Trứng gà", amount: 3, unit: "quả", available: true },
-      { id: "2", name: "Cà rốt", amount: 50, unit: "g", available: true },
-      { id: "3", name: "Hành lá", amount: 20, unit: "g", available: false },
-      { id: "4", name: "Dầu ăn", amount: 1, unit: "thìa", available: true },
-    ],
-    steps: [
-      {
-        title: "Chuẩn bị rau củ",
-        description: "Rửa sạch và thái nhỏ cà rốt, hành lá.",
-      },
-      {
-        title: "Đánh trứng",
-        description: "Đánh đều trứng với rau củ và một ít gia vị.",
-      },
-      {
-        title: "Chiên và cuộn",
-        description: "Đổ trứng thành lớp mỏng, cuộn khi vừa chín.",
-      },
-      {
-        title: "Thưởng thức",
-        description: "Cắt thành khoanh vừa ăn và dùng khi còn nóng.",
-      },
-    ],
-  },
-  "Salad rau củ": {
-    description: "Món ăn thanh mát, dễ chuẩn bị.",
-    image:
-      "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=900&auto=format&fit=crop",
-    minutes: 12,
-    calories: 210,
-    ingredients: [
-      { id: "1", name: "Xà lách", amount: 150, unit: "g", available: true },
-      { id: "2", name: "Cà chua", amount: 2, unit: "quả", available: true },
-      { id: "3", name: "Dưa leo", amount: 1, unit: "quả", available: false },
-      { id: "4", name: "Dầu ô liu", amount: 1, unit: "thìa", available: true },
-    ],
-    steps: [
-      {
-        title: "Rửa rau củ",
-        description: "Rửa sạch và để ráo tất cả nguyên liệu.",
-      },
-      {
-        title: "Sơ chế",
-        description: "Cắt cà chua, dưa leo và xà lách vừa ăn.",
-      },
-      {
-        title: "Trộn salad",
-        description: "Trộn rau củ cùng dầu ô liu và gia vị.",
-      },
-    ],
-  },
 };
 
 export default function RecipeDetailScreen() {
@@ -180,28 +79,24 @@ export default function RecipeDetailScreen() {
 
   const requestedName = typeof params.name === "string" ? params.name : "";
 
-  const recipe = useMemo<RecipeData>(() => {
-    const custom = OTHER_RECIPES[requestedName];
+  const [servings, setServings] = useState(1);
+  const [recipeId, setRecipeId] = useState("");
+  const [recipe, setRecipe] = useState<RecipeData>({ name: "Đang tải công thức", description: "", image: "", minutes: 0, calories: null, defaultServings: 1, ingredients: [], steps: [] });
+  useFocusEffect(useCallback(() => {
+    let active = true;
+    setRecipeId("");
+    setRecipe({ name: "Đang kiểm tra công thức theo khẩu vị", description: "", image: "", minutes: 0, calories: null, defaultServings: 1, ingredients: [], steps: [] });
+    getRecipes().then(rows => {
+      const found = params.id ? rows.find(r => r.id === params.id) : rows.find(r => r.name === requestedName);
+      if (!found) throw new Error("Công thức không còn được gợi ý theo thiết lập hiện tại hoặc chưa đủ dữ liệu nguyên liệu");
+      if (active) { setRecipe(found); setRecipeId(found.id); setServings(found.defaultServings); }
+    }).catch(error => Alert.alert("Không thể tải công thức", error.message));
+    return () => { active = false; };
+  }, [params.id, requestedName]));
 
-    if (custom) {
-      return {
-        ...DEFAULT_RECIPE,
-        ...custom,
-        name: requestedName,
-      };
-    }
-
-    return {
-      ...DEFAULT_RECIPE,
-      name: requestedName || DEFAULT_RECIPE.name,
-    };
-  }, [requestedName]);
-
-  const [servings, setServings] = useState(2);
-  const [favorite, setFavorite] = useState(false);
+  const { favorites, toggleFavorite } = useRecipeFavorites();
+  const favorite = favorites.includes(recipeId);
   const [checkedIds, setCheckedIds] = useState<string[]>([]);
-  const [completedSteps, setCompletedSteps] = useState<number[]>([]);
-  const [cooking, setCooking] = useState(false);
 
   const ingredients = recipe.ingredients;
 
@@ -211,10 +106,6 @@ export default function RecipeDetailScreen() {
 
   const progress = Math.round(
     (availableCount / Math.max(ingredients.length, 1)) * 100,
-  );
-
-  const stepProgress = Math.round(
-    (completedSteps.length / Math.max(recipe.steps.length, 1)) * 100,
   );
 
   const goBack = () => {
@@ -233,52 +124,19 @@ export default function RecipeDetailScreen() {
     );
   };
 
-  const toggleStep = (index: number) => {
-    setCompletedSteps((previous) =>
-      previous.includes(index)
-        ? previous.filter((item) => item !== index)
-        : [...previous, index],
-    );
-  };
-
   const startCooking = () => {
-    if (!cooking) {
-      setCooking(true);
-      Alert.alert(
-        "Bắt đầu nấu ăn",
-        "Bạn có thể đánh dấu từng bước đã hoàn thành trong phần hướng dẫn.",
-      );
-      return;
-    }
-
-    if (completedSteps.length === recipe.steps.length) {
-      Alert.alert(
-        "Hoàn thành món ăn! 🎉",
-        `Bạn đã hoàn thành món ${recipe.name}.`,
-        [
-          {
-            text: "Nấu lại",
-            onPress: () => {
-              setCompletedSteps([]);
-              setCooking(false);
-            },
-          },
-          {
-            text: "Xong",
-            onPress: () => router.push("/recipes" as any),
-          },
-        ],
-      );
-    } else {
-      Alert.alert(
-        "Tiếp tục nấu ăn",
-        `Bạn đã hoàn thành ${completedSteps.length}/${recipe.steps.length} bước.`,
-      );
-    }
+    if (!recipeId || !recipe.steps.length) return;
+    const open = () => router.push({ pathname: "/cooking-steps", params: { id: recipeId, servings: String(servings) } });
+    if (missingCount > 0) {
+      Alert.alert("Kiểm tra nguyên liệu", `Kho hiện thiếu ${missingCount} nguyên liệu theo công thức gốc. Hãy chuẩn bị đủ nguyên liệu cho ${servings} người trước khi nấu.`, [
+        { text: "Kiểm tra lại", style: "cancel" },
+        { text: "Đã chuẩn bị, bắt đầu", onPress: open },
+      ]);
+    } else open();
   };
 
   const formatAmount = (amount: number) => {
-    const scaled = (amount * servings) / 2;
+    const scaled = (amount * servings) / recipe.defaultServings;
     return Number.isInteger(scaled)
       ? String(scaled)
       : String(Number(scaled.toFixed(2)));
@@ -298,7 +156,7 @@ export default function RecipeDetailScreen() {
 
         <Pressable
           style={styles.iconButton}
-          onPress={() => setFavorite((value) => !value)}
+          onPress={() => { if (recipeId) void toggleFavorite(recipeId); }}
         >
           <Heart
             size={21}
@@ -315,8 +173,8 @@ export default function RecipeDetailScreen() {
       >
         {/* ẢNH MÓN ĂN */}
         <View style={styles.heroCard}>
-          <Image
-            source={{ uri: recipe.image }}
+          <FoodImage
+            uri={recipe.image}
             style={styles.heroImage}
             resizeMode="cover"
           />
@@ -336,6 +194,15 @@ export default function RecipeDetailScreen() {
         <Text style={styles.recipeTitle}>{recipe.name}</Text>
 
         <Text style={styles.recipeDescription}>{recipe.description}</Text>
+        {recipe.preferenceInfo && !recipe.preferenceInfo.ingredientDataAvailable && (
+          <Text style={styles.recipeDescription}>Chưa có dữ liệu nguyên liệu để đối chiếu dị ứng.</Text>
+        )}
+        {!!recipe.preferenceInfo?.dislikedIngredients.length && (
+          <Text style={styles.recipeDescription}>
+            Có nguyên liệu bạn không thích: {recipe.preferenceInfo.dislikedIngredients.join(", ")}.
+          </Text>
+        )}
+
 
         {/* THÔNG TIN MÓN */}
         <View style={styles.statsRow}>
@@ -348,7 +215,7 @@ export default function RecipeDetailScreen() {
           <View style={styles.statCard}>
             <Flame size={21} color={C.orange} />
             <Text style={styles.statValue}>
-              {Math.round((recipe.calories * servings) / 2)}
+              {recipe.calories == null ? "—" : Math.round(recipe.calories * servings)}
             </Text>
             <Text style={styles.statLabel}>kcal tổng</Text>
           </View>
@@ -477,59 +344,20 @@ export default function RecipeDetailScreen() {
           <Text style={styles.sectionCount}>{recipe.steps.length} bước</Text>
         </View>
 
-        {cooking && (
-          <View style={styles.cookingProgress}>
-            <View style={styles.cookingProgressHeader}>
-              <Text style={styles.cookingProgressTitle}>Tiến độ nấu ăn</Text>
-              <Text style={styles.cookingProgressValue}>{stepProgress}%</Text>
+        {recipe.steps.length === 0 && (
+          <Text style={styles.recipeDescription}>Món này chưa có hướng dẫn chế biến.</Text>
+        )}
+        {recipe.steps.map((step, index) => (
+          <View key={index} style={styles.stepCard}>
+            <View style={styles.stepNumber}>
+              <Text style={styles.stepNumberText}>{String(index + 1).padStart(2, "0")}</Text>
             </View>
-
-            <View style={styles.progressTrack}>
-              <View
-                style={[styles.progressFill, { width: `${stepProgress}%` }]}
-              />
+            <View style={styles.stepInfo}>
+              <Text style={styles.stepTitle}>{step.title}</Text>
+              <Text style={styles.stepDescription}>{step.description}</Text>
             </View>
           </View>
-        )}
-
-        {recipe.steps.map((step, index) => {
-          const done = completedSteps.includes(index);
-
-          return (
-            <Pressable
-              key={index}
-              style={styles.stepCard}
-              onPress={() => {
-                if (!cooking) {
-                  setCooking(true);
-                }
-                toggleStep(index);
-              }}
-            >
-              <View style={[styles.stepNumber, done && styles.stepNumberDone]}>
-                {done ? (
-                  <Check size={18} color={C.white} />
-                ) : (
-                  <Text style={styles.stepNumberText}>
-                    {String(index + 1).padStart(2, "0")}
-                  </Text>
-                )}
-              </View>
-
-              <View style={styles.stepInfo}>
-                <Text style={[styles.stepTitle, done && { color: C.green }]}>
-                  {step.title}
-                </Text>
-
-                <Text style={styles.stepDescription}>{step.description}</Text>
-
-                <Text style={styles.stepHint}>
-                  {done ? "✓ Đã hoàn thành" : "Chạm để đánh dấu hoàn thành"}
-                </Text>
-              </View>
-            </Pressable>
-          );
-        })}
+        ))}
 
         {/* MẸO */}
         <View style={styles.tipCard}>
@@ -555,19 +383,14 @@ export default function RecipeDetailScreen() {
 
       {/* NÚT NẤU ĂN */}
       <View style={styles.bottomAction}>
-        <Pressable style={styles.startButton} onPress={startCooking}>
-          {cooking ? (
-            <RotateCcw size={18} color={C.white} />
-          ) : (
-            <Play size={18} color={C.white} />
-          )}
-
+        <Pressable
+          disabled={!recipeId || !recipe.steps.length}
+          style={[styles.startButton, (!recipeId || !recipe.steps.length) && { opacity: 0.5 }]}
+          onPress={startCooking}
+        >
+          <Play size={18} color={C.white} />
           <Text style={styles.startButtonText}>
-            {!cooking
-              ? "Bắt đầu nấu ăn"
-              : completedSteps.length === recipe.steps.length
-                ? "Hoàn thành món ăn"
-                : `Đang nấu · ${completedSteps.length}/${recipe.steps.length} bước`}
+            {recipeId && !recipe.steps.length ? "Chưa có hướng dẫn nấu" : "Bắt đầu nấu ăn"}
           </Text>
 
           <ChevronRight size={18} color={C.white} />

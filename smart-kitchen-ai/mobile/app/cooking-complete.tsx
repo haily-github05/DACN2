@@ -1,300 +1,87 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  ScrollView,
-  Pressable,
-  StyleSheet,
-  Alert,
-} from "react-native";
+// Trang: Hoàn thành nấu ăn — xác nhận khẩu phần và lưu lịch sử món đã nấu.
+import React, { useEffect, useRef, useState } from "react";
+import { ActivityIndicator, Alert, Pressable, ScrollView, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useRouter } from "expo-router";
-import { ArrowLeft, ChevronRight, Check, Sparkles } from "lucide-react-native";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { CheckCircle2 } from "lucide-react-native";
+import { getRecipes, kitchenRequest, KitchenRecipe } from "../lib/kitchenApi";
 import AppHeader from "../components/AppHeader";
-import BottomNav from "../components/BottomNav";
+import FoodImage from "../components/FoodImage";
+import { cookingStyles as s } from "../components/cookingStyles";
 
-const blocks: [string, string, string][] = [
-  ["hero", "Món vừa hoàn thành", "Cá hồi áp chảo sốt chanh"],
-  ["item", "Cá hồi đã sử dụng", "250 g / 350 g"],
-  ["item", "Chanh đã sử dụng", "1 quả / 3 quả"],
-  [
-    "highlight",
-    "Kho thực phẩm sau nấu",
-    "Tự động trừ lượng đã xác nhận (cần kết nối dữ liệu)",
-  ],
-  ["item", "Lịch sử nấu ăn", "Lưu món ăn và thời gian hoàn thành"],
-  ["action", "Xác nhận và cập nhật kho", "save"],
-];
-const ORANGE = "#A23A00";
-export default function Screen() {
+export default function CookingCompleteScreen() {
+  const { id, servings: requestedServings } = useLocalSearchParams<{ id?: string; servings?: string }>();
   const router = useRouter();
-  const [choices, setChoices] = useState<Record<string, string>>({});
-  const [inputs, setInputs] = useState<Record<string, string>>({});
-  const [checked, setChecked] = useState<Record<string, boolean>>({});
-  const [seconds, setSeconds] = useState(300);
-  const [running, setRunning] = useState(false);
-  const [messages, setMessages] = useState<string[]>([]);
-  const [read, setRead] = useState(false);
-  const go = (path: string) => router.push(path as any);
-  const action = (label: string, target: string) => {
-    if (target.startsWith("/")) return go(target);
-    if (target === "generate")
-      return Alert.alert(
-        "Thực đơn mẫu",
-        "Đã tạo thực đơn demo. Khi có backend, hệ thống sẽ tạo thực đơn dựa trên kho thực tế.",
-      );
-    if (target === "summary")
-      return Alert.alert(
-        "Danh sách mua sắm",
-        `Đã chọn ${Object.values(checked).filter(Boolean).length} nguyên liệu.`,
-      );
-    if (target === "photo")
-      return Alert.alert(
-        "Chọn ảnh",
-        "Tính năng chọn ảnh cho bài đăng sẽ được kết nối sau.",
-      );
-    if (target === "like" || target === "bookmark")
-      return Alert.alert("Đã chọn", label);
-    Alert.alert(
-      "Chế độ demo",
-      "Thông tin chưa được lưu lên máy chủ. Cần kết nối backend hoặc kho dữ liệu dùng chung.",
-    );
+  const [recipe, setRecipe] = useState<KitchenRecipe | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [retry, setRetry] = useState(0);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [rating, setRating] = useState<number | null>(null);
+  const [note, setNote] = useState("");
+  const submitting = useRef(false);
+  const count = Number(requestedServings);
+  const servings = Number.isInteger(count) && count >= 1 && count <= 10 ? count : 1;
+  useEffect(() => {
+    let active = true;
+    getRecipes().then(rows => {
+      const found = rows.find(r => r.id === id);
+      if (!found) throw new Error("Không tìm thấy món ăn theo thiết lập hiện tại.");
+      if (active) setRecipe(found);
+    }).catch(err => { if (active) setError(err.message); })
+      .finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
+  }, [id, retry]);
+  const save = async () => {
+    if (!recipe || submitting.current || saved) return;
+    submitting.current = true;
+    setSaving(true);
+    try {
+      await kitchenRequest("cooking", "POST", { recipeId: recipe.id, servings, rating, note });
+      setSaved(true);
+    } catch (err) {
+      submitting.current = false;
+      Alert.alert("Không thể lưu lịch sử", err instanceof Error ? err.message : "Vui lòng thử lại.");
+    } finally { setSaving(false); }
   };
-  return (
-    <SafeAreaView style={styles.safe} edges={[]}>
-      <AppHeader showNotification unreadCount={3} />
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={styles.content}
-        keyboardShouldPersistTaps="handled"
-      >
-        <View style={styles.heading}>
-          <Pressable onPress={() => router.back()} style={styles.back}>
-            <ArrowLeft size={23} color={ORANGE} />
-          </Pressable>
-          <Text style={styles.title}>Đã nấu xong!</Text>
+  return <SafeAreaView style={s.page} edges={["left", "right", "bottom"]}>
+    <AppHeader />
+    <ScrollView contentContainerStyle={s.content}>
+      <Text style={s.title}>{saved ? "Đã lưu món bạn nấu" : "Món ăn đã hoàn thành!"}</Text>
+      {loading ? <ActivityIndicator color="#A23A00" style={s.loader} /> : error ? <>
+        <Text style={s.body}>{error}</Text>
+        <Pressable style={s.button} onPress={() => { setLoading(true); setError(""); setRetry(n => n + 1); }}><Text style={s.buttonText}>Thử lại</Text></Pressable>
+      </> : recipe && <>
+        <FoodImage uri={recipe.image} style={s.photo} resizeMode="cover" accessibilityLabel={recipe.name} />
+        <View style={s.card}>
+          <Text style={s.cardTitle}>{recipe.name}</Text>
+          <Text style={s.body}>Khẩu phần: {servings} người</Text>
+          <Text style={s.body}>Năng lượng ước tính: {recipe.calories == null ? "Chưa có dữ liệu" : `${recipe.calories * servings} kcal tổng`}</Text>
+          <Text style={s.muted}>{saved ? "Món ăn và số người ăn đã được ghi vào lịch sử nấu ăn." : "Xác nhận lưu món vừa nấu vào lịch sử của bạn."}</Text>
         </View>
-        <Text style={styles.subtitle}>"Cập nhật nguyên liệu đã sử dụng"</Text>
-        {blocks.map(([kind, label, detail], i) => {
-          if (kind === "section")
-            return (
-              <Text key={i} style={styles.section}>
-                {label}
-              </Text>
-            );
-          if (
-            kind === "hero" ||
-            kind === "highlight" ||
-            kind === "chatbot" ||
-            kind === "chatuser" ||
-            kind === "note"
-          )
-            return (
-              <View
-                key={i}
-                style={[
-                  styles.card,
-                  (kind === "highlight" || kind === "chatbot") &&
-                    styles.highlight,
-                ]}
-              >
-                <Text style={styles.cardTitle}>{label}</Text>
-                {!!detail && <Text style={styles.detail}>{detail}</Text>}
-              </View>
-            );
-          if (kind === "item" || kind === "step")
-            return (
-              <View key={i} style={styles.card}>
-                <Text style={styles.cardTitle}>{label}</Text>
-                {!!detail && <Text style={styles.detail}>{detail}</Text>}
-              </View>
-            );
-          if (kind === "input" || kind === "chatinput")
-            return (
-              <View key={i}>
-                <Text style={styles.fieldLabel}>
-                  {kind === "input" ? label : ""}
-                </Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder={kind === "chatinput" ? label : detail}
-                  placeholderTextColor="#9A8176"
-                  value={inputs[label] ?? ""}
-                  onChangeText={(v) => setInputs((p) => ({ ...p, [label]: v }))}
-                />
-              </View>
-            );
-          if (kind === "choice")
-            return (
-              <View key={i} style={styles.choiceWrap}>
-                <Text style={styles.fieldLabel}>{label}</Text>
-                <View style={styles.options}>
-                  {detail.split("|").map((v, j) => (
-                    <Pressable
-                      key={j}
-                      onPress={() => setChoices((p) => ({ ...p, [label]: v }))}
-                      style={[
-                        styles.option,
-                        (choices[label] ?? detail.split("|")[0]) === v &&
-                          styles.optionActive,
-                      ]}
-                    >
-                      <Text
-                        style={[
-                          styles.optionText,
-                          (choices[label] ?? detail.split("|")[0]) === v &&
-                            styles.optionTextActive,
-                        ]}
-                      >
-                        {v}
-                      </Text>
-                    </Pressable>
-                  ))}
-                </View>
-              </View>
-            );
-          if (kind === "check")
-            return (
-              <Pressable
-                key={i}
-                style={styles.card}
-                onPress={() =>
-                  setChecked((p) => ({ ...p, [label]: !p[label] }))
-                }
-              >
-                <Text style={styles.cardTitle}>
-                  {checked[label] ? "☑" : "☐"} {label}
-                </Text>
-                <Text style={styles.detail}>{detail}</Text>
-              </Pressable>
-            );
-          if (kind === "timer")
-            return (
-              <View key={i} style={styles.card}>
-                <Text style={styles.cardTitle}>{label}</Text>
-                <Text style={styles.time}>
-                  {String(Math.floor(seconds / 60)).padStart(2, "0")}:
-                  {String(seconds % 60).padStart(2, "0")}
-                </Text>
-                <Text style={styles.detail}>
-                  Bộ đếm demo: dùng nút +/− để điều chỉnh; chưa chạy nền.
-                </Text>
-                <View style={styles.options}>
-                  <Pressable
-                    style={styles.option}
-                    onPress={() => setSeconds((v) => Math.max(0, v - 30))}
-                  >
-                    <Text>− 30 giây</Text>
-                  </Pressable>
-                  <Pressable
-                    style={styles.option}
-                    onPress={() => setSeconds((v) => v + 30)}
-                  >
-                    <Text>+ 30 giây</Text>
-                  </Pressable>
-                </View>
-              </View>
-            );
-          if (kind === "link" || kind === "action")
-            return (
-              <Pressable
-                key={i}
-                style={[
-                  styles.button,
-                  kind === "link" && styles.secondaryButton,
-                ]}
-                onPress={() => action(label, detail)}
-              >
-                <Text
-                  style={[
-                    styles.buttonText,
-                    kind === "link" && styles.secondaryText,
-                  ]}
-                >
-                  {label}
-                </Text>
-                {kind === "link" && <ChevronRight size={17} color={ORANGE} />}
-              </Pressable>
-            );
-          return null;
-        })}
-      </ScrollView>
-      <BottomNav />
-    </SafeAreaView>
-  );
+        <View style={s.card}>
+          <Text style={s.cardTitle}>Đánh giá món ăn (tùy chọn)</Text>
+          <View style={s.row}>{[1,2,3,4,5].map(value => (
+            <Pressable key={value} disabled={saving || saved} accessibilityLabel={value + " sao"}
+              onPress={() => setRating(prev => prev === value ? null : value)} style={{padding:6}}>
+              <Text style={{fontSize:30,color:rating !== null && value <= rating ? "#A23A00" : "#D9C8BF"}}>★</Text>
+            </Pressable>
+          ))}</View>
+          <Text style={s.muted}>{rating ? `${rating}/5 sao` : "Chưa đánh giá"}</Text>
+          <Text style={s.cardTitle}>Ghi chú cho lần nấu sau</Text>
+          <TextInput editable={!saving && !saved} value={note} onChangeText={setNote} multiline maxLength={2000}
+            placeholder="Ví dụ: Giảm muối, áp chảo thêm 2 phút…"
+            style={{minHeight:100,padding:12,borderWidth:1,borderColor:"#EED9CF",borderRadius:12,textAlignVertical:"top",color:"#201A17"}} />
+        </View>
+        <Pressable disabled={saving || saved} onPress={() => void save()} style={[s.button, (saving || saved) && s.disabled]}>
+          {saved && <CheckCircle2 color="white" size={20} />}
+          <Text style={s.buttonText}>{saved ? "Đã lưu lịch sử" : saving ? "Đang lưu…" : "Xác nhận lưu món đã nấu"}</Text>
+        </Pressable>
+        {!saved && <Pressable disabled={saving} onPress={() => router.back()}><Text style={s.link}>Quay lại các bước nấu</Text></Pressable>}
+      </>}
+      {saved && <Pressable onPress={() => router.replace({ pathname: "/my-activity", params: { tab: "cooked" } })}><Text style={s.link}>Xem lịch sử vừa lưu</Text></Pressable>}
+      <Pressable disabled={saving} onPress={() => router.replace("/recipes")}><Text style={s.link}>{saved ? "Khám phá món tiếp theo" : "Về danh sách công thức"}</Text></Pressable>
+    </ScrollView>
+  </SafeAreaView>;
 }
-const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: "#FFF8F6" },
-  scroll: { flex: 1 },
-  content: {
-    paddingHorizontal: 24,
-    paddingTop: 16,
-    paddingBottom: 32,
-    gap: 12,
-  },
-  heading: { flexDirection: "row", alignItems: "center", gap: 14 },
-  back: { width: 24, height: 38, justifyContent: "center" },
-  title: { fontSize: 20, fontWeight: "800", color: "#201A17", flexShrink: 1 },
-  subtitle: { fontSize: 12, color: "#735A51", marginBottom: 13 },
-  section: { fontSize: 16, fontWeight: "800", color: "#201A17", marginTop: 14 },
-  card: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: 15,
-    borderWidth: 1,
-    borderColor: "#EED9CF",
-    padding: 17,
-    gap: 8,
-  },
-  highlight: { backgroundColor: "#FEF1EB" },
-  cardTitle: { fontSize: 15, fontWeight: "700", color: "#201A17" },
-  detail: { fontSize: 12, color: "#735A51", lineHeight: 20 },
-  fieldLabel: {
-    fontSize: 13,
-    fontWeight: "700",
-    color: "#201A17",
-    marginBottom: 9,
-    marginTop: 9,
-  },
-  input: {
-    height: 48,
-    backgroundColor: "#FFFFFF",
-    borderWidth: 1,
-    borderColor: "#EED9CF",
-    borderRadius: 11,
-    paddingHorizontal: 13,
-    color: "#201A17",
-  },
-  choiceWrap: { marginBottom: 2 },
-  options: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
-  option: {
-    borderWidth: 1,
-    borderColor: "#EED9CF",
-    borderRadius: 10,
-    paddingHorizontal: 13,
-    paddingVertical: 11,
-    backgroundColor: "#FFFFFF",
-  },
-  optionActive: { backgroundColor: ORANGE, borderColor: ORANGE },
-  optionText: { fontSize: 12, color: "#735A51" },
-  optionTextActive: { color: "#FFFFFF", fontWeight: "800" },
-  button: {
-    minHeight: 50,
-    backgroundColor: ORANGE,
-    borderRadius: 12,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 14,
-    flexDirection: "row",
-    gap: 8,
-    marginTop: 6,
-  },
-  buttonText: { fontSize: 14, fontWeight: "800", color: "#FFFFFF" },
-  secondaryButton: {
-    backgroundColor: "#FFFFFF",
-    borderWidth: 1,
-    borderColor: "#EED9CF",
-  },
-  secondaryText: { color: ORANGE },
-  time: { fontSize: 30, fontWeight: "800", color: ORANGE, textAlign: "center" },
-});

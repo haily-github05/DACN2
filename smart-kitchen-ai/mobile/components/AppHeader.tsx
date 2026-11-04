@@ -1,4 +1,7 @@
-import React, { useState } from "react";
+// Thành phần: Đầu trang dùng chung — thương hiệu và các nút tiện ích.
+import { useNotifications } from "../hooks/useNotifications";
+import { getAuthUser } from "../lib/auth";
+import React, { useCallback, useState } from "react";
 
 import {
   View,
@@ -10,7 +13,7 @@ import {
   Linking,
 } from "react-native";
 
-import { useRouter } from "expo-router";
+import { useFocusEffect, useLocalSearchParams, usePathname, useRouter } from "expo-router";
 
 import {
   ChefHat,
@@ -46,13 +49,29 @@ const C = {
 
 export default function AppHeader({
   showBack = false,
-  showNotification = false,
+  showNotification = true,
   showHelp = true,
-  unreadCount = 0,
+  unreadCount,
   onNotificationPress,
   onHelpPress,
 }: AppHeaderProps) {
   const router = useRouter();
+  const pathname = usePathname();
+  const { from } = useLocalSearchParams<{ from?: string }>();
+  const eligiblePage = !["/", "/intro", "/login", "/register"].includes(pathname)
+    && (pathname !== "/onboarding-preferences" || from === "profile");
+  const [notificationUserId, setNotificationUserId] = useState<number | null>(null);
+  useFocusEffect(useCallback(() => {
+    let active = true;
+    setNotificationUserId(null);
+    if (eligiblePage && showNotification) getAuthUser().then(user => {
+      if (active) setNotificationUserId(user?.user_id ?? null);
+    });
+    return () => { active = false; };
+  }, [eligiblePage, showNotification]));
+  const showNotificationButton = eligiblePage && showNotification && notificationUserId !== null;
+  const notifications = useNotifications(showNotificationButton);
+  const notificationCount = notifications.userId === notificationUserId ? unreadCount ?? notifications.unread : 0;
 
   const [helpVisible, setHelpVisible] = useState(false);
 
@@ -137,7 +156,7 @@ export default function AppHeader({
 
         {/* RIGHT */}
         <View style={styles.right}>
-          {showNotification && (
+          {showNotificationButton && (
             <Pressable
               style={styles.iconButton}
               onPress={handleNotification}
@@ -145,7 +164,7 @@ export default function AppHeader({
             >
               <Bell size={21} color={C.orange} />
 
-              {unreadCount > 0 && <View style={styles.notificationDot} />}
+              {notificationCount > 0 && <View style={styles.notificationDot} />}
             </Pressable>
           )}
 

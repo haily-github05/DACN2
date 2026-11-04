@@ -1,3 +1,4 @@
+// Chức năng: API đọc thiết lập khẩu vị, dị ứng và nguyên liệu không thích.
 import Constants from "expo-constants";
 
 export type StoredPreferences = {

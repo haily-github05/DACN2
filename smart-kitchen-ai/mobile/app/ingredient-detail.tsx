@@ -1,8 +1,9 @@
+// Trang: Chi tiết nguyên liệu — số lượng, hạn dùng và nơi bảo quản.
+import FoodImage from "../components/FoodImage";
 import React, { useCallback, useState } from "react";
 import {
   View,
   Text,
-  Image,
   ScrollView,
   Pressable,
   StyleSheet,
@@ -46,8 +47,6 @@ const C = {
   mint: "#E9F5EB",
   red: "#C83D2B",
 };
-const FALLBACK_IMAGE =
-  "https://images.unsplash.com/photo-1542838132-92c53300491e?w=900";
 const TIPS: Record<string, string> = {
   Thịt: "Bảo quản thịt theo hướng dẫn trên bao bì, giữ lạnh đúng nhiệt độ và tránh lây nhiễm chéo với thực phẩm ăn liền.",
   "Rau củ":
@@ -172,8 +171,8 @@ export default function IngredientDetailScreen() {
             showsVerticalScrollIndicator={false}
           >
             <View style={s.hero}>
-              <Image
-                source={{ uri: ingredient.image || FALLBACK_IMAGE }}
+              <FoodImage
+                uri={ingredient.image}
                 style={s.heroImage}
               />
               <View style={s.heroBadges}>

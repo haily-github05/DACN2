@@ -1,3 +1,4 @@
+// Trang: Cá nhân — hồ sơ, thống kê hoạt động và thiết lập khẩu vị.
 import React, { useState, useCallback } from "react";
 
 import {
@@ -18,7 +19,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useRouter, useFocusEffect } from "expo-router";
 import { getCurrentUserId } from "../lib/auth";
-import { getProfile, avatarSource } from "../lib/profileApi";
+import { getProfile, avatarSource, ProfileStats } from "../lib/profileApi";
 import {
   getUserPreferences,
   type StoredPreferences,
@@ -89,9 +90,55 @@ type IconComponent = React.ComponentType<{
   strokeWidth?: number;
 }>;
 
+  const MenuItem = ({
+    icon: Icon,
+
+    title,
+
+    subtitle,
+
+    onPress,
+
+    color = C.orange,
+
+    background = C.peach,
+
+    right,
+  }: {
+    icon: IconComponent;
+
+    title: string;
+
+    subtitle?: string;
+
+    onPress: () => void;
+
+    color?: string;
+
+    background?: string;
+
+    right?: React.ReactNode;
+  }) => (
+    <Pressable style={styles.menuItem} onPress={onPress}>
+      <View style={[styles.menuIcon, { backgroundColor: background }]}>
+        <Icon size={19} color={color} />
+      </View>
+
+      <View style={styles.menuText}>
+        <Text style={styles.menuTitle}>{title}</Text>
+
+        {subtitle ? <Text style={styles.menuSubtitle}>{subtitle}</Text> : null}
+      </View>
+
+      {right ?? <ChevronRight size={18} color="#A38D82" />}
+    </Pressable>
+  );
+
+
 export default function ProfileScreen() {
   const router = useRouter();
 
+  const [stats, setStats] = useState<ProfileStats | null>(null);
   const [name, setName] = useState("Người dùng Smart Kitchen");
 
   const [email, setEmail] = useState("");
@@ -108,11 +155,13 @@ export default function ProfileScreen() {
   useFocusEffect(
     useCallback(() => {
       let active = true;
+      setStats(null);
       (async () => {
         try {
           const userId = await getCurrentUserId();
           const user = await getProfile(userId);
           if (!active) return;
+          setStats(user.stats ?? null);
           setName(user.full_name);
           setEmail(user.email ?? "");
           setPhone(user.phone ?? "");
@@ -146,18 +195,6 @@ export default function ProfileScreen() {
       };
     }, []),
   );
-
-  // Dữ liệu minh họa, thay bằng API khi có backend
-
-  const stats = {
-    cooked: 12,
-
-    saved: 8,
-
-    shared: 3,
-
-    streak: 5,
-  };
 
   const navigate = (path: string) => {
     router.push(path as any);
@@ -208,53 +245,10 @@ export default function ProfileScreen() {
 
     .join("");
 
-  const MenuItem = ({
-    icon: Icon,
-
-    title,
-
-    subtitle,
-
-    onPress,
-
-    color = C.orange,
-
-    background = C.peach,
-
-    right,
-  }: {
-    icon: IconComponent;
-
-    title: string;
-
-    subtitle?: string;
-
-    onPress: () => void;
-
-    color?: string;
-
-    background?: string;
-
-    right?: React.ReactNode;
-  }) => (
-    <Pressable style={styles.menuItem} onPress={onPress}>
-      <View style={[styles.menuIcon, { backgroundColor: background }]}>
-        <Icon size={19} color={color} />
-      </View>
-
-      <View style={styles.menuText}>
-        <Text style={styles.menuTitle}>{title}</Text>
-
-        {subtitle ? <Text style={styles.menuSubtitle}>{subtitle}</Text> : null}
-      </View>
-
-      {right ?? <ChevronRight size={18} color="#A38D82" />}
-    </Pressable>
-  );
 
   return (
     <SafeAreaView style={styles.screen} edges={[]}>
-      <AppHeader showNotification unreadCount={3} />
+      <AppHeader showNotification />
 
       <ScrollView
         style={styles.scroll}
@@ -322,33 +316,33 @@ export default function ProfileScreen() {
           </View>
 
           <View style={styles.statsRow}>
-            <View style={styles.statItem}>
+            <Pressable accessibilityRole="button" style={styles.statItem} onPress={() => router.push({ pathname: "/my-activity", params: { tab: "cooked" } })}>
               <ChefHat size={19} color={C.orange} />
 
-              <Text style={styles.statNumber}>{stats.cooked}</Text>
+              <Text style={styles.statNumber}>{stats?.cooked ?? "—"}</Text>
 
               <Text style={styles.statLabel}>Món đã nấu</Text>
-            </View>
+            </Pressable>
 
             <View style={styles.statDivider} />
 
-            <View style={styles.statItem}>
+            <Pressable accessibilityRole="button" style={styles.statItem} onPress={() => router.push({ pathname: "/my-activity", params: { tab: "saved" } })}>
               <Bookmark size={19} color={C.orange} />
 
-              <Text style={styles.statNumber}>{stats.saved}</Text>
+              <Text style={styles.statNumber}>{stats?.saved ?? "—"}</Text>
 
               <Text style={styles.statLabel}>Đã lưu</Text>
-            </View>
+            </Pressable>
 
             <View style={styles.statDivider} />
 
-            <View style={styles.statItem}>
+            <Pressable accessibilityRole="button" style={styles.statItem} onPress={() => router.push({ pathname: "/my-activity", params: { tab: "shared" } })}>
               <UsersRound size={19} color={C.orange} />
 
-              <Text style={styles.statNumber}>{stats.shared}</Text>
+              <Text style={styles.statNumber}>{stats?.shared ?? "—"}</Text>
 
               <Text style={styles.statLabel}>Đã chia sẻ</Text>
-            </View>
+            </Pressable>
           </View>
 
           <View style={styles.profileTip}>
@@ -378,7 +372,7 @@ export default function ProfileScreen() {
               <Flame size={21} color={C.orange} />
             </View>
 
-            <Text style={styles.achievementNumber}>{stats.streak} ngày</Text>
+            <Text style={styles.achievementNumber}>{stats?.streak ?? "—"} ngày</Text>
 
             <Text style={styles.achievementName}>Chuỗi vào bếp</Text>
 
@@ -390,7 +384,7 @@ export default function ProfileScreen() {
               <ChefHat size={21} color={C.orange} />
             </View>
 
-            <Text style={styles.achievementNumber}>{stats.cooked} món</Text>
+            <Text style={styles.achievementNumber}>{stats?.cooked ?? "—"} món</Text>
 
             <Text style={styles.achievementName}>Đầu bếp tại gia</Text>
 
@@ -560,8 +554,8 @@ export default function ProfileScreen() {
           <MenuItem
             icon={Bookmark}
             title="Bộ sưu tập đã lưu"
-            subtitle="Xem các công thức đã đánh dấu"
-            onPress={() => showComingSoon("Bộ sưu tập đã lưu")}
+            subtitle="Công thức và bài viết bạn đã lưu"
+            onPress={() => router.push({ pathname: "/my-activity", params: { tab: "saved" } })}
           />
 
           <View style={styles.menuDivider} />
@@ -570,7 +564,7 @@ export default function ProfileScreen() {
             icon={Clock3}
             title="Lịch sử nấu ăn"
             subtitle="Những món bạn đã thực hiện"
-            onPress={() => showComingSoon("Lịch sử nấu ăn")}
+            onPress={() => router.push({ pathname: "/my-activity", params: { tab: "cooked" } })}
           />
 
           <View style={styles.menuDivider} />

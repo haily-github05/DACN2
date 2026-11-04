@@ -1,3 +1,4 @@
+// Trang: Đăng nhập tài khoản — giữ đầy đủ nội dung, căn chỉnh lại bố cục.
 import React, { useState } from "react";
 import AppHeader from "../components/AppHeader";
 import {
@@ -357,7 +358,14 @@ const s = StyleSheet.create({
   },
   brandRow: { flexDirection: "row", alignItems: "center", gap: 9 },
   brand: { color: C.orange, fontSize: 17, fontWeight: "800" },
-  content: { paddingHorizontal: 26, paddingBottom: 40 },
+  content: {
+    flexGrow: 1,
+    width: "100%",
+    maxWidth: 460,
+    alignSelf: "center",
+    paddingHorizontal: 24,
+    paddingBottom: 24,
+  },
   back: {
     marginTop: 10,
     width: 40,
@@ -368,6 +376,7 @@ const s = StyleSheet.create({
     alignItems: "center",
   },
   badge: {
+    alignSelf: "center",
     flexDirection: "row",
     alignItems: "center",
     gap: 7,
@@ -375,8 +384,9 @@ const s = StyleSheet.create({
     marginBottom: 12,
   },
   badgeText: { fontSize: 12, color: C.orange, fontWeight: "700" },
-  title: { fontSize: 27, fontWeight: "800", color: C.dark },
+  title: { fontSize: 27, fontWeight: "800", color: C.dark, textAlign: "center" },
   subtitle: {
+    textAlign: "center",
     color: C.muted,
     fontSize: 14,
     lineHeight: 22,
@@ -384,7 +394,7 @@ const s = StyleSheet.create({
   },
   google: {
     height: 53,
-    marginTop: 25,
+    marginTop: 20,
     backgroundColor: C.white,
     borderWidth: 1,
     borderColor: C.border,
@@ -400,7 +410,7 @@ const s = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 9,
-    marginVertical: 22,
+    marginVertical: 18,
   },
   divider: { flex: 1, height: 1, backgroundColor: C.border },
   dividerText: { fontSize: 11, color: C.muted },
@@ -410,7 +420,7 @@ const s = StyleSheet.create({
     borderRadius: 12,
     flexDirection: "row",
     padding: 4,
-    marginBottom: 20,
+    marginBottom: 16,
   },
   tab: {
     flex: 1,
@@ -502,7 +512,7 @@ const s = StyleSheet.create({
     color: C.white,
   },
   security: {
-    marginTop: 28,
+    marginTop: 20,
     backgroundColor: C.peach,
     borderRadius: 14,
     padding: 16,
@@ -518,7 +528,7 @@ const s = StyleSheet.create({
     textAlign: "center",
   },
   bottom: {
-    marginTop: 39,
+    marginTop: 24,
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
@@ -530,6 +540,6 @@ const s = StyleSheet.create({
     color: C.muted,
     lineHeight: 18,
     textAlign: "center",
-    marginTop: 32,
+    marginTop: 18,
   },
 });

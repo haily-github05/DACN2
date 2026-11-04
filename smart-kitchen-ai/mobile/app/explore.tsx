@@ -1,28 +1,33 @@
+// Trang: Khám phá món ăn theo danh mục và tìm kiếm công thức.
+import IngredientCatalogResults from "../components/IngredientCatalogResults";
+import { matchesSearch } from "../lib/search";
+import SearchField from "../components/SearchField";
+import { matchesRecipeCategory } from "../lib/recipeCategories";
+import FoodImage from "../components/FoodImage";
+import { useRecipeFavorites } from "../hooks/useRecipeFavorites";
+import { getRecipes, KitchenRecipe } from "../lib/kitchenApi";
 
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
+  Alert,
   View,
   Text,
-  TextInput,
   ScrollView,
   Pressable,
-  Image,
   StyleSheet,
   Dimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import {
-  Search,
   Sparkles,
   ArrowRight,
   Clock3,
-  Star,
+  Flame,
   ChefHat,
   ChevronRight,
   Heart,
-  SlidersHorizontal,
-} from 'lucide-react-native';
+  } from 'lucide-react-native';
 
 import AppHeader from '../components/AppHeader';
 import BottomNav from '../components/BottomNav';
@@ -62,7 +67,7 @@ const categories = [
     id: 'quick',
     name: 'Món nấu nhanh',
     emoji: '⚡',
-    description: 'Tiết kiệm thời gian',
+    description: 'Trong tối đa 30 phút',
     image:
       'https://images.unsplash.com/photo-1525351484163-7529414344d8?w=700&q=85',
   },
@@ -76,80 +81,34 @@ const categories = [
   },
 ];
 
-const recipes = [
-  {
-    id: '1',
-    name: 'Cá hồi áp chảo',
-    category: 'healthy',
-    time: '20 phút',
-    level: 'Dễ nấu',
-    rating: '4.9',
-    image:
-      'https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=800&q=85',
-  },
-  {
-    id: '2',
-    name: 'Salad rau củ',
-    category: 'healthy',
-    time: '15 phút',
-    level: 'Dễ nấu',
-    rating: '4.8',
-    image:
-      'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&q=85',
-  },
-  {
-    id: '3',
-    name: 'Mì trộn đặc biệt',
-    category: 'quick',
-    time: '15 phút',
-    level: 'Dễ nấu',
-    rating: '4.7',
-    image:
-      'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=800&q=85',
-  },
-  {
-    id: '4',
-    name: 'Bánh ngọt trái cây',
-    category: 'dessert',
-    time: '35 phút',
-    level: 'Trung bình',
-    rating: '4.9',
-    image:
-      'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=800&q=85',
-  },
-];
-
 export default function ExploreScreen() {
   const router = useRouter();
+  const [visibleCount, setVisibleCount] = useState(10);
+  const [recipes, setRecipes] = useState<(KitchenRecipe & { time: string })[]>([]);
+  useFocusEffect(useCallback(() => {
+    let active = true;
+    setRecipes([]);
+    setVisibleCount(10);
+    getRecipes().then(rows => {
+      if (active) setRecipes(rows.map(r => ({ ...r, time: `${r.minutes} phút` })));
+    }).catch(error => { if (active) Alert.alert("Không thể tải công thức", error.message); });
+    return () => { active = false; };
+  }, []));
 
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] =
     useState('all');
-  const [favorites, setFavorites] = useState<string[]>([]);
+  const { favorites, toggleFavorite } = useRecipeFavorites();
 
   const filteredRecipes = useMemo(() => {
-    const keyword = search.trim().toLowerCase();
-
     return recipes.filter((recipe) => {
-      const matchesCategory =
-        selectedCategory === 'all' ||
-        recipe.category === selectedCategory;
+      const matchesCategory = matchesRecipeCategory(recipe, selectedCategory);
 
-      const matchesSearch =
-        !keyword ||
-        recipe.name.toLowerCase().includes(keyword);
-
-      return matchesCategory && matchesSearch;
+      const matchesQuery = matchesSearch(search, recipe.name, recipe.description, recipe.category, recipe.region, ...recipe.ingredients.map(item => item.name));
+      return matchesCategory && matchesQuery;
     });
-  }, [search, selectedCategory]);
+  }, [search, selectedCategory, recipes]);
 
-  const toggleFavorite = (id: string) => {
-    setFavorites((current) =>
-      current.includes(id)
-        ? current.filter((item) => item !== id)
-        : [...current, id]
-    );
-  };
 
   const openRecipe = (name: string) => {
     router.push({
@@ -158,15 +117,21 @@ export default function ExploreScreen() {
     } as any);
   };
 
+  const changeSearch = (value: string) => {
+    setSearch(value);
+    setVisibleCount(10);
+  };
+
   const openCategory = (id: string) => {
-    setSelectedCategory(id);
+    setVisibleCount(10);
+    setSelectedCategory(current => current === id ? 'all' : id);
+    setSearch('');
   };
 
   return (
     <SafeAreaView style={styles.safe} edges={[]}>
       <AppHeader
         showNotification
-        unreadCount={3}
       />
 
       <ScrollView
@@ -191,23 +156,9 @@ export default function ExploreScreen() {
         </View>
 
         {/* SEARCH */}
-        <View style={styles.searchBox}>
-          <Search size={20} color={C.muted} />
+        <SearchField value={search} onChangeText={changeSearch} placeholder="Tìm món ăn, nguyên liệu yêu thích..." style={styles.searchBox} inputStyle={styles.searchInput} />
 
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Tìm món ăn yêu thích..."
-            placeholderTextColor="#A18B81"
-            value={search}
-            onChangeText={setSearch}
-          />
-
-          <SlidersHorizontal
-            size={19}
-            color={C.orange}
-          />
-        </View>
-
+        <IngredientCatalogResults query={search} />
         {/* AI FEATURE */}
         <View style={styles.aiCard}>
           <View style={styles.aiBadge}>
@@ -254,7 +205,7 @@ export default function ExploreScreen() {
           </View>
 
           <Pressable
-            onPress={() => setSelectedCategory('all')}
+            onPress={() => openCategory('all')}
           >
             <Text style={styles.sectionLink}>
               Tất cả →
@@ -275,8 +226,8 @@ export default function ExploreScreen() {
                 ]}
                 onPress={() => openCategory(item.id)}
               >
-                <Image
-                  source={{ uri: item.image }}
+                <FoodImage
+                  uri={item.image}
                   style={styles.categoryImage}
                 />
 
@@ -302,7 +253,7 @@ export default function ExploreScreen() {
             </Text>
 
             <Text style={styles.sectionSubtitle}>
-              Công thức được yêu thích
+              Sắp xếp theo tên A–Z
             </Text>
           </View>
 
@@ -324,12 +275,14 @@ export default function ExploreScreen() {
             </Text>
 
             <Text style={styles.emptyDescription}>
-              Thử tìm kiếm bằng tên món khác nhé.
+              {selectedCategory === 'dessert' && !search.trim()
+                ? 'Hiện chưa có công thức tráng miệng. Bạn có thể chọn danh mục khác hoặc xem tất cả món.'
+                : 'Chưa có món phù hợp. Hãy thử tên món hoặc danh mục khác.'}
             </Text>
           </View>
         ) : (
           <View style={styles.recipeGrid}>
-            {filteredRecipes.map((recipe) => {
+            {filteredRecipes.slice(0, visibleCount).map((recipe) => {
               const isFavorite =
                 favorites.includes(recipe.id);
 
@@ -340,8 +293,8 @@ export default function ExploreScreen() {
                   onPress={() => openRecipe(recipe.name)}
                 >
                   <View style={styles.recipeImageWrap}>
-                    <Image
-                      source={{ uri: recipe.image }}
+                    <FoodImage
+                      uri={recipe.image}
                       style={styles.recipeImage}
                     />
 
@@ -376,19 +329,11 @@ export default function ExploreScreen() {
                     </Text>
 
                     <View style={styles.recipeRating}>
-                      <Star
-                        size={13}
-                        color="#E6A23C"
-                        fill="#E6A23C"
-                      />
-
+                      <Flame size={15} color={C.orange} />
                       <Text style={styles.ratingText}>
-                        {recipe.rating}
+                        {recipe.calories ?? "—"}
                       </Text>
-
-                      <Text style={styles.recipeLevel}>
-                        · {recipe.level}
-                      </Text>
+                      <Text style={styles.recipeLevel}>kcal/khẩu phần</Text>
                     </View>
 
                     <View style={styles.recipeFooter}>
@@ -410,6 +355,22 @@ export default function ExploreScreen() {
                 </Pressable>
               );
             })}
+          </View>
+        )}
+
+        {filteredRecipes.length > 0 && (
+          <View style={styles.loadMoreWrap}>
+            <Text style={styles.loadMoreCount}>Đang hiển thị {Math.min(visibleCount, filteredRecipes.length)}/{filteredRecipes.length} món</Text>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityState={{ disabled: visibleCount >= filteredRecipes.length }}
+              disabled={visibleCount >= filteredRecipes.length}
+              onPress={() => setVisibleCount(count => Math.min(count + 10, filteredRecipes.length))}
+              style={[styles.loadMoreButton, visibleCount >= filteredRecipes.length && styles.loadMoreDisabled]}
+            >
+              <Text style={styles.loadMoreText}>Xem thêm</Text>
+            </Pressable>
+            {visibleCount >= filteredRecipes.length && <Text style={styles.loadMoreCount}>Đã hiển thị tất cả món ăn</Text>}
           </View>
         )}
 
@@ -443,6 +404,11 @@ export default function ExploreScreen() {
 }
 
 const styles = StyleSheet.create({
+  loadMoreWrap: { alignItems: 'center', gap: 10, marginTop: 20 },
+  loadMoreCount: { fontSize: 12, color: C.muted },
+  loadMoreButton: { width: '100%', minHeight: 46, borderRadius: 13, backgroundColor: C.orange, alignItems: 'center', justifyContent: 'center' },
+  loadMoreDisabled: { opacity: 0.35 },
+  loadMoreText: { color: C.white, fontSize: 14, fontWeight: '700' },
   safe: {
     flex: 1,
     backgroundColor: C.cream,

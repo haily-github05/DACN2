@@ -1,3 +1,4 @@
+// Backend: API tải ảnh đại diện lên máy chủ.
 const express = require("express");
 const multer = require("multer");
 const path = require("path");

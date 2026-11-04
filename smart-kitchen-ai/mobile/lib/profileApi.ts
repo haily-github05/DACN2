@@ -1,7 +1,11 @@
+// Chức năng: API hồ sơ cá nhân, thống kê và ảnh đại diện.
 
 import Constants from "expo-constants";
 
+export type ProfileStats = { cooked: number; saved: number; shared: number; streak: number };
+
 export type ProfileUser = {
+  stats?: ProfileStats;
   user_id: number;
   full_name: string;
   email: string | null;

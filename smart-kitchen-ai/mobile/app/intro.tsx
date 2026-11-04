@@ -1,28 +1,24 @@
+// Trang: Giới thiệu ngắn gọn — nội dung vừa màn hình, không cuộn.
 import React from "react";
-import AppHeader from "../components/AppHeader";
 import {
   View,
   Text,
   StyleSheet,
-  ScrollView,
   Pressable,
-  SafeAreaView,
   Image,
+  useWindowDimensions,
 } from "react-native";
-
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
-
 import {
   ArrowLeft,
-  CircleHelp,
-  Camera,
-  ChefHat,
-  Sparkles,
+  ArrowRight,
   BookOpen,
   CheckCircle2,
-  UserRound,
-  ArrowRight,
+  Leaf,
+  Sparkles,
 } from "lucide-react-native";
+import AppHeader from "../components/AppHeader";
 
 const C = {
   orange: "#A23A00",
@@ -31,358 +27,203 @@ const C = {
   border: "#EED9CF",
   dark: "#201A17",
   muted: "#735A51",
-  white: "#FFFFFF",
 };
-
 export default function IntroScreen() {
   const router = useRouter();
-
+  const { height, fontScale } = useWindowDimensions();
+  const compact = height < 740 || fontScale > 1.2;
+  const minimal = height < 620 || fontScale > 1.5;
   return (
-    <SafeAreaView style={styles.safe}>
+    <SafeAreaView style={s.page} edges={["left", "right", "bottom"]}>
       <AppHeader />
-
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={styles.content}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* BACK BUTTON */}
-        <Pressable style={styles.backButton} onPress={() => router.back()}>
-          <ArrowLeft size={22} color={C.orange} />
-        </Pressable>
-
-        {/* HERO IMAGE */}
-        <View style={styles.hero}>
-          <View style={styles.heroBadge}>
-            <Sparkles size={15} color={C.orange} />
-
-            <Text style={styles.heroBadgeText}>Trợ lý Ẩm thực Thông minh</Text>
-          </View>
-
-          <Image
-            source={require("../assets/intro-food.png")}
-            style={styles.foodImage}
-            resizeMode="cover"
-          />
-
-          <View style={styles.heroTags}>
-            <View style={styles.tag}>
-              <Camera size={14} color={C.orange} />
-
-              <Text style={styles.tagText}>Quét nguyên liệu AI</Text>
-            </View>
-
-            <View style={styles.tag}>
-              <ChefHat size={14} color={C.orange} />
-
-              <Text style={styles.tagText}>Chuẩn vị Việt & Quốc tế</Text>
-            </View>
-          </View>
-        </View>
-
-        {/* TITLE */}
-        <Text style={styles.title}>
-          Chào mừng bạn đến với{" "}
-          <Text style={styles.titleOrange}>SMART KITCHEN AI</Text>
-        </Text>
-
-        {/* DESCRIPTION */}
-        <Text style={styles.description}>
-          Người bạn đồng hành vào bếp giúp biến mọi nguyên liệu trong tủ lạnh
-          thành món ngon chuẩn vị chỉ với một chạm chụp ảnh và gợi ý thông minh
-          từ AI.
-        </Text>
-
-        {/* FEATURES */}
-        <View style={styles.featureGrid}>
-          <View style={styles.feature}>
-            <BookOpen size={23} color={C.orange} />
-
-            <View style={styles.featureText}>
-              <Text style={styles.featureTitle}>10.000+ Công thức</Text>
-
-              <Text style={styles.featureSub}>Chi tiết từng bước nấu</Text>
-            </View>
-          </View>
-
-          <View style={styles.feature}>
-            <Sparkles size={23} color={C.orange} />
-
-            <View style={styles.featureText}>
-              <Text style={styles.featureTitle}>Gợi ý Chuẩn vị AI</Text>
-
-              <Text style={styles.featureSub}>Cá nhân hoá khẩu vị</Text>
-            </View>
-          </View>
-        </View>
-
-        {/* ACTION BUTTONS */}
-        <View style={styles.actions}>
-          {/* LOGIN */}
+      <View style={[s.content, compact && s.compactContent]}>
+        <View style={s.topRow}>
           <Pressable
-            style={styles.primaryButton}
-            onPress={() => router.push("/login")}
+            accessibilityLabel="Quay lại"
+            style={s.back}
+            onPress={() =>
+              router.canGoBack() ? router.back() : router.replace("/")
+            }
           >
-            <UserRound size={19} color={C.white} />
-
-            <Text style={styles.primaryText}>Đăng nhập</Text>
-
-            <ArrowRight size={18} color={C.white} />
+            <ArrowLeft size={20} color={C.orange} />
           </Pressable>
-
-          {/* REGISTER */}
+          <View style={s.badge}>
+            <Sparkles size={13} color={C.orange} />
+            <Text style={s.badgeText}>CĂN BẾP CỦA BẠN, THÔNG MINH HƠN</Text>
+          </View>
+        </View>
+        {!minimal && (
+          <View style={s.hero}>
+            <Image
+              source={require("../assets/intro-food.png")}
+              style={s.image}
+              resizeMode="contain"
+              accessibilityLabel="Món ăn tươi ngon trong căn bếp"
+            />
+          </View>
+        )}
+        <View style={s.copy}>
+          <Text style={[s.title, compact && s.compactTitle]}>
+            Bếp gọn hơn.{"\n"}
+            <Text style={s.orange}>Mỗi bữa ngon hơn.</Text>
+          </Text>
+          {!minimal && (
+            <Text style={s.description}>
+              Quản lý nguyên liệu, tìm món hợp khẩu vị{"\n"}và lên thực đơn mỗi
+              ngày.
+            </Text>
+          )}
+        </View>
+        {!minimal && (
+          <View style={s.features}>
+            <View style={s.feature}>
+              <Leaf size={18} color={C.orange} />
+              <Text style={s.featureText}>Quản lý kho</Text>
+            </View>
+            <View style={s.featureDivider} />
+            <View style={s.feature}>
+              <BookOpen size={18} color={C.orange} />
+              <Text style={s.featureText}>Gợi ý món ngon</Text>
+            </View>
+          </View>
+        )}
+        <View style={s.actions}>
+          <Pressable style={s.primary} onPress={() => router.push("/login")}>
+            <Text style={s.primaryText}>Đăng nhập</Text>
+            <ArrowRight size={19} color="white" />
+          </Pressable>
           <Pressable
-            style={styles.secondaryButton}
+            style={s.secondary}
             onPress={() => router.push("/register")}
           >
-            <Text style={styles.secondaryText}>
-              Tạo tài khoản mới / Đăng ký
-            </Text>
+            <Text style={s.secondaryText}>Tạo tài khoản mới</Text>
           </Pressable>
-
-          {/* GUEST */}
-          <Pressable
-            style={styles.guestButton}
-            onPress={() => router.push("/home")}
-          >
-            <CheckCircle2 size={17} color={C.orange} />
-
-            <Text style={styles.guestText}>
-              Trải nghiệm ngay không cần tài khoản
-            </Text>
+          <Pressable style={s.guest} onPress={() => router.push("/home")}>
+            <CheckCircle2 size={16} color={C.orange} />
+            <Text style={s.guestText}>Trải nghiệm ngay</Text>
           </Pressable>
         </View>
-      </ScrollView>
+      </View>
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  safe: {
-    flex: 1,
-    backgroundColor: C.cream,
-  },
-
-  scroll: {
-    flex: 1,
-  },
-
-  // HEADER
-  header: {
-    height: 55,
-    backgroundColor: C.white,
-    paddingHorizontal: 20,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    borderBottomWidth: 1,
-    borderBottomColor: C.border,
-  },
-
-  brandRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 9,
-  },
-
-  brand: {
-    fontSize: 17,
-    fontWeight: "800",
-    color: C.orange,
-  },
-
-  help: {
-    width: 36,
-    height: 36,
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 12,
-    backgroundColor: C.peach,
-  },
-
+const s = StyleSheet.create({
+  page: { flex: 1, backgroundColor: C.cream },
   content: {
+    flex: 1,
     paddingHorizontal: 24,
-    paddingBottom: 30,
+    paddingTop: 14,
+    paddingBottom: 10,
+    gap: 16,
   },
-
-  // BACK BUTTON
-  backButton: {
-    marginTop: 12,
-    width: 40,
-    height: 40,
+  compactContent: { paddingTop: 8, paddingBottom: 6, gap: 10 },
+  topRow: { flexDirection: "row", alignItems: "center", gap: 10 },
+  back: {
+    width: 34,
+    height: 34,
+    borderRadius: 11,
     backgroundColor: C.peach,
-    borderRadius: 12,
     alignItems: "center",
     justifyContent: "center",
   },
-
-  // HERO
-  hero: {
-    marginTop: 5,
-    height: 255,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  heroBadge: {
+  badge: {
+    flex: 1,
     flexDirection: "row",
     alignItems: "center",
-    gap: 7,
-    backgroundColor: C.peach,
-    borderRadius: 20,
-    paddingHorizontal: 15,
-    paddingVertical: 8,
-    marginBottom: 12,
+    justifyContent: "center",
+    gap: 6,
   },
-
-  heroBadgeText: {
-    color: C.orange,
-    fontSize: 11,
+  badgeText: {
+    fontSize: 9,
     fontWeight: "700",
+    letterSpacing: 0.5,
+    color: C.orange,
+    flexShrink: 1,
   },
-
-  // IMAGE
-  foodImage: {
-    width: "100%",
-    height: 195,
-    borderRadius: 18,
-  },
-
-  heroTags: {
-    flexDirection: "row",
+  hero: {
+    flex: 1,
+    minHeight: 0,
+    maxHeight: 250,
+    alignItems: "center",
     justifyContent: "center",
-    flexWrap: "wrap",
-    gap: 8,
-    marginTop: 12,
+    overflow: "hidden",
   },
-
-  tag: {
+  image: { width: "100%", height: "100%" },
+  copy: { alignItems: "center", gap: 9 },
+  title: {
+    fontSize: 31,
+    lineHeight: 38,
+    fontWeight: "800",
+    textAlign: "center",
+    color: C.dark,
+  },
+  compactTitle: { fontSize: 26, lineHeight: 32 },
+  orange: { color: C.orange },
+  description: {
+    fontSize: 13,
+    lineHeight: 20,
+    textAlign: "center",
+    color: C.muted,
+  },
+  features: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 5,
-    paddingHorizontal: 10,
-    paddingVertical: 7,
-    borderRadius: 10,
-    backgroundColor: C.white,
+    justifyContent: "center",
+    backgroundColor: "white",
     borderWidth: 1,
     borderColor: C.border,
+    borderRadius: 14,
+    paddingVertical: 13,
+    paddingHorizontal: 8,
   },
-
-  tagText: {
-    color: C.muted,
-    fontSize: 10,
-    fontWeight: "600",
-  },
-
-  // TITLE
-  title: {
-    marginTop: 22,
-    fontSize: 23,
-    lineHeight: 31,
-    fontWeight: "800",
-    color: C.dark,
-    textAlign: "center",
-  },
-
-  titleOrange: {
-    color: C.orange,
-  },
-
-  description: {
-    marginTop: 14,
-    fontSize: 13,
-    lineHeight: 21,
-    textAlign: "center",
-    color: C.muted,
-  },
-
-  // FEATURES
-  featureGrid: {
-    marginTop: 23,
-    flexDirection: "row",
-    gap: 10,
-  },
-
   feature: {
     flex: 1,
-    minHeight: 100,
-    padding: 12,
-    borderRadius: 15,
-    borderWidth: 1,
-    borderColor: C.border,
-    backgroundColor: C.white,
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 8,
+    gap: 6,
   },
-
   featureText: {
-    alignItems: "center",
-  },
-
-  featureTitle: {
-    color: C.dark,
     fontSize: 11,
-    fontWeight: "800",
-    textAlign: "center",
-  },
-
-  featureSub: {
+    fontWeight: "600",
     color: C.muted,
-    fontSize: 10,
-    lineHeight: 15,
-    textAlign: "center",
-    marginTop: 4,
+    flexShrink: 1,
   },
-
-  // ACTIONS
-  actions: {
-    marginTop: 29,
-    gap: 12,
+  featureDivider: {
+    width: 1,
+    height: 20,
+    backgroundColor: C.border,
+    marginHorizontal: 6,
   },
-
-  primaryButton: {
-    height: 53,
+  actions: { gap: 8, marginTop: "auto" },
+  primary: {
+    minHeight: 48,
     backgroundColor: C.orange,
     borderRadius: 14,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 10,
+    gap: 12,
+    padding: 10,
   },
-
-  primaryText: {
-    fontSize: 15,
-    fontWeight: "700",
-    color: C.white,
-  },
-
-  secondaryButton: {
-    height: 51,
-    borderWidth: 1.5,
-    borderColor: C.orange,
+  primaryText: { fontSize: 15, fontWeight: "700", color: "white" },
+  secondary: {
+    minHeight: 44,
+    borderWidth: 1,
+    borderColor: C.border,
     borderRadius: 14,
-    justifyContent: "center",
+    backgroundColor: "white",
     alignItems: "center",
+    justifyContent: "center",
+    padding: 8,
   },
-
-  secondaryText: {
-    fontSize: 13,
-    fontWeight: "700",
-    color: C.orange,
-  },
-
-  guestButton: {
-    minHeight: 38,
+  secondaryText: { fontSize: 13, fontWeight: "700", color: C.orange },
+  guest: {
+    minHeight: 36,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     gap: 7,
   },
-
-  guestText: {
-    fontSize: 12,
-    color: C.orange,
-    fontWeight: "600",
-  },
+  guestText: { fontSize: 12, color: C.orange, fontWeight: "600" },
 });

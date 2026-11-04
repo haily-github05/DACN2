@@ -1,3 +1,4 @@
+// Trang: Chào mừng — màn hình mở đầu của ứng dụng.
 import React from "react";
 import { ImageBackground } from "react-native";
 import {

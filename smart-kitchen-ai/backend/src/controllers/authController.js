@@ -1,3 +1,5 @@
+const { createToken } = require("../services/sessionService");
+// Backend: Xử lý yêu cầu đăng nhập và đăng ký.
 const authService = require('../services/authService');
 
 const authController = {
@@ -25,7 +27,7 @@ const authController = {
       return res.status(201).json({
         success: true,
         message: 'Đăng ký tài khoản thành công!',
-        data: { user_id: userId, full_name: normalizedName, phone: normalizedPhone },
+        data: { user_id: userId, full_name: normalizedName, phone: normalizedPhone, token: createToken(userId) },
       });
     } catch (error) {
       console.error('Registration error:', error.message);
@@ -53,7 +55,7 @@ const authController = {
         return res.status(401).json({ success: false, message: 'Số điện thoại hoặc mật khẩu không đúng' });
       }
 
-      return res.json({ success: true, message: 'Đăng nhập thành công', data: user });
+      return res.json({ success: true, message: 'Đăng nhập thành công', data: { ...user, token: createToken(user.user_id) } });
     } catch (error) {
       console.error('Login error:', error.message);
       return res.status(500).json({ success: false, message: 'Lỗi hệ thống khi đăng nhập' });

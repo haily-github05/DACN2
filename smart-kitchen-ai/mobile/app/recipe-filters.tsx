@@ -1,3 +1,4 @@
+// Trang: Bộ lọc công thức theo các lựa chọn của người dùng.
 import React, { useState } from "react";
 import {
   View,
@@ -63,7 +64,7 @@ export default function Screen() {
   };
   return (
     <SafeAreaView style={styles.safe} edges={[]}>
-      <AppHeader showNotification unreadCount={3} />
+      <AppHeader showNotification />
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={styles.content}
@@ -75,7 +76,7 @@ export default function Screen() {
           </Pressable>
           <Text style={styles.title}>Lọc món ăn phù hợp</Text>
         </View>
-        <Text style={styles.subtitle}>"Cá nhân hóa theo nhu cầu của bạn"</Text>
+        <Text style={styles.subtitle}>{'"Cá nhân hóa theo nhu cầu của bạn"'}</Text>
         {blocks.map(([kind, label, detail], i) => {
           if (kind === "section")
             return (

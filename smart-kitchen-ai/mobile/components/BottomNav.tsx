@@ -1,6 +1,8 @@
+// Thành phần: Thanh điều hướng dưới — Trang chủ, Kho, Khám phá, Thực đơn và Cá nhân.
 import React from "react";
 import { View, Text, Pressable, StyleSheet } from "react-native";
 
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { usePathname, useRouter } from "expo-router";
 
 import {
@@ -58,11 +60,12 @@ const pageGroups = {
   pantry: ['/pantry','/ingredient-detail','/add-ingredient','/ingredient-categories','/edit-ingredient','/expiring-food','/cooking-complete'],
   explore: ['/explore','/scan','/scan-result','/recipes','/recipe-detail','/ai-assistant','/recipe-filters','/cooking-steps','/community','/create-post','/post-detail'],
   'meal-plan': ['/meal-plan','/shopping-list'],
-  profile: ['/profile','/preferences','/notifications'],
+  profile: ['/profile','/preferences','/notifications','/my-activity'],
 };
 
 export default function BottomNav() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const pathname = usePathname();
 
   const activeKey =
@@ -79,7 +82,7 @@ export default function BottomNav() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { height: 60 + insets.bottom, paddingBottom: insets.bottom }]}>
       {items.map((item) => {
         const active = item.key === activeKey;
         const Icon = item.icon;
@@ -110,7 +113,7 @@ export default function BottomNav() {
 
 const styles = StyleSheet.create({
   container: {
-    height: 66,
+    flexShrink: 0,
     backgroundColor: COLORS.white,
     borderTopWidth: 1,
     borderTopColor: COLORS.border,
@@ -124,7 +127,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 6,
-    height: "100%",
+    height: 60,
   },
 
   label: {

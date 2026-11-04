@@ -1,3 +1,4 @@
+// Backend: Kết nối MySQL dùng chung cho các API.
 const mysql = require('mysql2');
 require('dotenv').config(); 
 

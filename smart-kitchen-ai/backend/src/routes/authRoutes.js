@@ -1,3 +1,4 @@
+// Backend: Các đường dẫn API đăng nhập và đăng ký.
 const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/authController');

@@ -1,3 +1,4 @@
+// Trang: Đăng ký tài khoản mới.
 import React, { useState } from "react";
 import AppHeader from "../components/AppHeader";
 import {

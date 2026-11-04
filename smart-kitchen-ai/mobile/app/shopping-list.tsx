@@ -1,3 +1,6 @@
+// Trang: Danh sách mua sắm — thêm, đánh dấu đã mua và chuyển vào kho.
+import { matchesSearch } from "../lib/search";
+import SearchField from "../components/SearchField";
 import React, { useEffect, useMemo, useState } from "react";
 import {
   View,
@@ -13,11 +16,10 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { kitchenRequest } from "../lib/kitchenApi";
 import {
   ArrowLeft,
   Plus,
-  Search,
   ShoppingCart,
   Check,
   Trash2,
@@ -43,7 +45,6 @@ const C = {
   greenLight: "#E9F5EB",
 };
 
-const STORAGE_KEY = "smart-kitchen-shopping-list-v1";
 
 type Category =
   | "Rau củ & Gia vị"
@@ -76,57 +77,6 @@ const EMOJI: Record<Category, string> = {
   Khác: "🛍️",
 };
 
-const INITIAL_ITEMS: ShoppingItem[] = [
-  {
-    id: "1",
-    name: "Súp lơ baby",
-    quantity: "300g",
-    category: "Rau củ & Gia vị",
-    reason: "Cho món bò cuộn súp lơ",
-    checked: false,
-  },
-  {
-    id: "2",
-    name: "Tỏi",
-    quantity: "2 củ",
-    category: "Rau củ & Gia vị",
-    reason: "Gia vị chế biến",
-    checked: false,
-  },
-  {
-    id: "3",
-    name: "Cà rốt",
-    quantity: "500g",
-    category: "Rau củ & Gia vị",
-    reason: "Bổ sung rau củ",
-    checked: true,
-  },
-  {
-    id: "4",
-    name: "Phô mai Mozzarella",
-    quantity: "200g",
-    category: "Sữa & Chế phẩm",
-    reason: "Cho món đút lò",
-    checked: false,
-  },
-  {
-    id: "5",
-    name: "Sữa tươi",
-    quantity: "1 lít",
-    category: "Sữa & Chế phẩm",
-    reason: "Dùng cho bữa sáng",
-    checked: true,
-  },
-  {
-    id: "6",
-    name: "Kem tươi",
-    quantity: "200ml",
-    category: "Sữa & Chế phẩm",
-    reason: "Cho món súp bí đỏ",
-    checked: false,
-  },
-];
-
 export default function ShoppingListScreen() {
   const router = useRouter();
 
@@ -142,33 +92,20 @@ export default function ShoppingListScreen() {
   const [newCategory, setNewCategory] = useState<Category>("Rau củ & Gia vị");
 
   useEffect(() => {
-    async function loadItems() {
-      try {
-        const saved = await AsyncStorage.getItem(STORAGE_KEY);
-
-        if (saved !== null) {
-          const parsed = JSON.parse(saved);
-          setItems(Array.isArray(parsed) ? parsed : INITIAL_ITEMS);
-        } else {
-          setItems(INITIAL_ITEMS);
-        }
-      } catch {
-        setItems(INITIAL_ITEMS);
-      } finally {
-        setLoaded(true);
-      }
-    }
-
-    loadItems();
+    let active = true;
+    kitchenRequest<ShoppingItem[]>("shopping").then(data => {
+      if (active) { setItems(data); setLoaded(true); }
+    }).catch(error => Alert.alert("Không thể tải danh sách", error.message));
+    return () => { active = false; };
   }, []);
-
-  useEffect(() => {
-    if (!loaded) return;
-
-    AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(items)).catch(() => {
-      console.warn("Không thể lưu danh sách mua sắm");
-    });
-  }, [items, loaded]);
+  const [saving, setSaving] = useState(false);
+  const mutate = async (task: () => Promise<void>) => {
+    if (!loaded || saving) return;
+    setSaving(true);
+    try { await task(); } catch (error) {
+      Alert.alert("Không thể lưu", error instanceof Error ? error.message : "Vui lòng thử lại");
+    } finally { setSaving(false); }
+  };
 
   const total = items.length;
   const completed = items.filter((i) => i.checked).length;
@@ -177,19 +114,14 @@ export default function ShoppingListScreen() {
   const progress = total > 0 ? (completed / total) * 100 : 0;
 
   const filteredItems = useMemo(() => {
-    const keyword = search.trim().toLowerCase();
-
     return items.filter((item) => {
-      const matchesSearch =
-        item.name.toLowerCase().includes(keyword) ||
-        item.reason.toLowerCase().includes(keyword);
-
+      const matchesQuery = matchesSearch(search, item.name, item.category, item.reason);
       const matchesFilter =
         filter === "all" ||
         (filter === "pending" && !item.checked) ||
         (filter === "done" && item.checked);
 
-      return matchesSearch && matchesFilter;
+      return matchesQuery && matchesFilter;
     });
   }, [items, search, filter]);
 
@@ -201,13 +133,12 @@ export default function ShoppingListScreen() {
     }
   };
 
-  const toggleItem = (id: string) => {
-    setItems((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, checked: !item.checked } : item,
-      ),
-    );
-  };
+  const toggleItem = (id: string) => void mutate(async () => {
+    const item = items.find(i => i.id === id);
+    if (!item) return;
+    await kitchenRequest(`shopping/${id}`, "PATCH", { checked: !item.checked });
+    setItems(prev => prev.map(i => i.id === id ? { ...i, checked: !i.checked } : i));
+  });
 
   const removeItem = (item: ShoppingItem) => {
     Alert.alert(
@@ -219,7 +150,10 @@ export default function ShoppingListScreen() {
           text: "Xóa",
           style: "destructive",
           onPress: () => {
-            setItems((prev) => prev.filter((i) => i.id !== item.id));
+            void mutate(async () => {
+              await kitchenRequest(`shopping/${item.id}`, "DELETE");
+              setItems(prev => prev.filter(i => i.id !== item.id));
+            });
           },
         },
       ],
@@ -247,12 +181,12 @@ export default function ShoppingListScreen() {
       checked: false,
     };
 
-    setItems((prev) => [...prev, newItem]);
-
-    setNewName("");
-    setNewQuantity("");
-    setNewCategory("Rau củ & Gia vị");
-    setModalVisible(false);
+    void mutate(async () => {
+      const saved = await kitchenRequest<ShoppingItem>("shopping", "POST", newItem);
+      setItems(prev => [...prev, saved]);
+      setNewName(""); setNewQuantity(""); setNewCategory("Rau củ & Gia vị");
+      setModalVisible(false);
+    });
   };
 
   const transferToPantry = () => {
@@ -266,18 +200,14 @@ export default function ShoppingListScreen() {
       return;
     }
 
-    Alert.alert(
-      "Nguyên liệu đã mua",
-      `Bạn đã mua ${purchased.length} nguyên liệu.\n\n` +
-        "Chức năng tự động chuyển dữ liệu vào kho chưa được kết nối. Bạn có thể mở Kho thực phẩm để thêm nguyên liệu.",
-      [
-        { text: "Đóng", style: "cancel" },
-        {
-          text: "Mở Kho thực phẩm",
-          onPress: () => router.push("/pantry" as any),
-        },
-      ],
-    );
+    Alert.alert("Chuyển vào kho", "Nguyên liệu sẽ được chuyển vào ngăn mát. Hãy cập nhật hạn sử dụng tại kho.", [
+      { text: "Hủy", style: "cancel" },
+      { text: "Chuyển", onPress: () => void mutate(async () => {
+        await kitchenRequest("shopping/transfer", "POST");
+        setItems(prev => prev.filter(i => !i.checked));
+        router.push("/pantry" as any);
+      }) },
+    ]);
   };
 
   const renderItem = (item: ShoppingItem) => (
@@ -290,7 +220,7 @@ export default function ShoppingListScreen() {
       </Pressable>
 
       <View style={styles.itemEmojiBox}>
-        <Text style={styles.itemEmoji}>{EMOJI[item.category]}</Text>
+        <Text style={styles.itemEmoji}>{EMOJI[item.category] || "🛍️"}</Text>
       </View>
 
       <Pressable style={styles.itemInfo} onPress={() => toggleItem(item.id)}>
@@ -392,22 +322,7 @@ export default function ShoppingListScreen() {
         </View>
 
         {/* TÌM KIẾM */}
-        <View style={styles.searchBox}>
-          <Search size={18} color={C.muted} />
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Tìm nguyên liệu trong danh sách..."
-            placeholderTextColor="#A18B81"
-            value={search}
-            onChangeText={setSearch}
-          />
-
-          {search.length > 0 && (
-            <Pressable onPress={() => setSearch("")}>
-              <X size={17} color={C.muted} />
-            </Pressable>
-          )}
-        </View>
+        <SearchField value={search} onChangeText={setSearch} placeholder="Tìm nguyên liệu trong danh sách..." style={styles.searchBox} inputStyle={styles.searchInput} />
 
         {/* BỘ LỌC */}
         <View style={styles.filterRow}>

@@ -1,3 +1,4 @@
+// Chức năng: Quản lý phiên đăng nhập và tài khoản hiện tại trên thiết bị.
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -5,6 +6,7 @@ const AUTH_KEY = "authUser";
 let sessionUser: AuthUser | null = null;
 
 export type AuthUser = {
+  token?: string;
   user_id: number;
   full_name: string;
   phone: string | null;

@@ -1,0 +1,5631 @@
+{
+  "description": "Công thức tham khảo cho 1 khẩu phần; thời gian chuẩn bị không tính thời gian ngâm/ướp. Không dùng thay cho kiểm tra nhãn dị ứng và thành phần thực tế.",
+  "recipes": [
+    {
+      "recipe_id": 9201,
+      "name": "Cơm gà xối mỡ",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 35,
+      "ingredients": [
+        {
+          "name": "Gạo",
+          "quantity": 80.0,
+          "unit": "g",
+          "category": "Ngũ cốc",
+          "note": null
+        },
+        {
+          "name": "Thịt gà",
+          "quantity": 180.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Dưa leo",
+          "quantity": 50.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 30.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Tỏi",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Luộc gà với nước vừa ngập đến khi chín; vớt ráo và thấm khô da. Nấu gạo với phần nước luộc gà.",
+        "Chiên gà trong dầu nóng, trở mặt đến khi da vàng giòn. Pha nước mắm với tỏi và một ít nước luộc gà; ăn cùng cơm, dưa leo."
+      ]
+    },
+    {
+      "recipe_id": 9202,
+      "name": "Cơm tấm sườn nướng",
+      "servings": 1,
+      "prep_time": 15,
+      "cook_time": 35,
+      "ingredients": [
+        {
+          "name": "Gạo",
+          "quantity": 80.0,
+          "unit": "g",
+          "category": "Ngũ cốc",
+          "note": null
+        },
+        {
+          "name": "Sườn heo",
+          "quantity": 180.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Cà rốt",
+          "quantity": 30.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Dưa leo",
+          "quantity": 40.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Hành lá",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Đường",
+          "quantity": 8.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Tỏi",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Ướp sườn với tỏi, nửa phần nước mắm và đường trong 20 phút; nấu gạo thành cơm.",
+        "Nướng sườn ở 190°C khoảng 20–25 phút, trở mặt đến khi chín. Làm nóng dầu với hành; pha nước mắm còn lại với nước, đường, ăn cùng rau và cơm."
+      ]
+    },
+    {
+      "recipe_id": 9203,
+      "name": "Cơm gà Hải Nam",
+      "servings": 1,
+      "prep_time": 15,
+      "cook_time": 35,
+      "ingredients": [
+        {
+          "name": "Gạo",
+          "quantity": 80.0,
+          "unit": "g",
+          "category": "Ngũ cốc",
+          "note": null
+        },
+        {
+          "name": "Thịt gà",
+          "quantity": 180.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Gừng",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Hành lá",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Dưa leo",
+          "quantity": 50.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Muối",
+          "quantity": 2.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 5.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Luộc gà cùng gừng và muối đến khi chín, giữ nước luộc.",
+        "Đảo gạo với dầu rồi nấu bằng nước luộc gà. Xé gà, dọn cùng cơm, dưa leo và hành lá."
+      ]
+    },
+    {
+      "recipe_id": 9204,
+      "name": "Cơm chiên hải sản",
+      "servings": 1,
+      "prep_time": 15,
+      "cook_time": 15,
+      "ingredients": [
+        {
+          "name": "Cơm chín",
+          "quantity": 200.0,
+          "unit": "g",
+          "category": "Ngũ cốc",
+          "note": null
+        },
+        {
+          "name": "Tôm",
+          "quantity": 70.0,
+          "unit": "g",
+          "category": "Hải sản",
+          "note": null
+        },
+        {
+          "name": "Mực",
+          "quantity": 70.0,
+          "unit": "g",
+          "category": "Hải sản",
+          "note": null
+        },
+        {
+          "name": "Cà rốt",
+          "quantity": 40.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Trứng gà",
+          "quantity": 1.0,
+          "unit": "quả",
+          "category": "Trứng",
+          "note": null
+        },
+        {
+          "name": "Hành lá",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước tương",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có đậu nành; nhiều sản phẩm có lúa mì. Kiểm tra nhãn."
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Cắt nhỏ cà rốt, làm sạch tôm mực; đánh tan trứng. Xào tôm mực với một nửa dầu đến chín rồi để riêng.",
+        "Chiên trứng, thêm cơm và cà rốt đảo nóng đều. Cho hải sản, nước tương, hành lá vào đảo đến khi tất cả chín."
+      ]
+    },
+    {
+      "recipe_id": 9205,
+      "name": "Cơm chiên dương châu",
+      "servings": 1,
+      "prep_time": 15,
+      "cook_time": 15,
+      "ingredients": [
+        {
+          "name": "Cơm chín",
+          "quantity": 200.0,
+          "unit": "g",
+          "category": "Ngũ cốc",
+          "note": null
+        },
+        {
+          "name": "Trứng gà",
+          "quantity": 1.0,
+          "unit": "quả",
+          "category": "Trứng",
+          "note": null
+        },
+        {
+          "name": "Lạp xưởng",
+          "quantity": 40.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": "Kiểm tra nhãn về đậu nành, lúa mì và phụ gia."
+        },
+        {
+          "name": "Đậu Hà Lan",
+          "quantity": 40.0,
+          "unit": "g",
+          "category": "Đậu",
+          "note": null
+        },
+        {
+          "name": "Cà rốt",
+          "quantity": 30.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước tương",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có đậu nành; nhiều sản phẩm có lúa mì. Kiểm tra nhãn."
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Cắt hạt lựu cà rốt và lạp xưởng. Luộc đậu Hà Lan, cà rốt đến chín; đánh tan trứng.",
+        "Chiên trứng với dầu, thêm cơm và lạp xưởng đảo chín. Cho rau củ và nước tương vào, đảo đến nóng đều."
+      ]
+    },
+    {
+      "recipe_id": 9206,
+      "name": "Cơm bò lúc lắc",
+      "servings": 1,
+      "prep_time": 15,
+      "cook_time": 20,
+      "ingredients": [
+        {
+          "name": "Gạo",
+          "quantity": 80.0,
+          "unit": "g",
+          "category": "Ngũ cốc",
+          "note": null
+        },
+        {
+          "name": "Thịt bò",
+          "quantity": 150.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Ớt chuông",
+          "quantity": 60.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Hành tây",
+          "quantity": 40.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước tương",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có đậu nành; nhiều sản phẩm có lúa mì. Kiểm tra nhãn."
+        },
+        {
+          "name": "Tỏi",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Tiêu",
+          "quantity": 1.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Nấu gạo thành cơm. Cắt bò khối nhỏ, ướp nước tương và tiêu; cắt ớt chuông, hành tây.",
+        "Phi tỏi với dầu, áp chảo bò rồi thêm rau củ, đảo nhanh đến chín; dọn với cơm."
+      ]
+    },
+    {
+      "recipe_id": 9207,
+      "name": "Cơm cá kho tộ",
+      "servings": 1,
+      "prep_time": 15,
+      "cook_time": 35,
+      "ingredients": [
+        {
+          "name": "Gạo",
+          "quantity": 80.0,
+          "unit": "g",
+          "category": "Ngũ cốc",
+          "note": null
+        },
+        {
+          "name": "Cá basa",
+          "quantity": 180.0,
+          "unit": "g",
+          "category": "Hải sản",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 12.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Đường",
+          "quantity": 8.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Hành tím",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Tiêu",
+          "quantity": 1.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 5.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Nấu gạo thành cơm. Ướp cá với nước mắm, hành tím và tiêu trong 15 phút.",
+        "Đun đường với dầu đến màu cánh gián, thêm cá và nước vừa xâm xấp. Kho nhỏ lửa 25–30 phút đến cá chín, nước sánh; ăn với cơm."
+      ]
+    },
+    {
+      "recipe_id": 9208,
+      "name": "Cơm thịt kho trứng",
+      "servings": 1,
+      "prep_time": 15,
+      "cook_time": 45,
+      "ingredients": [
+        {
+          "name": "Gạo",
+          "quantity": 80.0,
+          "unit": "g",
+          "category": "Ngũ cốc",
+          "note": null
+        },
+        {
+          "name": "Thịt heo",
+          "quantity": 150.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Trứng gà",
+          "quantity": 1.0,
+          "unit": "quả",
+          "category": "Trứng",
+          "note": null
+        },
+        {
+          "name": "Nước dừa",
+          "quantity": 150.0,
+          "unit": "ml",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 12.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Đường",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Hành tím",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Nấu cơm, luộc trứng chín rồi bóc vỏ. Chần thịt và rửa sạch.",
+        "Ướp thịt với hành, nước mắm, đường; cho nước dừa vào kho 30 phút, thêm trứng và kho tiếp đến thịt mềm. Dọn cùng cơm."
+      ]
+    },
+    {
+      "recipe_id": 9209,
+      "name": "Cơm gà nướng mật ong",
+      "servings": 1,
+      "prep_time": 15,
+      "cook_time": 30,
+      "ingredients": [
+        {
+          "name": "Gạo",
+          "quantity": 80.0,
+          "unit": "g",
+          "category": "Ngũ cốc",
+          "note": null
+        },
+        {
+          "name": "Thịt gà",
+          "quantity": 180.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Mật ong",
+          "quantity": 15.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Nước tương",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có đậu nành; nhiều sản phẩm có lúa mì. Kiểm tra nhãn."
+        },
+        {
+          "name": "Tỏi",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Cà rốt",
+          "quantity": 50.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Bông cải xanh",
+          "quantity": 60.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 5.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Nấu cơm. Ướp gà với mật ong, nước tương, tỏi 20 phút; luộc cà rốt, bông cải chín.",
+        "Nướng gà ở 180°C khoảng 25–30 phút, trở mặt và kiểm tra chín bên trong; dọn với cơm và rau."
+      ]
+    },
+    {
+      "recipe_id": 9210,
+      "name": "Cơm trộn rau củ",
+      "servings": 1,
+      "prep_time": 15,
+      "cook_time": 15,
+      "ingredients": [
+        {
+          "name": "Cơm chín",
+          "quantity": 200.0,
+          "unit": "g",
+          "category": "Ngũ cốc",
+          "note": null
+        },
+        {
+          "name": "Trứng gà",
+          "quantity": 1.0,
+          "unit": "quả",
+          "category": "Trứng",
+          "note": null
+        },
+        {
+          "name": "Nấm đùi gà",
+          "quantity": 60.0,
+          "unit": "g",
+          "category": "Nấm",
+          "note": null
+        },
+        {
+          "name": "Cà rốt",
+          "quantity": 40.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Cải thìa",
+          "quantity": 60.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước tương",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có đậu nành; nhiều sản phẩm có lúa mì. Kiểm tra nhãn."
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Thái nấm và rau củ. Xào từng loại với một ít dầu đến chín; chiên trứng chín.",
+        "Hâm nóng cơm, xếp rau nấm và trứng lên trên, thêm nước tương và trộn đều khi ăn."
+      ]
+    },
+    {
+      "recipe_id": 9211,
+      "name": "Phở bò tái",
+      "servings": 1,
+      "prep_time": 15,
+      "cook_time": 120,
+      "ingredients": [
+        {
+          "name": "Bánh phở",
+          "quantity": 200.0,
+          "unit": "g",
+          "category": "Ngũ cốc",
+          "note": null
+        },
+        {
+          "name": "Thịt bò",
+          "quantity": 120.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Xương bò",
+          "quantity": 200.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Hành tây",
+          "quantity": 40.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Gừng",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Quế",
+          "quantity": 1.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Hoa hồi",
+          "quantity": 1.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Hành lá",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Muối",
+          "quantity": 2.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Chần rửa xương. Ninh xương với hành, gừng nướng, quế, hồi và 800 ml nước trong 2 giờ, hớt bọt.",
+        "Lọc nước dùng, nêm muối và nước mắm. Trụng bánh phở, thái bò mỏng; cho bò vào nước dùng sôi đến chín rồi chan lên phở, thêm hành."
+      ]
+    },
+    {
+      "recipe_id": 9212,
+      "name": "Phở gà",
+      "servings": 1,
+      "prep_time": 15,
+      "cook_time": 40,
+      "ingredients": [
+        {
+          "name": "Bánh phở",
+          "quantity": 200.0,
+          "unit": "g",
+          "category": "Ngũ cốc",
+          "note": null
+        },
+        {
+          "name": "Thịt gà",
+          "quantity": 180.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Hành tây",
+          "quantity": 40.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Gừng",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Hành lá",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Rau mùi",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Muối",
+          "quantity": 2.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Luộc gà với hành, gừng và 700 ml nước; hớt bọt, nấu đến gà chín rồi xé thịt.",
+        "Nêm nước dùng bằng muối, nước mắm. Trụng bánh phở; xếp gà, hành, rau mùi rồi chan nước dùng sôi."
+      ]
+    },
+    {
+      "recipe_id": 9213,
+      "name": "Bún bò Huế",
+      "servings": 1,
+      "prep_time": 15,
+      "cook_time": 90,
+      "ingredients": [
+        {
+          "name": "Bún tươi",
+          "quantity": 200.0,
+          "unit": "g",
+          "category": "Ngũ cốc",
+          "note": null
+        },
+        {
+          "name": "Thịt bò",
+          "quantity": 150.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Xương heo",
+          "quantity": 150.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Sả",
+          "quantity": 20.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Mắm ruốc",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": "Có tôm/ruốc."
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Ớt",
+          "quantity": 2.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Hành lá",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Chần xương và bò, ninh cùng sả với 800 ml nước khoảng 75–90 phút đến mềm.",
+        "Hòa mắm ruốc với nước, lọc lấy phần trong vào nồi, nêm nước mắm và ớt. Trụng bún, thái bò chín, chan nước dùng và thêm hành."
+      ]
+    },
+    {
+      "recipe_id": 9214,
+      "name": "Bún riêu cua",
+      "servings": 1,
+      "prep_time": 15,
+      "cook_time": 30,
+      "ingredients": [
+        {
+          "name": "Bún tươi",
+          "quantity": 200.0,
+          "unit": "g",
+          "category": "Ngũ cốc",
+          "note": null
+        },
+        {
+          "name": "Cua đồng",
+          "quantity": 150.0,
+          "unit": "g",
+          "category": "Hải sản",
+          "note": null
+        },
+        {
+          "name": "Cà chua",
+          "quantity": 100.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Đậu hũ",
+          "quantity": 80.0,
+          "unit": "g",
+          "category": "Đậu",
+          "note": null
+        },
+        {
+          "name": "Trứng gà",
+          "quantity": 1.0,
+          "unit": "quả",
+          "category": "Trứng",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Hành tím",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Giã cua, lọc với 600 ml nước, bỏ vỏ. Đun nhẹ cho riêu kết lại rồi vớt riêng; chiên đậu hũ.",
+        "Xào cà chua với hành và dầu, thêm vào nước cua. Cho trứng đánh tan, đậu, riêu vào nấu chín, nêm nước mắm, chan lên bún."
+      ]
+    },
+    {
+      "recipe_id": 9215,
+      "name": "Bún chả Hà Nội",
+      "servings": 1,
+      "prep_time": 15,
+      "cook_time": 25,
+      "ingredients": [
+        {
+          "name": "Bún tươi",
+          "quantity": 200.0,
+          "unit": "g",
+          "category": "Ngũ cốc",
+          "note": null
+        },
+        {
+          "name": "Thịt heo",
+          "quantity": 170.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Đu đủ xanh",
+          "quantity": 40.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Cà rốt",
+          "quantity": 30.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Xà lách",
+          "quantity": 40.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 15.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Đường",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Giấm",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Tỏi",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 5.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Ướp thịt với tỏi, một phần nước mắm, đường và dầu 20 phút. Thái mỏng đu đủ, cà rốt và ngâm giấm đường.",
+        "Nướng thịt ở 190°C 20–25 phút, trở mặt đến chín. Pha nước mắm còn lại với nước, giấm, đường; ăn cùng bún và rau rửa sạch."
+      ]
+    },
+    {
+      "recipe_id": 9216,
+      "name": "Bún thịt nướng",
+      "servings": 1,
+      "prep_time": 15,
+      "cook_time": 25,
+      "ingredients": [
+        {
+          "name": "Bún tươi",
+          "quantity": 200.0,
+          "unit": "g",
+          "category": "Ngũ cốc",
+          "note": null
+        },
+        {
+          "name": "Thịt heo",
+          "quantity": 150.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Xà lách",
+          "quantity": 50.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Dưa leo",
+          "quantity": 50.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Đậu phộng",
+          "quantity": 15.0,
+          "unit": "g",
+          "category": "Đậu",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 15.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Đường",
+          "quantity": 8.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Chanh",
+          "quantity": 0.5,
+          "unit": "quả",
+          "category": "Trái cây",
+          "note": null
+        },
+        {
+          "name": "Tỏi",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Sả",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 5.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Ướp thịt với sả, tỏi, dầu và một phần nước mắm trong 20 phút; rang chín đậu phộng.",
+        "Nướng thịt ở 190°C 20–25 phút đến chín. Pha nước mắm, đường, chanh với nước; xếp bún, rau, thịt, đậu phộng rồi rưới nước chấm."
+      ]
+    },
+    {
+      "recipe_id": 9217,
+      "name": "Bún cá",
+      "servings": 1,
+      "prep_time": 15,
+      "cook_time": 30,
+      "ingredients": [
+        {
+          "name": "Bún tươi",
+          "quantity": 200.0,
+          "unit": "g",
+          "category": "Ngũ cốc",
+          "note": null
+        },
+        {
+          "name": "Cá rô phi",
+          "quantity": 180.0,
+          "unit": "g",
+          "category": "Hải sản",
+          "note": null
+        },
+        {
+          "name": "Cà chua",
+          "quantity": 100.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Thì là",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Hành lá",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Lọc cá lấy thịt, kiểm tra bỏ xương; ninh xương cá với 600 ml nước 20 phút rồi lọc kỹ.",
+        "Chiên cá chín; xào cà chua, thêm nước dùng và nước mắm, đun sôi. Chan lên bún, thêm cá, thì là và hành."
+      ]
+    },
+    {
+      "recipe_id": 9218,
+      "name": "Bún măng vịt",
+      "servings": 1,
+      "prep_time": 15,
+      "cook_time": 45,
+      "ingredients": [
+        {
+          "name": "Bún tươi",
+          "quantity": 200.0,
+          "unit": "g",
+          "category": "Ngũ cốc",
+          "note": null
+        },
+        {
+          "name": "Thịt vịt",
+          "quantity": 180.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Măng tươi",
+          "quantity": 100.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Gừng",
+          "quantity": 15.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Hành lá",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Muối",
+          "quantity": 2.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Luộc măng trong nhiều nước, đổ bỏ nước luộc rồi rửa lại. Làm sạch vịt, luộc với gừng và 700 ml nước đến chín.",
+        "Thêm măng vào nước vịt nấu 15 phút, nêm muối và nước mắm; chặt vịt, dọn cùng bún và hành."
+      ]
+    },
+    {
+      "recipe_id": 9219,
+      "name": "Bún xào chay",
+      "servings": 1,
+      "prep_time": 15,
+      "cook_time": 15,
+      "ingredients": [
+        {
+          "name": "Bún tươi",
+          "quantity": 200.0,
+          "unit": "g",
+          "category": "Ngũ cốc",
+          "note": null
+        },
+        {
+          "name": "Đậu hũ",
+          "quantity": 100.0,
+          "unit": "g",
+          "category": "Đậu",
+          "note": null
+        },
+        {
+          "name": "Nấm đùi gà",
+          "quantity": 70.0,
+          "unit": "g",
+          "category": "Nấm",
+          "note": null
+        },
+        {
+          "name": "Cà rốt",
+          "quantity": 50.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Cải thìa",
+          "quantity": 60.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước tương",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có đậu nành; nhiều sản phẩm có lúa mì. Kiểm tra nhãn."
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Cắt đậu, nấm và rau củ; chiên đậu vàng, xào cà rốt và nấm đến chín.",
+        "Cho bún, cải thìa và nước tương vào đảo nhẹ, thêm một ít nước nếu khô; xào đến nóng đều và cải chín."
+      ]
+    },
+    {
+      "recipe_id": 9220,
+      "name": "Miến gà",
+      "servings": 1,
+      "prep_time": 15,
+      "cook_time": 35,
+      "ingredients": [
+        {
+          "name": "Miến dong",
+          "quantity": 70.0,
+          "unit": "g",
+          "category": "Ngũ cốc",
+          "note": null
+        },
+        {
+          "name": "Thịt gà",
+          "quantity": 150.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Nấm hương",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Nấm",
+          "note": null
+        },
+        {
+          "name": "Gừng",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Hành lá",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Muối",
+          "quantity": 2.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Ngâm miến và nấm riêng, rửa sạch. Luộc gà với gừng, muối và 650 ml nước đến chín rồi xé.",
+        "Thêm nấm vào nước dùng nấu chín, nêm nước mắm. Cho miến vào nấu vừa mềm, dọn cùng gà và hành."
+      ]
+    },
+    {
+      "recipe_id": 9221,
+      "name": "Hủ tiếu Nam Vang",
+      "servings": 1,
+      "prep_time": 15,
+      "cook_time": 75,
+      "ingredients": [
+        {
+          "name": "Hủ tiếu",
+          "quantity": 180.0,
+          "unit": "g",
+          "category": "Ngũ cốc",
+          "note": null
+        },
+        {
+          "name": "Thịt heo",
+          "quantity": 100.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Tôm",
+          "quantity": 70.0,
+          "unit": "g",
+          "category": "Hải sản",
+          "note": null
+        },
+        {
+          "name": "Xương heo",
+          "quantity": 150.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Giá đỗ",
+          "quantity": 50.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Hành lá",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Muối",
+          "quantity": 2.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Chần xương, ninh với 800 ml nước 60 phút. Luộc thịt và tôm trong nước dùng đến chín, vớt ra thái thịt.",
+        "Lọc và nêm nước dùng. Trụng hủ tiếu, nấu chín giá đỗ; xếp thịt tôm, thêm hành rồi chan nước dùng."
+      ]
+    },
+    {
+      "recipe_id": 9222,
+      "name": "Mì Quảng gà",
+      "servings": 1,
+      "prep_time": 15,
+      "cook_time": 30,
+      "ingredients": [
+        {
+          "name": "Mì Quảng",
+          "quantity": 200.0,
+          "unit": "g",
+          "category": "Ngũ cốc",
+          "note": null
+        },
+        {
+          "name": "Thịt gà",
+          "quantity": 180.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Nghệ",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Đậu phộng",
+          "quantity": 15.0,
+          "unit": "g",
+          "category": "Đậu",
+          "note": null
+        },
+        {
+          "name": "Xà lách",
+          "quantity": 40.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Hành tím",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 12.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Ướp gà với nghệ, hành và nước mắm 15 phút; rang chín đậu phộng, rửa rau.",
+        "Xào săn gà với dầu, thêm 350 ml nước, om đến chín. Trụng mì, xếp gà, rau, đậu phộng rồi chan ít nước dùng."
+      ]
+    },
+    {
+      "recipe_id": 9223,
+      "name": "Mì xào bò",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 12,
+      "ingredients": [
+        {
+          "name": "Mì trứng",
+          "quantity": 100.0,
+          "unit": "g",
+          "category": "Ngũ cốc",
+          "note": "Có lúa mì và trứng; kiểm tra nhãn."
+        },
+        {
+          "name": "Thịt bò",
+          "quantity": 120.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Cải xanh",
+          "quantity": 100.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Tỏi",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước tương",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có đậu nành; nhiều sản phẩm có lúa mì. Kiểm tra nhãn."
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Luộc mì theo hướng dẫn trên gói rồi để ráo. Thái bò mỏng, cắt cải.",
+        "Phi tỏi, xào bò đến chín rồi để riêng. Xào cải, thêm mì, bò và nước tương; đảo nóng đều."
+      ]
+    },
+    {
+      "recipe_id": 9224,
+      "name": "Mì xào hải sản",
+      "servings": 1,
+      "prep_time": 15,
+      "cook_time": 15,
+      "ingredients": [
+        {
+          "name": "Mì trứng",
+          "quantity": 100.0,
+          "unit": "g",
+          "category": "Ngũ cốc",
+          "note": "Có lúa mì và trứng; kiểm tra nhãn."
+        },
+        {
+          "name": "Tôm",
+          "quantity": 70.0,
+          "unit": "g",
+          "category": "Hải sản",
+          "note": null
+        },
+        {
+          "name": "Mực",
+          "quantity": 70.0,
+          "unit": "g",
+          "category": "Hải sản",
+          "note": null
+        },
+        {
+          "name": "Cải thìa",
+          "quantity": 80.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Cà rốt",
+          "quantity": 40.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Tỏi",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước tương",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có đậu nành; nhiều sản phẩm có lúa mì. Kiểm tra nhãn."
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Luộc mì rồi để ráo. Làm sạch tôm, mực, cắt rau củ.",
+        "Phi tỏi, xào tôm mực đến chín, thêm rau củ và chút nước; khi rau chín cho mì, nước tương vào đảo đều."
+      ]
+    },
+    {
+      "recipe_id": 9225,
+      "name": "Cháo gà",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 40,
+      "ingredients": [
+        {
+          "name": "Gạo",
+          "quantity": 60.0,
+          "unit": "g",
+          "category": "Ngũ cốc",
+          "note": null
+        },
+        {
+          "name": "Thịt gà",
+          "quantity": 120.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Gừng",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Hành lá",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 8.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Muối",
+          "quantity": 1.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Luộc gà với gừng và 700 ml nước đến chín rồi xé thịt.",
+        "Cho gạo vào nước luộc nấu nhỏ lửa, khuấy thường xuyên đến nhừ. Thêm gà, nước mắm, muối và hành, đun sôi lại."
+      ]
+    },
+    {
+      "recipe_id": 9226,
+      "name": "Cháo thịt bằm",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 35,
+      "ingredients": [
+        {
+          "name": "Gạo",
+          "quantity": 60.0,
+          "unit": "g",
+          "category": "Ngũ cốc",
+          "note": null
+        },
+        {
+          "name": "Thịt heo",
+          "quantity": 100.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Hành lá",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Hành tím",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 8.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 5.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Nấu gạo với 700 ml nước đến nhừ. Băm thịt và hành tím.",
+        "Phi hành với dầu, xào thịt chín rồi cho vào cháo, nêm nước mắm và nấu thêm 5 phút; thêm hành lá."
+      ]
+    },
+    {
+      "recipe_id": 9227,
+      "name": "Cháo cá hồi",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 35,
+      "ingredients": [
+        {
+          "name": "Gạo",
+          "quantity": 60.0,
+          "unit": "g",
+          "category": "Ngũ cốc",
+          "note": null
+        },
+        {
+          "name": "Cá hồi",
+          "quantity": 100.0,
+          "unit": "g",
+          "category": "Hải sản",
+          "note": null
+        },
+        {
+          "name": "Cà rốt",
+          "quantity": 50.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Gừng",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Muối",
+          "quantity": 1.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Nấu gạo với 650 ml nước đến nhừ. Thái nhỏ cà rốt, lọc hết xương cá.",
+        "Thêm cà rốt vào cháo nấu mềm; cho cá và gừng vào nấu 8–10 phút đến cá chín, dằm nhỏ và nêm muối."
+      ]
+    },
+    {
+      "recipe_id": 9228,
+      "name": "Cháo đậu xanh",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 40,
+      "ingredients": [
+        {
+          "name": "Gạo",
+          "quantity": 50.0,
+          "unit": "g",
+          "category": "Ngũ cốc",
+          "note": null
+        },
+        {
+          "name": "Đậu xanh",
+          "quantity": 40.0,
+          "unit": "g",
+          "category": "Đậu",
+          "note": null
+        },
+        {
+          "name": "Muối",
+          "quantity": 1.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Ngâm đậu xanh 2 giờ, vo gạo và rửa đậu.",
+        "Nấu gạo, đậu với 750 ml nước đến mềm nhừ, khuấy tránh bén đáy, nêm muối và thêm nước nếu cần."
+      ]
+    },
+    {
+      "recipe_id": 9229,
+      "name": "Bánh mì trứng",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 8,
+      "ingredients": [
+        {
+          "name": "Bánh mì",
+          "quantity": 1.0,
+          "unit": "ổ",
+          "category": "Ngũ cốc",
+          "note": "Có lúa mì; kiểm tra nhãn về sữa và trứng."
+        },
+        {
+          "name": "Trứng gà",
+          "quantity": 2.0,
+          "unit": "quả",
+          "category": "Trứng",
+          "note": null
+        },
+        {
+          "name": "Dưa leo",
+          "quantity": 40.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Xà lách",
+          "quantity": 20.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước tương",
+          "quantity": 5.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có đậu nành; nhiều sản phẩm có lúa mì. Kiểm tra nhãn."
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 5.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Rửa rau, thái dưa leo; làm nóng bánh mì.",
+        "Chiên trứng với dầu đến lòng trắng và lòng đỏ chín, kẹp vào bánh cùng rau, thêm nước tương."
+      ]
+    },
+    {
+      "recipe_id": 9230,
+      "name": "Bánh mì thịt nướng",
+      "servings": 1,
+      "prep_time": 15,
+      "cook_time": 20,
+      "ingredients": [
+        {
+          "name": "Bánh mì",
+          "quantity": 1.0,
+          "unit": "ổ",
+          "category": "Ngũ cốc",
+          "note": "Có lúa mì; kiểm tra nhãn về sữa và trứng."
+        },
+        {
+          "name": "Thịt heo",
+          "quantity": 120.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Cà rốt",
+          "quantity": 30.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Dưa leo",
+          "quantity": 40.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Giấm",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Đường",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 8.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Sả",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Tỏi",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 5.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Ướp thịt với sả, tỏi, nước mắm và dầu 20 phút. Ngâm cà rốt thái sợi với giấm, đường.",
+        "Nướng thịt ở 190°C khoảng 20 phút đến chín, thái miếng; kẹp vào bánh mì nóng cùng dưa leo, cà rốt."
+      ]
+    },
+    {
+      "recipe_id": 9231,
+      "name": "Bánh cuốn nhân thịt",
+      "servings": 1,
+      "prep_time": 15,
+      "cook_time": 25,
+      "ingredients": [
+        {
+          "name": "Bột gạo",
+          "quantity": 80.0,
+          "unit": "g",
+          "category": "Ngũ cốc",
+          "note": null
+        },
+        {
+          "name": "Bột năng",
+          "quantity": 20.0,
+          "unit": "g",
+          "category": "Ngũ cốc",
+          "note": null
+        },
+        {
+          "name": "Thịt heo",
+          "quantity": 100.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Mộc nhĩ",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Nấm",
+          "note": null
+        },
+        {
+          "name": "Hành tím",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Ngâm, rửa, thái mộc nhĩ; băm thịt. Xào thịt, mộc nhĩ, hành với một ít dầu và nước mắm đến chín.",
+        "Hòa hai loại bột với 250 ml nước. Tráng lớp mỏng trên chảo chống dính có dầu, đậy đến bột trong, lấy ra thêm nhân và cuộn."
+      ]
+    },
+    {
+      "recipe_id": 9232,
+      "name": "Bánh xèo tôm thịt",
+      "servings": 1,
+      "prep_time": 15,
+      "cook_time": 25,
+      "ingredients": [
+        {
+          "name": "Bột gạo",
+          "quantity": 80.0,
+          "unit": "g",
+          "category": "Ngũ cốc",
+          "note": null
+        },
+        {
+          "name": "Nước cốt dừa",
+          "quantity": 80.0,
+          "unit": "ml",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nghệ",
+          "quantity": 2.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Tôm",
+          "quantity": 70.0,
+          "unit": "g",
+          "category": "Hải sản",
+          "note": null
+        },
+        {
+          "name": "Thịt heo",
+          "quantity": 70.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Giá đỗ",
+          "quantity": 60.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Xà lách",
+          "quantity": 40.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 20.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Hòa bột, nghệ, nước cốt dừa và 100 ml nước. Xào tôm và thịt thái mỏng đến chín.",
+        "Láng dầu chảo nóng, đổ lớp bột mỏng, thêm nhân và giá, đậy cho giá chín rồi mở nắp chiên giòn; gập bánh, ăn với rau và nước mắm pha nước."
+      ]
+    },
+    {
+      "recipe_id": 9233,
+      "name": "Bánh khọt tôm",
+      "servings": 1,
+      "prep_time": 15,
+      "cook_time": 20,
+      "ingredients": [
+        {
+          "name": "Bột gạo",
+          "quantity": 80.0,
+          "unit": "g",
+          "category": "Ngũ cốc",
+          "note": null
+        },
+        {
+          "name": "Nước cốt dừa",
+          "quantity": 80.0,
+          "unit": "ml",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Tôm",
+          "quantity": 100.0,
+          "unit": "g",
+          "category": "Hải sản",
+          "note": null
+        },
+        {
+          "name": "Hành lá",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Xà lách",
+          "quantity": 40.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 15.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Hòa bột, nước cốt dừa và 80 ml nước, thêm hành thái nhỏ; làm sạch tôm.",
+        "Làm nóng khuôn bánh khọt với dầu, đổ bột và đặt tôm lên. Đậy đến tôm, bột chín rồi mở cho giòn; ăn cùng rau và nước mắm pha loãng."
+      ]
+    },
+    {
+      "recipe_id": 9234,
+      "name": "Gỏi cuốn tôm thịt",
+      "servings": 1,
+      "prep_time": 15,
+      "cook_time": 20,
+      "ingredients": [
+        {
+          "name": "Bánh tráng",
+          "quantity": 4.0,
+          "unit": "cái",
+          "category": "Ngũ cốc",
+          "note": null
+        },
+        {
+          "name": "Bún tươi",
+          "quantity": 80.0,
+          "unit": "g",
+          "category": "Ngũ cốc",
+          "note": null
+        },
+        {
+          "name": "Tôm",
+          "quantity": 80.0,
+          "unit": "g",
+          "category": "Hải sản",
+          "note": null
+        },
+        {
+          "name": "Thịt heo",
+          "quantity": 80.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Xà lách",
+          "quantity": 40.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Dưa leo",
+          "quantity": 40.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Đường",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Chanh",
+          "quantity": 0.5,
+          "unit": "quả",
+          "category": "Trái cây",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Luộc chín thịt và tôm, thái thịt, bóc tôm; rửa rau và thái dưa leo.",
+        "Làm ẩm bánh tráng, xếp rau, bún, thịt tôm rồi cuốn chặt. Pha nước mắm với đường, chanh và nước để chấm."
+      ]
+    },
+    {
+      "recipe_id": 9235,
+      "name": "Nem rán",
+      "servings": 1,
+      "prep_time": 15,
+      "cook_time": 20,
+      "ingredients": [
+        {
+          "name": "Bánh tráng",
+          "quantity": 5.0,
+          "unit": "cái",
+          "category": "Ngũ cốc",
+          "note": null
+        },
+        {
+          "name": "Thịt heo",
+          "quantity": 100.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Miến dong",
+          "quantity": 20.0,
+          "unit": "g",
+          "category": "Ngũ cốc",
+          "note": null
+        },
+        {
+          "name": "Mộc nhĩ",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Nấm",
+          "note": null
+        },
+        {
+          "name": "Cà rốt",
+          "quantity": 40.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Trứng gà",
+          "quantity": 1.0,
+          "unit": "quả",
+          "category": "Trứng",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 8.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 80.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Ngâm miến, mộc nhĩ rồi cắt nhỏ; trộn với thịt băm, cà rốt bào, trứng và nước mắm.",
+        "Cuốn nhân trong bánh tráng, gấp kín. Chiên lửa vừa khoảng 12–15 phút, trở đều đến nhân chín, vỏ giòn; để ráo dầu."
+      ]
+    },
+    {
+      "recipe_id": 9236,
+      "name": "Thịt heo rang cháy cạnh",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 15,
+      "ingredients": [
+        {
+          "name": "Thịt heo",
+          "quantity": 180.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Hành tím",
+          "quantity": 15.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Hành lá",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 12.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Đường",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Thái thịt ba chỉ mỏng vừa, băm hành tím; pha nước mắm với đường.",
+        "Rang thịt trên chảo đến ra mỡ và cạnh vàng, chắt bớt mỡ. Thêm hành và nước mắm, đảo nhỏ lửa đến thịt chín, thêm hành lá."
+      ]
+    },
+    {
+      "recipe_id": 9237,
+      "name": "Thịt kho tiêu",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 30,
+      "ingredients": [
+        {
+          "name": "Thịt heo",
+          "quantity": 180.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 12.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Đường",
+          "quantity": 6.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Tiêu",
+          "quantity": 2.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Hành tím",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 5.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Ướp thịt với nước mắm, tiêu, hành 15 phút.",
+        "Thắng đường với dầu, thêm thịt đảo săn rồi thêm 150 ml nước. Kho nhỏ lửa khoảng 30 phút đến thịt mềm, nước sánh."
+      ]
+    },
+    {
+      "recipe_id": 9238,
+      "name": "Thịt kho tàu",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 50,
+      "ingredients": [
+        {
+          "name": "Thịt heo",
+          "quantity": 180.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Trứng gà",
+          "quantity": 1.0,
+          "unit": "quả",
+          "category": "Trứng",
+          "note": null
+        },
+        {
+          "name": "Nước dừa",
+          "quantity": 200.0,
+          "unit": "ml",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 12.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Đường",
+          "quantity": 6.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Hành tím",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Chần thịt, luộc trứng chín rồi bóc vỏ. Ướp thịt với hành, nước mắm và đường 20 phút.",
+        "Cho thịt, nước dừa vào nồi kho nhỏ lửa 35 phút; thêm trứng kho tiếp 15 phút đến thịt mềm."
+      ]
+    },
+    {
+      "recipe_id": 9239,
+      "name": "Sườn xào chua ngọt",
+      "servings": 1,
+      "prep_time": 15,
+      "cook_time": 30,
+      "ingredients": [
+        {
+          "name": "Sườn heo",
+          "quantity": 200.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Cà chua",
+          "quantity": 80.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Giấm",
+          "quantity": 15.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Đường",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Tỏi",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 15.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Chần sườn, rửa sạch, để ráo; áp chảo với dầu cho vàng hai mặt.",
+        "Phi tỏi, xào cà chua, thêm giấm, đường, nước mắm và 100 ml nước. Cho sườn vào om 20 phút đến chín mềm, sốt sánh."
+      ]
+    },
+    {
+      "recipe_id": 9240,
+      "name": "Sườn nướng mật ong",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 30,
+      "ingredients": [
+        {
+          "name": "Sườn heo",
+          "quantity": 200.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Mật ong",
+          "quantity": 15.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Nước tương",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có đậu nành; nhiều sản phẩm có lúa mì. Kiểm tra nhãn."
+        },
+        {
+          "name": "Tỏi",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 5.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Ướp sườn với mật ong, nước tương, tỏi và dầu ít nhất 30 phút.",
+        "Nướng ở 180°C khoảng 30 phút, trở mặt giữa chừng; kiểm tra phần sát xương chín hoàn toàn trước khi dọn."
+      ]
+    },
+    {
+      "recipe_id": 9241,
+      "name": "Thịt heo luộc cuốn bánh tráng",
+      "servings": 1,
+      "prep_time": 15,
+      "cook_time": 25,
+      "ingredients": [
+        {
+          "name": "Thịt heo",
+          "quantity": 150.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Bánh tráng",
+          "quantity": 4.0,
+          "unit": "cái",
+          "category": "Ngũ cốc",
+          "note": null
+        },
+        {
+          "name": "Xà lách",
+          "quantity": 50.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Dưa leo",
+          "quantity": 50.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 12.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Đường",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Chanh",
+          "quantity": 0.5,
+          "unit": "quả",
+          "category": "Trái cây",
+          "note": null
+        },
+        {
+          "name": "Tỏi",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Luộc thịt với nước vừa ngập đến chín, vớt ráo và thái mỏng. Rửa rau, thái dưa leo.",
+        "Làm ẩm bánh tráng, cuốn thịt và rau. Pha nước mắm với tỏi, đường, chanh và nước để chấm."
+      ]
+    },
+    {
+      "recipe_id": 9242,
+      "name": "Thịt heo xào sả ớt",
+      "servings": 1,
+      "prep_time": 15,
+      "cook_time": 15,
+      "ingredients": [
+        {
+          "name": "Thịt heo",
+          "quantity": 180.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Sả",
+          "quantity": 20.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Ớt",
+          "quantity": 3.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Tỏi",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Đường",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Thái thịt mỏng, băm sả, tỏi, ớt; ướp thịt với nước mắm, đường 15 phút.",
+        "Phi sả, tỏi với dầu rồi xào thịt lửa vừa đến chín; thêm ớt, đảo đến thịt săn và thơm."
+      ]
+    },
+    {
+      "recipe_id": 9243,
+      "name": "Bò kho cà rốt",
+      "servings": 1,
+      "prep_time": 15,
+      "cook_time": 90,
+      "ingredients": [
+        {
+          "name": "Thịt bò",
+          "quantity": 180.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Cà rốt",
+          "quantity": 100.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Sả",
+          "quantity": 15.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Quế",
+          "quantity": 1.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Hoa hồi",
+          "quantity": 1.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Đường",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Tỏi",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Cắt bò khối, ướp nước mắm, đường, tỏi 20 phút; cắt cà rốt.",
+        "Xào săn bò với dầu, thêm sả, quế, hồi và 600 ml nước, hầm 70 phút. Thêm cà rốt nấu đến bò và cà rốt mềm, gắp bỏ quế hồi."
+      ]
+    },
+    {
+      "recipe_id": 9244,
+      "name": "Bò sốt vang",
+      "servings": 1,
+      "prep_time": 15,
+      "cook_time": 90,
+      "ingredients": [
+        {
+          "name": "Thịt bò",
+          "quantity": 180.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Cà chua",
+          "quantity": 100.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Cà rốt",
+          "quantity": 70.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Rượu vang đỏ",
+          "quantity": 50.0,
+          "unit": "ml",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Tỏi",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Muối",
+          "quantity": 2.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Cắt bò khối, ướp muối và rượu vang 20 phút. Cắt cà chua, cà rốt.",
+        "Phi tỏi, xào bò và cà chua, thêm 500 ml nước, hầm nhỏ lửa 70 phút. Thêm cà rốt nấu mềm, mở nắp đun thêm cho sốt sánh."
+      ]
+    },
+    {
+      "recipe_id": 9245,
+      "name": "Bò xào hành tây",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 8,
+      "ingredients": [
+        {
+          "name": "Thịt bò",
+          "quantity": 150.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Hành tây",
+          "quantity": 100.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Tỏi",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước tương",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có đậu nành; nhiều sản phẩm có lúa mì. Kiểm tra nhãn."
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Tiêu",
+          "quantity": 1.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Thái bò mỏng, ướp nước tương, tiêu 10 phút; bổ múi hành tây.",
+        "Phi tỏi với dầu, xào bò nhanh rồi để riêng. Xào hành đến vừa chín, cho bò lại chảo đảo chín đều."
+      ]
+    },
+    {
+      "recipe_id": 9246,
+      "name": "Bò xào cần tây",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 8,
+      "ingredients": [
+        {
+          "name": "Thịt bò",
+          "quantity": 150.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Cần tây",
+          "quantity": 100.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Tỏi",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước tương",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có đậu nành; nhiều sản phẩm có lúa mì. Kiểm tra nhãn."
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Thái bò mỏng, ướp nước tương 10 phút; cắt khúc cần tây.",
+        "Phi tỏi, xào bò đến chín rồi để riêng. Xào cần tây vừa chín, thêm bò, đảo đều rồi tắt bếp."
+      ]
+    },
+    {
+      "recipe_id": 9247,
+      "name": "Bò cuốn lá lốt",
+      "servings": 1,
+      "prep_time": 15,
+      "cook_time": 15,
+      "ingredients": [
+        {
+          "name": "Thịt bò",
+          "quantity": 150.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Lá lốt",
+          "quantity": 20.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Sả",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Tỏi",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 8.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Tiêu",
+          "quantity": 1.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 5.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Băm bò, trộn sả, tỏi, nước mắm và tiêu. Rửa, thấm khô lá lốt.",
+        "Cuốn thịt vào lá, phết dầu và nướng ở 180°C khoảng 12–15 phút, trở mặt đến phần nhân chín hoàn toàn."
+      ]
+    },
+    {
+      "recipe_id": 9248,
+      "name": "Bò hầm khoai tây",
+      "servings": 1,
+      "prep_time": 15,
+      "cook_time": 90,
+      "ingredients": [
+        {
+          "name": "Thịt bò",
+          "quantity": 180.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Khoai tây",
+          "quantity": 120.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Cà rốt",
+          "quantity": 80.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Hành tây",
+          "quantity": 40.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Muối",
+          "quantity": 2.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Tỏi",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Cắt bò và rau củ thành khối. Phi tỏi, xào bò săn với dầu và muối.",
+        "Thêm 600 ml nước hầm nhỏ lửa 65 phút. Cho khoai, cà rốt, hành vào hầm thêm 20–25 phút đến mềm."
+      ]
+    },
+    {
+      "recipe_id": 9249,
+      "name": "Gà kho gừng",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 30,
+      "ingredients": [
+        {
+          "name": "Thịt gà",
+          "quantity": 180.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Gừng",
+          "quantity": 20.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 12.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Đường",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Hành tím",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 5.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Chặt gà miếng vừa, thái gừng, ướp gà với nước mắm, đường và hành 15 phút.",
+        "Xào gà với dầu và gừng, thêm 120 ml nước, kho nhỏ lửa 25–30 phút đến gà chín, sốt sánh."
+      ]
+    },
+    {
+      "recipe_id": 9250,
+      "name": "Gà chiên nước mắm",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 25,
+      "ingredients": [
+        {
+          "name": "Thịt gà",
+          "quantity": 180.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 15.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Đường",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Tỏi",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 40.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Thấm khô gà, chiên lửa vừa khoảng 20 phút, trở đều đến chín bên trong rồi để ráo.",
+        "Chắt dầu còn ít, phi tỏi; thêm nước mắm, đường và 30 ml nước. Cho gà vào đảo cho sốt bám đều."
+      ]
+    },
+    {
+      "recipe_id": 9251,
+      "name": "Gà hấp hành",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 35,
+      "ingredients": [
+        {
+          "name": "Thịt gà",
+          "quantity": 200.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Hành lá",
+          "quantity": 40.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Gừng",
+          "quantity": 15.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Muối",
+          "quantity": 2.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Ướp gà với muối, xếp gừng và một nửa hành dưới xửng.",
+        "Hấp gà 30–35 phút đến chín, thêm hành còn lại trong 3 phút cuối. Chặt miếng, rưới nước hấp lên trên."
+      ]
+    },
+    {
+      "recipe_id": 9252,
+      "name": "Gà nướng sả",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 30,
+      "ingredients": [
+        {
+          "name": "Thịt gà",
+          "quantity": 200.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Sả",
+          "quantity": 25.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Tỏi",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 12.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Đường",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Băm sả tỏi, trộn nước mắm, đường, dầu và ướp gà 30 phút.",
+        "Nướng gà ở 180°C khoảng 30 phút, trở mặt đến chín bên trong; tránh để sả cháy đen."
+      ]
+    },
+    {
+      "recipe_id": 9253,
+      "name": "Gà xào nấm",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 15,
+      "ingredients": [
+        {
+          "name": "Thịt gà",
+          "quantity": 150.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Nấm đùi gà",
+          "quantity": 120.0,
+          "unit": "g",
+          "category": "Nấm",
+          "note": null
+        },
+        {
+          "name": "Tỏi",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước tương",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có đậu nành; nhiều sản phẩm có lúa mì. Kiểm tra nhãn."
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Thái gà mỏng, ướp nước tương 10 phút; thái nấm.",
+        "Phi tỏi, xào gà đến chín, thêm nấm và 30 ml nước; đảo đến nấm chín và nước cạn bớt."
+      ]
+    },
+    {
+      "recipe_id": 9254,
+      "name": "Gà hầm hạt sen",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 50,
+      "ingredients": [
+        {
+          "name": "Thịt gà",
+          "quantity": 180.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Hạt sen",
+          "quantity": 60.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nấm hương",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Nấm",
+          "note": null
+        },
+        {
+          "name": "Gừng",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Muối",
+          "quantity": 2.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Bỏ tâm sen nếu còn, ngâm và rửa nấm; chần gà rồi rửa sạch.",
+        "Hầm gà, sen, gừng với 650 ml nước 35 phút; thêm nấm và muối, hầm tiếp đến gà chín mềm, sen bở."
+      ]
+    },
+    {
+      "recipe_id": 9255,
+      "name": "Cá thu sốt cà chua",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 25,
+      "ingredients": [
+        {
+          "name": "Cá thu",
+          "quantity": 180.0,
+          "unit": "g",
+          "category": "Hải sản",
+          "note": null
+        },
+        {
+          "name": "Cà chua",
+          "quantity": 120.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Tỏi",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Đường",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 15.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Thấm khô cá, chiên với dầu đến vàng hai mặt.",
+        "Phi tỏi, xào cà chua, thêm nước mắm, đường và 100 ml nước. Cho cá vào om 10–15 phút đến chín, sốt sánh."
+      ]
+    },
+    {
+      "recipe_id": 9256,
+      "name": "Cá basa kho tiêu",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 30,
+      "ingredients": [
+        {
+          "name": "Cá basa",
+          "quantity": 180.0,
+          "unit": "g",
+          "category": "Hải sản",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 12.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Đường",
+          "quantity": 8.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Tiêu",
+          "quantity": 2.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Hành tím",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 5.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Ướp cá với nước mắm, hành và tiêu 15 phút.",
+        "Thắng đường với dầu, thêm cá và 150 ml nước. Kho nhỏ lửa 25–30 phút đến cá chín, nước sánh."
+      ]
+    },
+    {
+      "recipe_id": 9257,
+      "name": "Cá diêu hồng hấp gừng",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 25,
+      "ingredients": [
+        {
+          "name": "Cá diêu hồng",
+          "quantity": 250.0,
+          "unit": "g",
+          "category": "Hải sản",
+          "note": null
+        },
+        {
+          "name": "Gừng",
+          "quantity": 20.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Hành lá",
+          "quantity": 20.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước tương",
+          "quantity": 15.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có đậu nành; nhiều sản phẩm có lúa mì. Kiểm tra nhãn."
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 5.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Làm sạch cá, khứa nhẹ thân, xếp trên gừng trong đĩa sâu.",
+        "Rưới nước tương và dầu, hấp 20–25 phút đến thịt chín tách xương; thêm hành hấp tiếp 2 phút."
+      ]
+    },
+    {
+      "recipe_id": 9258,
+      "name": "Cá rô phi chiên giòn",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 20,
+      "ingredients": [
+        {
+          "name": "Cá rô phi",
+          "quantity": 250.0,
+          "unit": "g",
+          "category": "Hải sản",
+          "note": null
+        },
+        {
+          "name": "Xà lách",
+          "quantity": 40.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Dưa leo",
+          "quantity": 40.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Chanh",
+          "quantity": 0.5,
+          "unit": "quả",
+          "category": "Trái cây",
+          "note": null
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 60.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Làm sạch cá, khứa thân và thấm thật khô; rửa rau.",
+        "Chiên cá lửa vừa 15–20 phút, trở mặt đến chín giòn rồi để ráo. Ăn với rau và nước mắm pha chanh, nước."
+      ]
+    },
+    {
+      "recipe_id": 9259,
+      "name": "Cá nục kho cà",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 35,
+      "ingredients": [
+        {
+          "name": "Cá nục",
+          "quantity": 200.0,
+          "unit": "g",
+          "category": "Hải sản",
+          "note": null
+        },
+        {
+          "name": "Cà chua",
+          "quantity": 120.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Hành tím",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 12.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Đường",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Làm sạch cá, ướp nước mắm và hành 15 phút; cắt cà chua.",
+        "Xào cà chua với dầu, thêm cá, đường và 180 ml nước; kho nhỏ lửa 30–35 phút đến cá chín mềm."
+      ]
+    },
+    {
+      "recipe_id": 9260,
+      "name": "Cá hồi sốt chanh dây",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 15,
+      "ingredients": [
+        {
+          "name": "Cá hồi",
+          "quantity": 180.0,
+          "unit": "g",
+          "category": "Hải sản",
+          "note": null
+        },
+        {
+          "name": "Chanh dây",
+          "quantity": 1.0,
+          "unit": "quả",
+          "category": "Trái cây",
+          "note": null
+        },
+        {
+          "name": "Đường",
+          "quantity": 8.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Muối",
+          "quantity": 1.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Lọc chanh dây lấy nước; ướp cá với muối và thấm khô.",
+        "Áp chảo cá với dầu 4–5 phút mỗi mặt tùy độ dày đến chín. Nấu nước chanh dây, đường và 30 ml nước thành sốt, rưới lên cá."
+      ]
+    },
+    {
+      "recipe_id": 9261,
+      "name": "Cá hồi nướng rau củ",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 20,
+      "ingredients": [
+        {
+          "name": "Cá hồi",
+          "quantity": 180.0,
+          "unit": "g",
+          "category": "Hải sản",
+          "note": null
+        },
+        {
+          "name": "Bông cải xanh",
+          "quantity": 100.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Cà rốt",
+          "quantity": 80.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Tỏi",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Muối",
+          "quantity": 2.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Cắt rau củ vừa ăn, trộn dầu, tỏi, muối rồi xếp cùng cá lên khay.",
+        "Nướng ở 190°C 18–20 phút đến cá và rau chín; nếu rau chưa mềm, lấy cá ra và nướng rau thêm."
+      ]
+    },
+    {
+      "recipe_id": 9262,
+      "name": "Tôm rang me",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 12,
+      "ingredients": [
+        {
+          "name": "Tôm",
+          "quantity": 200.0,
+          "unit": "g",
+          "category": "Hải sản",
+          "note": null
+        },
+        {
+          "name": "Me",
+          "quantity": 20.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Đường",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Tỏi",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Làm sạch tôm. Dầm me với 80 ml nước ấm rồi lọc bỏ hạt.",
+        "Phi tỏi, xào tôm, thêm nước me, đường, nước mắm; đảo đến tôm chín và sốt sánh."
+      ]
+    },
+    {
+      "recipe_id": 9263,
+      "name": "Tôm rim nước mắm",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 12,
+      "ingredients": [
+        {
+          "name": "Tôm",
+          "quantity": 200.0,
+          "unit": "g",
+          "category": "Hải sản",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 12.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Đường",
+          "quantity": 8.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Tỏi",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Làm sạch tôm, để ráo; băm tỏi.",
+        "Phi tỏi với dầu, cho tôm vào đảo; thêm nước mắm, đường và 40 ml nước, rim đến tôm chín, sốt bám đều."
+      ]
+    },
+    {
+      "recipe_id": 9264,
+      "name": "Tôm hấp sả",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 10,
+      "ingredients": [
+        {
+          "name": "Tôm",
+          "quantity": 200.0,
+          "unit": "g",
+          "category": "Hải sản",
+          "note": null
+        },
+        {
+          "name": "Sả",
+          "quantity": 25.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Gừng",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Muối",
+          "quantity": 1.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Làm sạch tôm, đập dập sả và thái gừng.",
+        "Xếp sả, gừng với 80 ml nước, thêm tôm và muối; đậy hấp 8–10 phút đến tôm chuyển màu và chín đều."
+      ]
+    },
+    {
+      "recipe_id": 9265,
+      "name": "Tôm xào bông cải",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 12,
+      "ingredients": [
+        {
+          "name": "Tôm",
+          "quantity": 150.0,
+          "unit": "g",
+          "category": "Hải sản",
+          "note": null
+        },
+        {
+          "name": "Bông cải xanh",
+          "quantity": 120.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Cà rốt",
+          "quantity": 60.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Tỏi",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước tương",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có đậu nành; nhiều sản phẩm có lúa mì. Kiểm tra nhãn."
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Bóc tôm, bỏ chỉ lưng; chần bông cải, cà rốt 2–3 phút.",
+        "Phi tỏi, xào tôm đến chín, thêm rau và nước tương; đảo thêm 2–3 phút cho rau chín vừa."
+      ]
+    },
+    {
+      "recipe_id": 9266,
+      "name": "Mực xào chua ngọt",
+      "servings": 1,
+      "prep_time": 15,
+      "cook_time": 12,
+      "ingredients": [
+        {
+          "name": "Mực",
+          "quantity": 180.0,
+          "unit": "g",
+          "category": "Hải sản",
+          "note": null
+        },
+        {
+          "name": "Dứa",
+          "quantity": 80.0,
+          "unit": "g",
+          "category": "Trái cây",
+          "note": null
+        },
+        {
+          "name": "Cà chua",
+          "quantity": 80.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Hành tây",
+          "quantity": 50.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Đường",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Tỏi",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Làm sạch, cắt mực, chần nhanh rồi để ráo; thái rau củ.",
+        "Phi tỏi, xào cà chua, dứa và hành, thêm mực, nước mắm, đường; đảo đến mực chín, rau vừa mềm."
+      ]
+    },
+    {
+      "recipe_id": 9267,
+      "name": "Mực hấp gừng",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 10,
+      "ingredients": [
+        {
+          "name": "Mực",
+          "quantity": 200.0,
+          "unit": "g",
+          "category": "Hải sản",
+          "note": null
+        },
+        {
+          "name": "Gừng",
+          "quantity": 20.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Hành lá",
+          "quantity": 20.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Chanh",
+          "quantity": 0.5,
+          "unit": "quả",
+          "category": "Trái cây",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Làm sạch mực, để ráo; thái gừng và hành.",
+        "Hấp mực cùng gừng, hành khoảng 8–10 phút đến chín. Pha nước mắm với chanh và nước để chấm."
+      ]
+    },
+    {
+      "recipe_id": 9268,
+      "name": "Mực chiên giòn",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 12,
+      "ingredients": [
+        {
+          "name": "Mực",
+          "quantity": 180.0,
+          "unit": "g",
+          "category": "Hải sản",
+          "note": null
+        },
+        {
+          "name": "Bột mì",
+          "quantity": 50.0,
+          "unit": "g",
+          "category": "Ngũ cốc",
+          "note": null
+        },
+        {
+          "name": "Trứng gà",
+          "quantity": 1.0,
+          "unit": "quả",
+          "category": "Trứng",
+          "note": null
+        },
+        {
+          "name": "Muối",
+          "quantity": 1.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 100.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Làm sạch mực, cắt khoanh và thấm khô. Đánh trứng với muối.",
+        "Nhúng mực qua trứng, áo bột mì rồi chiên lửa vừa đến mực chín, lớp bột vàng giòn; vớt ráo dầu."
+      ]
+    },
+    {
+      "recipe_id": 9269,
+      "name": "Nghêu hấp sả",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 10,
+      "ingredients": [
+        {
+          "name": "Nghêu",
+          "quantity": 300.0,
+          "unit": "g",
+          "category": "Hải sản",
+          "note": null
+        },
+        {
+          "name": "Sả",
+          "quantity": 25.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Ớt",
+          "quantity": 3.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Gừng",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Ngâm nghêu trong nước sạch để nhả cát, chà rửa và loại bỏ con hỏng; đập dập sả.",
+        "Đun 100 ml nước với sả, gừng, ớt, thêm nghêu và đậy hấp đến mở miệng; bỏ con không mở sau khi nấu."
+      ]
+    },
+    {
+      "recipe_id": 9270,
+      "name": "Canh chua cá",
+      "servings": 1,
+      "prep_time": 15,
+      "cook_time": 20,
+      "ingredients": [
+        {
+          "name": "Cá basa",
+          "quantity": 150.0,
+          "unit": "g",
+          "category": "Hải sản",
+          "note": null
+        },
+        {
+          "name": "Dứa",
+          "quantity": 70.0,
+          "unit": "g",
+          "category": "Trái cây",
+          "note": null
+        },
+        {
+          "name": "Cà chua",
+          "quantity": 80.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Me",
+          "quantity": 15.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Đậu bắp",
+          "quantity": 50.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Giá đỗ",
+          "quantity": 40.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Rau ngổ",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Đường",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Làm sạch cá, cắt rau củ; dầm me với nước ấm rồi lọc bỏ hạt.",
+        "Đun 600 ml nước với me, cà chua, dứa, thêm cá nấu chín. Thêm đậu bắp, giá, nêm nước mắm, đường, nấu rau chín rồi thêm rau ngổ."
+      ]
+    },
+    {
+      "recipe_id": 9271,
+      "name": "Canh rau ngót thịt bằm",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 12,
+      "ingredients": [
+        {
+          "name": "Rau ngót",
+          "quantity": 150.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Thịt heo",
+          "quantity": 80.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Hành tím",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 8.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 5.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Tuốt, rửa và vò nhẹ rau ngót; băm thịt, hành.",
+        "Phi hành, xào thịt chín rồi thêm 500 ml nước. Khi sôi cho rau vào nấu 5–7 phút, nêm nước mắm."
+      ]
+    },
+    {
+      "recipe_id": 9272,
+      "name": "Canh cải xanh thịt bằm",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 12,
+      "ingredients": [
+        {
+          "name": "Cải xanh",
+          "quantity": 150.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Thịt heo",
+          "quantity": 80.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Gừng",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 8.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        }
+      ],
+      "steps": [
+        "Rửa cắt cải, băm thịt; thái gừng.",
+        "Đun 500 ml nước, cho thịt vào khuấy tơi và nấu chín. Thêm cải, gừng, nước mắm, nấu đến rau mềm vừa."
+      ]
+    },
+    {
+      "recipe_id": 9273,
+      "name": "Canh bí xanh nấu tôm",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 15,
+      "ingredients": [
+        {
+          "name": "Bí xanh",
+          "quantity": 200.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Tôm",
+          "quantity": 100.0,
+          "unit": "g",
+          "category": "Hải sản",
+          "note": null
+        },
+        {
+          "name": "Hành tím",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 8.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 5.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Gọt bí, bỏ ruột già, thái lát; bóc tôm bỏ chỉ, băm sơ.",
+        "Phi hành, xào tôm với dầu rồi thêm 550 ml nước. Cho bí vào nấu chín trong, nêm nước mắm."
+      ]
+    },
+    {
+      "recipe_id": 9274,
+      "name": "Canh mồng tơi nấu cua",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 15,
+      "ingredients": [
+        {
+          "name": "Mồng tơi",
+          "quantity": 180.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Cua đồng",
+          "quantity": 150.0,
+          "unit": "g",
+          "category": "Hải sản",
+          "note": null
+        },
+        {
+          "name": "Muối",
+          "quantity": 2.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Làm sạch, giã cua và lọc với 550 ml nước, bỏ hết vỏ; rửa và thái rau.",
+        "Đun nước cua lửa nhỏ để riêu kết lại, thêm muối rồi cho rau vào nấu 4–5 phút đến chín."
+      ]
+    },
+    {
+      "recipe_id": 9275,
+      "name": "Canh khổ qua nhồi thịt",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 30,
+      "ingredients": [
+        {
+          "name": "Khổ qua",
+          "quantity": 200.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Thịt heo",
+          "quantity": 100.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Mộc nhĩ",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Nấm",
+          "note": null
+        },
+        {
+          "name": "Hành lá",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 8.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Tiêu",
+          "quantity": 1.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Ngâm mộc nhĩ, băm cùng thịt và hành; trộn nước mắm, tiêu. Bỏ ruột khổ qua, nhồi nhân.",
+        "Cho khổ qua vào 600 ml nước sôi, hạ lửa nấu 25–30 phút đến nhân chín và khổ qua mềm."
+      ]
+    },
+    {
+      "recipe_id": 9276,
+      "name": "Canh rong biển đậu hũ",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 10,
+      "ingredients": [
+        {
+          "name": "Rong biển khô",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Đậu hũ",
+          "quantity": 150.0,
+          "unit": "g",
+          "category": "Đậu",
+          "note": null
+        },
+        {
+          "name": "Gừng",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Muối",
+          "quantity": 2.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Dầu mè",
+          "quantity": 3.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Ngâm rong biển theo hướng dẫn trên gói, rửa và cắt nhỏ; cắt đậu hũ.",
+        "Đun 500 ml nước cùng gừng, cho đậu và rong biển vào nấu 5–7 phút; nêm muối, dầu mè."
+      ]
+    },
+    {
+      "recipe_id": 9277,
+      "name": "Canh nấm thập cẩm",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 15,
+      "ingredients": [
+        {
+          "name": "Nấm đùi gà",
+          "quantity": 70.0,
+          "unit": "g",
+          "category": "Nấm",
+          "note": null
+        },
+        {
+          "name": "Nấm hương",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Nấm",
+          "note": null
+        },
+        {
+          "name": "Nấm kim châm",
+          "quantity": 70.0,
+          "unit": "g",
+          "category": "Nấm",
+          "note": null
+        },
+        {
+          "name": "Cà rốt",
+          "quantity": 50.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Muối",
+          "quantity": 2.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Ngâm nấm hương, rửa các loại nấm, bỏ gốc và thái vừa ăn; cắt cà rốt.",
+        "Nấu cà rốt với 550 ml nước 7 phút, thêm nấm, nêm muối và nấu thêm 5–7 phút đến chín."
+      ]
+    },
+    {
+      "recipe_id": 9278,
+      "name": "Canh khoai mỡ",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 20,
+      "ingredients": [
+        {
+          "name": "Khoai mỡ",
+          "quantity": 200.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Thịt heo",
+          "quantity": 80.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Hành lá",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 8.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 5.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Hành tím",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Gọt khoai, rửa rồi băm hoặc nạo nhỏ; băm thịt và hành tím.",
+        "Phi hành, xào thịt chín, thêm 550 ml nước. Cho khoai vào khuấy đều, nấu 15 phút đến sánh chín, nêm nước mắm và hành lá."
+      ]
+    },
+    {
+      "recipe_id": 9279,
+      "name": "Rau muống xào tỏi",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 8,
+      "ingredients": [
+        {
+          "name": "Rau muống",
+          "quantity": 250.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Tỏi",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Muối",
+          "quantity": 2.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Nhặt, rửa rau, cắt khúc; đập dập tỏi.",
+        "Phi tỏi với dầu, cho rau cùng 30 ml nước vào đảo lửa lớn đến chín, nêm muối rồi dọn ngay."
+      ]
+    },
+    {
+      "recipe_id": 9280,
+      "name": "Cải thìa xào nấm",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 10,
+      "ingredients": [
+        {
+          "name": "Cải thìa",
+          "quantity": 180.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nấm đùi gà",
+          "quantity": 100.0,
+          "unit": "g",
+          "category": "Nấm",
+          "note": null
+        },
+        {
+          "name": "Tỏi",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước tương",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có đậu nành; nhiều sản phẩm có lúa mì. Kiểm tra nhãn."
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Rửa cải, bổ đôi cây lớn; thái nấm và băm tỏi.",
+        "Phi tỏi, xào nấm 4–5 phút, thêm cải và 30 ml nước. Nêm nước tương, đảo đến cải chín."
+      ]
+    },
+    {
+      "recipe_id": 9281,
+      "name": "Bông cải xanh luộc",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 6,
+      "ingredients": [
+        {
+          "name": "Bông cải xanh",
+          "quantity": 250.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước tương",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có đậu nành; nhiều sản phẩm có lúa mì. Kiểm tra nhãn."
+        }
+      ],
+      "steps": [
+        "Cắt bông cải thành nhánh đều, rửa kỹ.",
+        "Luộc trong nước sôi 4–6 phút đến chín vừa, vớt ráo và dùng nước tương để chấm."
+      ]
+    },
+    {
+      "recipe_id": 9282,
+      "name": "Đậu que xào tỏi",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 12,
+      "ingredients": [
+        {
+          "name": "Đậu que",
+          "quantity": 220.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Tỏi",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Muối",
+          "quantity": 2.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Tước xơ, rửa và cắt đậu que; băm tỏi.",
+        "Phi tỏi, xào đậu với muối và 60 ml nước, đậy 5–7 phút rồi đảo đến đậu chín hoàn toàn."
+      ]
+    },
+    {
+      "recipe_id": 9283,
+      "name": "Cà tím nướng mỡ hành",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 25,
+      "ingredients": [
+        {
+          "name": "Cà tím",
+          "quantity": 250.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Hành lá",
+          "quantity": 25.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Đường",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 15.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Rửa cà tím, để nguyên quả, khía vài đường nhỏ.",
+        "Nướng ở 200°C khoảng 25 phút đến mềm, bóc vỏ. Làm nóng dầu rồi cho hành vào; rưới lên cà cùng nước mắm pha đường và nước."
+      ]
+    },
+    {
+      "recipe_id": 9284,
+      "name": "Đậu hũ chiên sả ớt",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 15,
+      "ingredients": [
+        {
+          "name": "Đậu hũ",
+          "quantity": 200.0,
+          "unit": "g",
+          "category": "Đậu",
+          "note": null
+        },
+        {
+          "name": "Sả",
+          "quantity": 20.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Ớt",
+          "quantity": 3.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Muối",
+          "quantity": 2.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 30.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Thấm khô đậu, cắt miếng; băm sả, ớt.",
+        "Chiên đậu vàng đều rồi để riêng. Chừa ít dầu, đảo sả ớt với muối đến thơm; thêm đậu đảo cho gia vị bám đều."
+      ]
+    },
+    {
+      "recipe_id": 9285,
+      "name": "Đậu hũ kho nấm",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 20,
+      "ingredients": [
+        {
+          "name": "Đậu hũ",
+          "quantity": 180.0,
+          "unit": "g",
+          "category": "Đậu",
+          "note": null
+        },
+        {
+          "name": "Nấm đùi gà",
+          "quantity": 100.0,
+          "unit": "g",
+          "category": "Nấm",
+          "note": null
+        },
+        {
+          "name": "Nước tương",
+          "quantity": 15.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có đậu nành; nhiều sản phẩm có lúa mì. Kiểm tra nhãn."
+        },
+        {
+          "name": "Đường",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Tỏi",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Cắt đậu và nấm vừa ăn, băm tỏi; áp chảo đậu cho vàng.",
+        "Phi tỏi, xào nấm, thêm đậu, nước tương, đường và 120 ml nước. Kho 15 phút đến chín thấm vị."
+      ]
+    },
+    {
+      "recipe_id": 9286,
+      "name": "Nấm đùi gà áp chảo",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 10,
+      "ingredients": [
+        {
+          "name": "Nấm đùi gà",
+          "quantity": 220.0,
+          "unit": "g",
+          "category": "Nấm",
+          "note": null
+        },
+        {
+          "name": "Nước tương",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có đậu nành; nhiều sản phẩm có lúa mì. Kiểm tra nhãn."
+        },
+        {
+          "name": "Tiêu",
+          "quantity": 1.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Tỏi",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Thái nấm dọc thành lát dày khoảng 1 cm; băm tỏi.",
+        "Áp chảo nấm với dầu 3–4 phút mỗi mặt. Thêm tỏi, nước tương, tiêu và 20 ml nước, đảo đến nấm chín, sốt bám đều."
+      ]
+    },
+    {
+      "recipe_id": 9287,
+      "name": "Gỏi gà bắp cải",
+      "servings": 1,
+      "prep_time": 15,
+      "cook_time": 25,
+      "ingredients": [
+        {
+          "name": "Thịt gà",
+          "quantity": 150.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Bắp cải",
+          "quantity": 120.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Cà rốt",
+          "quantity": 40.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Rau răm",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 12.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Đường",
+          "quantity": 8.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Chanh",
+          "quantity": 0.5,
+          "unit": "quả",
+          "category": "Trái cây",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Luộc gà chín rồi xé; thái mỏng bắp cải, cà rốt và rửa rau răm.",
+        "Pha nước mắm, đường, chanh và 20 ml nước. Trộn rau với gà, rưới nước trộn, đảo đều rồi dùng ngay."
+      ]
+    },
+    {
+      "recipe_id": 9288,
+      "name": "Gỏi xoài tôm khô",
+      "servings": 1,
+      "prep_time": 15,
+      "cook_time": 8,
+      "ingredients": [
+        {
+          "name": "Xoài xanh",
+          "quantity": 180.0,
+          "unit": "g",
+          "category": "Trái cây",
+          "note": null
+        },
+        {
+          "name": "Tôm khô",
+          "quantity": 30.0,
+          "unit": "g",
+          "category": "Hải sản",
+          "note": null
+        },
+        {
+          "name": "Đậu phộng",
+          "quantity": 15.0,
+          "unit": "g",
+          "category": "Đậu",
+          "note": null
+        },
+        {
+          "name": "Rau răm",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Đường",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Chanh",
+          "quantity": 0.5,
+          "unit": "quả",
+          "category": "Trái cây",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Bào xoài, rửa rau răm; ngâm tôm khô rồi hấp chín, rang chín đậu phộng.",
+        "Pha nước mắm, đường, chanh với một ít nước. Trộn xoài, tôm và rau với nước trộn, rắc đậu phộng."
+      ]
+    },
+    {
+      "recipe_id": 9289,
+      "name": "Salad cá ngừ",
+      "servings": 1,
+      "prep_time": 15,
+      "cook_time": 0,
+      "ingredients": [
+        {
+          "name": "Cá ngừ đóng hộp",
+          "quantity": 100.0,
+          "unit": "g",
+          "category": "Hải sản",
+          "note": "Có cá; kiểm tra thành phần nước sốt trên nhãn."
+        },
+        {
+          "name": "Xà lách",
+          "quantity": 80.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Cà chua",
+          "quantity": 80.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Dưa leo",
+          "quantity": 60.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Chanh",
+          "quantity": 0.5,
+          "unit": "quả",
+          "category": "Trái cây",
+          "note": null
+        },
+        {
+          "name": "Dầu ô liu",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Muối",
+          "quantity": 1.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Rửa sạch rau, để ráo và cắt vừa ăn; mở cá ngừ đóng hộp, để ráo.",
+        "Pha dầu ô liu, chanh và muối; trộn với rau rồi thêm cá ngừ, đảo nhẹ và dùng ngay."
+      ]
+    },
+    {
+      "recipe_id": 9290,
+      "name": "Salad ức gà",
+      "servings": 1,
+      "prep_time": 15,
+      "cook_time": 15,
+      "ingredients": [
+        {
+          "name": "Ức gà",
+          "quantity": 150.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Xà lách",
+          "quantity": 80.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Cà chua",
+          "quantity": 70.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Dưa leo",
+          "quantity": 60.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Chanh",
+          "quantity": 0.5,
+          "unit": "quả",
+          "category": "Trái cây",
+          "note": null
+        },
+        {
+          "name": "Dầu ô liu",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Muối",
+          "quantity": 2.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Ướp gà với nửa phần muối. Rửa sạch và cắt rau.",
+        "Áp chảo gà với nửa phần dầu đến chín hoàn toàn, thái lát. Pha dầu còn lại, chanh, muối rồi trộn cùng rau và gà."
+      ]
+    },
+    {
+      "recipe_id": 9291,
+      "name": "Salad khoai tây trứng",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 20,
+      "ingredients": [
+        {
+          "name": "Khoai tây",
+          "quantity": 180.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Trứng gà",
+          "quantity": 1.0,
+          "unit": "quả",
+          "category": "Trứng",
+          "note": null
+        },
+        {
+          "name": "Cà rốt",
+          "quantity": 40.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Sốt mayonnaise",
+          "quantity": 20.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": "Thường có trứng; kiểm tra nhãn."
+        },
+        {
+          "name": "Muối",
+          "quantity": 1.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Gọt và cắt khoai, cà rốt; luộc đến mềm rồi để nguội. Luộc trứng chín, bóc vỏ và thái miếng.",
+        "Trộn khoai, cà rốt, trứng với mayonnaise và muối, giữ lạnh nếu chưa dùng ngay."
+      ]
+    },
+    {
+      "recipe_id": 9292,
+      "name": "Trứng chiên cà chua",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 10,
+      "ingredients": [
+        {
+          "name": "Trứng gà",
+          "quantity": 2.0,
+          "unit": "quả",
+          "category": "Trứng",
+          "note": null
+        },
+        {
+          "name": "Cà chua",
+          "quantity": 100.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Hành lá",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 5.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Dầu ăn",
+          "quantity": 10.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Đánh trứng với nước mắm và hành thái nhỏ; cắt cà chua.",
+        "Xào cà chua với dầu đến mềm, cho trứng vào, dàn đều và chiên lửa nhỏ đến chín cả hai mặt."
+      ]
+    },
+    {
+      "recipe_id": 9293,
+      "name": "Trứng hấp thịt bằm",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 20,
+      "ingredients": [
+        {
+          "name": "Trứng gà",
+          "quantity": 2.0,
+          "unit": "quả",
+          "category": "Trứng",
+          "note": null
+        },
+        {
+          "name": "Thịt heo",
+          "quantity": 80.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Hành lá",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Nước mắm",
+          "quantity": 8.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có cá; kiểm tra nhãn."
+        },
+        {
+          "name": "Tiêu",
+          "quantity": 1.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Đánh trứng với 60 ml nước, trộn thịt băm, hành, nước mắm và tiêu.",
+        "Cho hỗn hợp vào bát chịu nhiệt, hấp 20–25 phút đến trứng đông và thịt chín hoàn toàn ở giữa."
+      ]
+    },
+    {
+      "recipe_id": 9294,
+      "name": "Trứng kho nước tương",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 20,
+      "ingredients": [
+        {
+          "name": "Trứng gà",
+          "quantity": 2.0,
+          "unit": "quả",
+          "category": "Trứng",
+          "note": null
+        },
+        {
+          "name": "Nước tương",
+          "quantity": 20.0,
+          "unit": "ml",
+          "category": "Gia vị",
+          "note": "Có đậu nành; nhiều sản phẩm có lúa mì. Kiểm tra nhãn."
+        },
+        {
+          "name": "Đường",
+          "quantity": 5.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Hành tím",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Luộc trứng chín, làm nguội và bóc vỏ.",
+        "Đun nước tương, đường, hành và 150 ml nước. Cho trứng vào kho nhỏ lửa 15 phút, trở đều cho thấm."
+      ]
+    },
+    {
+      "recipe_id": 9295,
+      "name": "Khoai tây nghiền",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 20,
+      "ingredients": [
+        {
+          "name": "Khoai tây",
+          "quantity": 250.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Sữa tươi",
+          "quantity": 60.0,
+          "unit": "ml",
+          "category": "Sữa",
+          "note": null
+        },
+        {
+          "name": "Bơ sữa",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Sữa",
+          "note": "Có sữa."
+        },
+        {
+          "name": "Muối",
+          "quantity": 1.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Gọt khoai, cắt khối và luộc 15–20 phút đến mềm, chắt ráo.",
+        "Nghiền khi còn nóng, thêm bơ và sữa làm ấm từng ít một; trộn mịn và nêm muối."
+      ]
+    },
+    {
+      "recipe_id": 9296,
+      "name": "Bí đỏ hấp",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 15,
+      "ingredients": [
+        {
+          "name": "Bí đỏ",
+          "quantity": 250.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Gọt vỏ, bỏ hạt và cắt bí thành miếng đều.",
+        "Hấp trên nước sôi 12–15 phút đến mềm, thử bằng nĩa rồi lấy ra dùng nóng."
+      ]
+    },
+    {
+      "recipe_id": 9297,
+      "name": "Súp gà ngô non",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 25,
+      "ingredients": [
+        {
+          "name": "Thịt gà",
+          "quantity": 100.0,
+          "unit": "g",
+          "category": "Thịt",
+          "note": null
+        },
+        {
+          "name": "Ngô non",
+          "quantity": 80.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Trứng gà",
+          "quantity": 1.0,
+          "unit": "quả",
+          "category": "Trứng",
+          "note": null
+        },
+        {
+          "name": "Bột năng",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Ngũ cốc",
+          "note": null
+        },
+        {
+          "name": "Hành lá",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Muối",
+          "quantity": 2.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Luộc gà trong 500 ml nước đến chín rồi xé. Cắt nhỏ ngô non, cho vào nước luộc nấu mềm.",
+        "Thêm gà, muối; hòa bột năng với 30 ml nước, khuấy vào nồi. Rót trứng đánh tan thành dòng, khuấy đến chín, thêm hành."
+      ]
+    },
+    {
+      "recipe_id": 9298,
+      "name": "Súp cua",
+      "servings": 1,
+      "prep_time": 15,
+      "cook_time": 20,
+      "ingredients": [
+        {
+          "name": "Thịt cua",
+          "quantity": 100.0,
+          "unit": "g",
+          "category": "Hải sản",
+          "note": null
+        },
+        {
+          "name": "Trứng gà",
+          "quantity": 1.0,
+          "unit": "quả",
+          "category": "Trứng",
+          "note": null
+        },
+        {
+          "name": "Nấm hương",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Nấm",
+          "note": null
+        },
+        {
+          "name": "Ngô ngọt",
+          "quantity": 50.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        },
+        {
+          "name": "Bột năng",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Ngũ cốc",
+          "note": null
+        },
+        {
+          "name": "Muối",
+          "quantity": 2.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Hành lá",
+          "quantity": 10.0,
+          "unit": "g",
+          "category": "Rau củ",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Ngâm và thái nấm; kiểm tra thịt cua bỏ hết mảnh vỏ. Đun nấm, ngô trong 500 ml nước đến chín.",
+        "Thêm cua nấu chín, nêm muối. Hòa bột năng với 30 ml nước, khuấy vào nồi, rót trứng đánh tan và đun đến chín; thêm hành."
+      ]
+    },
+    {
+      "recipe_id": 9299,
+      "name": "Chè đậu xanh",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 30,
+      "ingredients": [
+        {
+          "name": "Đậu xanh",
+          "quantity": 60.0,
+          "unit": "g",
+          "category": "Đậu",
+          "note": null
+        },
+        {
+          "name": "Đường phèn",
+          "quantity": 25.0,
+          "unit": "g",
+          "category": "Gia vị",
+          "note": null
+        },
+        {
+          "name": "Nước cốt dừa",
+          "quantity": 30.0,
+          "unit": "ml",
+          "category": "Rau củ",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Ngâm đậu xanh 2 giờ, rửa sạch rồi nấu với 500 ml nước đến mềm.",
+        "Thêm đường phèn, khuấy tan, nấu thêm 5 phút. Đun nóng nước cốt dừa riêng rồi rưới lên chè khi dùng."
+      ]
+    },
+    {
+      "recipe_id": 9300,
+      "name": "Sữa chua trái cây",
+      "servings": 1,
+      "prep_time": 10,
+      "cook_time": 0,
+      "ingredients": [
+        {
+          "name": "Sữa chua",
+          "quantity": 150.0,
+          "unit": "g",
+          "category": "Sữa",
+          "note": null
+        },
+        {
+          "name": "Chuối",
+          "quantity": 60.0,
+          "unit": "g",
+          "category": "Trái cây",
+          "note": null
+        },
+        {
+          "name": "Xoài chín",
+          "quantity": 60.0,
+          "unit": "g",
+          "category": "Trái cây",
+          "note": null
+        },
+        {
+          "name": "Dâu tây",
+          "quantity": 40.0,
+          "unit": "g",
+          "category": "Trái cây",
+          "note": null
+        }
+      ],
+      "steps": [
+        "Rửa sạch dâu, gọt chuối và xoài; cắt trái cây vừa ăn.",
+        "Cho sữa chua ra bát, thêm trái cây và trộn nhẹ. Dùng ngay hoặc đậy kín và bảo quản trong ngăn mát."
+      ]
+    }
+  ]
+}

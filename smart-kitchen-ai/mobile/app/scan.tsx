@@ -1,3 +1,4 @@
+// Trang: Quét nguyên liệu — chọn ảnh để xem luồng nhận diện mẫu.
 import React, { useState } from "react";
 import AppHeader from "../components/AppHeader";
 import BottomNav from "../components/BottomNav";
@@ -114,7 +115,7 @@ export default function ScanScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={[]}>
-      <AppHeader showNotification unreadCount={3} />
+      <AppHeader showNotification />
 
       <ScrollView
         style={styles.scroll}

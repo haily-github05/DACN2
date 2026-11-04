@@ -6,5 +6,11 @@
     "express": "^5.3.0",
     "multer": "^2.5.0",
     "mysql2": "^3.24.6"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "migrate": "node scripts/migrate.js",
+    "test": "node --test tests/*.test.js",
+    "test:smoke": "node scripts/smoke-kitchen.js"
   }
 }

@@ -1,3 +1,4 @@
+// Backend: Mã cũ xử lý đăng ký theo email; nội dung hiện chưa phải dịch vụ công thức.
 const db = require('../config/db');
 const bcrypt = require('bcryptjs');
 

@@ -1,4 +1,8 @@
-import React, { useMemo, useState } from "react";
+import { suggestDayMenu, suggestMeal } from "../lib/mealSuggestions";
+// Trang: Thực đơn — lập kế hoạch các bữa ăn theo ngày và tuần.
+import { sortRecipesByName } from "../lib/recipeOrder";
+import { getRecipes, kitchenRequest } from "../lib/kitchenApi";
+import React, { useCallback, useMemo, useState } from "react";
 import {
   View,
   Text,
@@ -8,7 +12,7 @@ import {
   Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import {
   ArrowLeft,
   ChevronLeft,
@@ -48,92 +52,12 @@ type Recipe = {
   id: string;
   name: string;
   minutes: number;
-  calories: number;
+  calories: number | null;
+  category?: string;
 };
 
-type DayPlan = Record<MealType, Recipe | null>;
+type DayPlan = Record<MealType, Recipe[]>;
 type Plans = Record<string, DayPlan>;
-
-const RECIPES: Record<MealType, Recipe[]> = {
-  breakfast: [
-    {
-      id: "b1",
-      name: "Trứng cuộn rau củ",
-      minutes: 10,
-      calories: 240,
-    },
-    {
-      id: "b2",
-      name: "Bánh mì trứng phô mai",
-      minutes: 12,
-      calories: 320,
-    },
-    {
-      id: "b3",
-      name: "Sữa chua trái cây",
-      minutes: 5,
-      calories: 180,
-    },
-    {
-      id: "b4",
-      name: "Cháo yến mạch",
-      minutes: 15,
-      calories: 250,
-    },
-  ],
-  lunch: [
-    {
-      id: "l1",
-      name: "Ức gà áp chảo sốt tiêu đen",
-      minutes: 25,
-      calories: 420,
-    },
-    {
-      id: "l2",
-      name: "Cơm bò xào rau củ",
-      minutes: 25,
-      calories: 480,
-    },
-    {
-      id: "l3",
-      name: "Cá hồi áp chảo",
-      minutes: 20,
-      calories: 410,
-    },
-    {
-      id: "l4",
-      name: "Cơm gà nấm",
-      minutes: 30,
-      calories: 450,
-    },
-  ],
-  dinner: [
-    {
-      id: "d1",
-      name: "Canh thịt bò rong biển",
-      minutes: 20,
-      calories: 310,
-    },
-    {
-      id: "d2",
-      name: "Salad cá hồi sốt mè rang",
-      minutes: 15,
-      calories: 310,
-    },
-    {
-      id: "d3",
-      name: "Súp bí đỏ hạt sen",
-      minutes: 20,
-      calories: 245,
-    },
-    {
-      id: "d4",
-      name: "Bò cuộn súp lơ baby",
-      minutes: 25,
-      calories: 380,
-    },
-  ],
-};
 
 const MEALS: {
   key: MealType;
@@ -194,9 +118,9 @@ function formatDate(date: Date) {
 
 function emptyDay(): DayPlan {
   return {
-    breakfast: null,
-    lunch: null,
-    dinner: null,
+    breakfast: [],
+    lunch: [],
+    dinner: [],
   };
 }
 
@@ -209,6 +133,30 @@ export default function MealPlanScreen() {
 
   const [plans, setPlans] = useState<Plans>({});
   const [generation, setGeneration] = useState(0);
+  const [recipeOptions, setRecipeOptions] = useState<Recipe[]>([]);
+  const [loaded, setLoaded] = useState(false);
+  const [saving, setSaving] = useState(false);
+  useFocusEffect(useCallback(() => {
+    let active = true;
+    setLoaded(false);
+    setRecipeOptions([]);
+    setPlans({});
+    Promise.all([kitchenRequest<Plans>("plans"), getRecipes()]).then(([data, recipes]) => {
+      if (active) { setPlans(data); setRecipeOptions(recipes.some(r => !r.preferenceInfo?.dislikedIngredients.length)
+        ? recipes.filter(r => !r.preferenceInfo?.dislikedIngredients.length) : recipes); setLoaded(true); }
+    }).catch(error => Alert.alert("Không thể tải thực đơn", error.message));
+    return () => { active = false; };
+  }, []));
+  const savePlans = async (changed: Plans) => {
+    if (!loaded || saving) return;
+    setSaving(true);
+    try {
+      await kitchenRequest("plans", "PUT", changed);
+      setPlans(prev => ({ ...prev, ...changed }));
+    } catch (error) { Alert.alert("Không thể lưu thực đơn", error instanceof Error ? error.message : "Vui lòng thử lại"); }
+    finally { setSaving(false); }
+  };
+
 
   const days = useMemo(
     () => Array.from({ length: 7 }, (_, i) => addDays(weekStart, i)),
@@ -217,13 +165,13 @@ export default function MealPlanScreen() {
 
   const currentPlan = plans[selectedDate] ?? emptyDay();
 
-  const totalCalories = MEALS.reduce(
-    (sum, meal) => sum + (currentPlan[meal.key]?.calories ?? 0),
-    0,
-  );
+  const plannedMeals = MEALS.flatMap(meal => currentPlan[meal.key]);
+  const totalCalories = plannedMeals.length > 0 && plannedMeals.every(meal => meal.calories !== null)
+    ? plannedMeals.reduce((sum, meal) => sum + (meal.calories ?? 0), 0)
+    : null;
 
   const mealCount = MEALS.filter(
-    (meal) => currentPlan[meal.key] !== null,
+    (meal) => currentPlan[meal.key].length > 0,
   ).length;
 
   const goBack = () => {
@@ -240,49 +188,40 @@ export default function MealPlanScreen() {
     setSelectedDate(dateKey(nextWeek));
   };
 
-  const updateMeal = (type: MealType, recipe: Recipe | null) => {
-    setPlans((previous) => ({
-      ...previous,
-      [selectedDate]: {
-        ...(previous[selectedDate] ?? emptyDay()),
-        [type]: recipe,
-      },
-    }));
+  const updateMeal = (type: MealType, recipes: Recipe[]) => {
+    void savePlans({ [selectedDate]: { ...(plans[selectedDate] ?? emptyDay()), [type]: recipes } });
   };
 
-  const changeMeal = (type: MealType) => {
-    const options = RECIPES[type];
-    const currentId = currentPlan[type]?.id;
-
-    const currentIndex = options.findIndex((recipe) => recipe.id === currentId);
-
-    const next = options[(currentIndex + 1) % options.length];
-
-    updateMeal(type, next);
+  const changeMeal = (type: MealType, index?: number) => {
+    if (!loaded || saving) return;
+    if (index === undefined && currentPlan[type].length >= 6) {
+      Alert.alert("Đủ món", "Mỗi buổi tối đa 6 món."); return;
+    }
+    const used = MEALS.flatMap(meal => currentPlan[meal.key]).map(recipe => recipe.id);
+    const next = suggestMeal(recipeOptions, type, used, generation);
+    if (!next) {
+      Alert.alert("Chưa có món khác", "Không có thêm món phù hợp để thêm hoặc đổi mà không trùng các bữa trong ngày."); return;
+    }
+    updateMeal(type, index === undefined ? [...currentPlan[type], next] : currentPlan[type].map((recipe, i) => i === index ? next : recipe));
+    setGeneration(prev => prev + 1);
   };
 
   const generatePlan = () => {
-    const nextPlans: Plans = { ...plans };
-
+    if (!loaded || saving) return;
+    if (!recipeOptions.length) {
+      Alert.alert("Chưa có công thức phù hợp", "Hãy bổ sung công thức hoặc kiểm tra lại thiết lập khẩu vị.");
+      return;
+    }
+    const nextPlans: Plans = {};
+    const usage: Record<string, number> = {};
     days.forEach((date, dayIndex) => {
-      const plan: DayPlan = emptyDay();
-
-      MEALS.forEach(({ key }) => {
-        const options = RECIPES[key];
-
-        plan[key] = options[(dayIndex + generation) % options.length];
-      });
-
-      nextPlans[dateKey(date)] = plan;
+      nextPlans[dateKey(date)] = suggestDayMenu(recipeOptions, dayIndex + generation, usage);
     });
-
-    setPlans(nextPlans);
-    setGeneration((prev) => prev + 1);
-
-    Alert.alert(
-      "Đã tạo thực đơn",
-      "Đã tạo thực đơn mẫu cho 7 ngày. Bạn có thể đổi từng món theo sở thích.",
-    );
+    void savePlans(nextPlans);
+    setGeneration(prev => prev + 1);
+    if (new Set(recipeOptions.map(recipe => recipe.id)).size < 3) {
+      Alert.alert("Chưa đủ món cho ba bữa", "Hiện có ít hơn 3 món phù hợp. Các bữa còn thiếu sẽ để trống để tránh lặp món trong cùng ngày.");
+    }
   };
 
   const openRecipe = (recipe: Recipe) => {
@@ -302,7 +241,7 @@ export default function MealPlanScreen() {
   const renderMeal = (type: MealType) => {
     const config = MEALS.find((meal) => meal.key === type)!;
 
-    const recipe = currentPlan[type];
+    const recipes = sortRecipesByName(currentPlan[type], recipe => recipe.name);
     const Icon = config.icon;
 
     return (
@@ -317,54 +256,31 @@ export default function MealPlanScreen() {
             <Text style={styles.mealTime}>{config.time}</Text>
           </View>
 
-          {recipe ? (
-            <>
+          {recipes.length ? recipes.map(recipe => (
+            <View key={recipe.id} style={{ paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: C.border }}>
               <Pressable onPress={() => openRecipe(recipe)}>
-                <Text style={styles.mealName} numberOfLines={2}>
-                  {recipe.name}
-                </Text>
+                <Text style={styles.mealName}>{recipe.name}</Text>
               </Pressable>
-
               <View style={styles.mealMeta}>
                 <Clock3 size={12} color={C.muted} />
                 <Text style={styles.mealMetaText}>{recipe.minutes} phút</Text>
-
                 <Flame size={12} color={C.orange} />
-                <Text style={styles.mealMetaText}>{recipe.calories} kcal</Text>
+                <Text style={styles.mealMetaText}>{recipe.calories ?? "—"} kcal/khẩu phần</Text>
               </View>
-            </>
-          ) : (
-            <Text style={styles.emptyMealText}>
-              Chưa chọn món cho bữa ăn này
-            </Text>
-          )}
+              <View style={styles.mealActions}>
+                <Pressable disabled={saving} onPress={() => changeMeal(type, currentPlan[type].findIndex(item => item.id === recipe.id))} style={styles.mealActionButton}>
+                  <RefreshCw size={13} color={C.orange} /><Text style={styles.mealActionText}>Đổi món</Text>
+                </Pressable>
+                <Pressable disabled={saving} onPress={() => updateMeal(type, currentPlan[type].filter(item => item.id !== recipe.id))} style={styles.detailAction}>
+                  <Text style={styles.detailActionText}>Bỏ món</Text>
+                </Pressable>
+              </View>
+            </View>
+          )) : <Text style={styles.emptyMealText}>Chưa chọn món cho bữa ăn này</Text>}
+          <Pressable disabled={!loaded || saving} onPress={() => changeMeal(type)} style={[styles.mealActionButton, { alignSelf: 'flex-start', marginTop: 10 }]}>
+            <Plus size={13} color={C.orange} /><Text style={styles.mealActionText}>Thêm món</Text>
+          </Pressable>
 
-          <View style={styles.mealActions}>
-            <Pressable
-              onPress={() => changeMeal(type)}
-              style={styles.mealActionButton}
-            >
-              {recipe ? (
-                <RefreshCw size={13} color={C.orange} />
-              ) : (
-                <Plus size={13} color={C.orange} />
-              )}
-
-              <Text style={styles.mealActionText}>
-                {recipe ? "Đổi món" : "Thêm món"}
-              </Text>
-            </Pressable>
-
-            {recipe && (
-              <Pressable
-                onPress={() => openRecipe(recipe)}
-                style={styles.detailAction}
-              >
-                <Text style={styles.detailActionText}>Xem công thức</Text>
-                <ChevronRight size={13} color={C.green} />
-              </Pressable>
-            )}
-          </View>
         </View>
       </View>
     );
@@ -426,11 +342,11 @@ export default function MealPlanScreen() {
           </View>
 
           <View style={styles.aiInfo}>
-            <Text style={styles.aiTitle}>Chef AI lên thực đơn cho bạn</Text>
+            <Text style={styles.aiTitle}>Gợi ý thực đơn từ công thức</Text>
 
             <Text style={styles.aiDescription}>
-              Gợi ý các món ăn cho 7 ngày, giúp bạn dễ dàng lên kế hoạch nấu
-              nướng.
+              Bữa sáng gợi ý 2 món nhanh; trưa và tối gồm món chính, rau và canh,
+              không lặp lại trong cùng ngày.
             </Text>
 
             <Pressable style={styles.generateButton} onPress={generatePlan}>
@@ -485,12 +401,12 @@ export default function MealPlanScreen() {
             <Text style={styles.nutritionTitle}>Tổng dinh dưỡng hôm nay</Text>
 
             <Text style={styles.nutritionSubtitle}>
-              Ước tính từ các món đã lên kế hoạch
+              Ước tính cho 1 người từ các món đã lên kế hoạch
             </Text>
           </View>
 
           <Text style={styles.totalCalories}>
-            {totalCalories}
+            {totalCalories ?? "—"}
             <Text style={styles.calorieUnit}> kcal</Text>
           </Text>
         </View>

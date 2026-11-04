@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+// Trang: Thực phẩm sắp hết hạn và đã hết hạn.
+import { getIngredients, daysUntil, Ingredient } from "../lib/ingredients";
+import React, { useCallback, useState } from "react";
 import {
   View,
   Text,
@@ -9,22 +11,25 @@ import {
   Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import { ArrowLeft, ChevronRight, Check, Sparkles } from "lucide-react-native";
 import AppHeader from "../components/AppHeader";
 import BottomNav from "../components/BottomNav";
 
-const blocks: [string, string, string][] = [
-  ["item", "Hết hạn trong 1 ngày", "Rau cải · 200 g"],
-  ["item", "Hết hạn trong 2 ngày", "Cà chua · 3 quả"],
-  ["item", "Hết hạn trong 3 ngày", "Cá hồi · 350 g"],
-  ["highlight", "Gợi ý sử dụng", "Ưu tiên nấu món từ thực phẩm gần hết hạn"],
-  ["link", "Gợi ý món từ nguyên liệu này", "/recipes"],
-  ["note", "⚠ Ưu tiên nguyên liệu gần hết hạn", ""],
-];
 const ORANGE = "#A23A00";
 export default function Screen() {
   const router = useRouter();
+  const [items, setItems] = useState<Ingredient[]>([]);
+  const [loaded, setLoaded] = useState(false);
+  useFocusEffect(useCallback(() => {
+    let active = true;
+    getIngredients().then(data => { if (active) { setItems(data); setLoaded(true); } }).catch(error => Alert.alert("Không thể tải dữ liệu", error.message));
+    return () => { active = false; };
+  }, []));
+  const expiring = items.filter(i => { const days = daysUntil(i.expiryDate); return days !== null && days <= 3; });
+  const blocks: [string, string, string][] = expiring.map(i => ["item", i.name, `${i.quantity} ${i.unit} · ${daysUntil(i.expiryDate)! < 0 ? "Đã hết hạn" : `Còn ${daysUntil(i.expiryDate)} ngày`}`]);
+  if (loaded && !blocks.length) blocks.push(["note", "Không có thực phẩm sắp hết hạn", ""]);
+
   const [choices, setChoices] = useState<Record<string, string>>({});
   const [inputs, setInputs] = useState<Record<string, string>>({});
   const [checked, setChecked] = useState<Record<string, boolean>>({});
@@ -59,7 +64,7 @@ export default function Screen() {
   };
   return (
     <SafeAreaView style={styles.safe} edges={[]}>
-      <AppHeader showNotification unreadCount={3} />
+      <AppHeader showNotification />
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={styles.content}
@@ -71,7 +76,7 @@ export default function Screen() {
           </Pressable>
           <Text style={styles.title}>Sắp hết hạn</Text>
         </View>
-        <Text style={styles.subtitle}>"Ưu tiên dùng thực phẩm đúng lúc"</Text>
+        <Text style={styles.subtitle}>{'"Ưu tiên dùng thực phẩm đúng lúc"'}</Text>
         {blocks.map(([kind, label, detail], i) => {
           if (kind === "section")
             return (

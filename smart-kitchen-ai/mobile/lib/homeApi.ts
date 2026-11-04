@@ -1,4 +1,6 @@
+// Chức năng: API dữ liệu cho Trang chủ.
 
+import { sortRecipesByName } from "./recipeOrder";
 import { getCurrentUserId } from "./auth";
 import Constants from "expo-constants";
 export type HomeRecipe = {
@@ -53,5 +55,6 @@ export async function getHomeData(): Promise<HomeData> {
     );
   }
 
-  return result.data;
+  const data: HomeData = result.data;
+  return { ...data, recipes: sortRecipesByName(data.recipes, recipe => recipe.name) };
 }

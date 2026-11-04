@@ -1,3 +1,5 @@
+// Backend: API Trang chủ — hồ sơ, tổng quan kho và gợi ý món theo khẩu vị.
+const { getRecommendations } = require("../services/recipeRecommendationService");
 
 const express = require("express");
 const router = express.Router();
@@ -65,9 +67,11 @@ router.get("/:userId", async (req, res) => {
          cook_time,
          estimated_cost
        FROM recipes
-       ORDER BY recipe_id DESC
-       LIMIT 10`
+       WHERE is_active=1
+       ORDER BY recipe_id DESC`
     );
+
+    const recommended = (await getRecommendations(userId, recipes)).slice(0, 10);
 
     const pantry = pantryRows[0] || {};
 
@@ -84,7 +88,7 @@ router.get("/:userId", async (req, res) => {
           total: Number(pantry.total || 0),
           expiringSoon: Number(pantry.expiringSoon || 0),
         },
-        recipes,
+        recipes: recommended,
       },
     });
   } catch (error) {

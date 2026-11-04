@@ -1,0 +1,27 @@
+// Thành phần: Bộ giao diện dùng chung cho trang Đang nấu ăn và Hoàn thành nấu ăn.
+import { StyleSheet } from "react-native";
+export const cookingStyles = StyleSheet.create({
+  page: { flex: 1, backgroundColor: "#FFF8F6" },
+  heading: { paddingHorizontal: 20, paddingVertical: 12, flexDirection: "row", alignItems: "center", gap: 12 },
+  headingTitle: { fontSize: 20, fontWeight: "700", color: "#201A17" },
+  iconButton: { padding: 8 },
+  content: { padding: 20, gap: 16, paddingBottom: 30 },
+  title: { fontSize: 26, fontWeight: "700", color: "#A23A00" },
+  body: { fontSize: 16, lineHeight: 25, color: "#201A17" },
+  muted: { fontSize: 14, lineHeight: 21, color: "#735A51" },
+  link: { color: "#A23A00", fontSize: 16, fontWeight: "600" },
+  card: { padding: 18, borderWidth: 1, borderColor: "#EED9CF", borderRadius: 16, backgroundColor: "white", gap: 10 },
+  cardTitle: { fontSize: 17, fontWeight: "700", color: "#201A17", flexShrink: 1 },
+  row: { flexDirection: "row", alignItems: "center", gap: 12 },
+  stepNumber: { width: 34, height: 34, borderRadius: 17, backgroundColor: "#FEF1EB", alignItems: "center", justifyContent: "center" },
+  doneNumber: { backgroundColor: "#397C57" },
+  doneCard: { borderColor: "#397C57", backgroundColor: "#F1F8F2" },
+  track: { height: 8, borderRadius: 4, overflow: "hidden", backgroundColor: "#EED9CF" },
+  progress: { height: 8, backgroundColor: "#397C57" },
+  footer: { padding: 16, borderTopWidth: 1, borderColor: "#EED9CF", backgroundColor: "white" },
+  button: { minHeight: 52, padding: 16, alignItems: "center", justifyContent: "center", flexDirection: "row", gap: 10, backgroundColor: "#A23A00", borderRadius: 14 },
+  buttonText: { color: "white", fontSize: 16, fontWeight: "700", flexShrink: 1 },
+  disabled: { opacity: 0.45 },
+  loader: { margin: 40 },
+  photo: { height: 200, width: "100%", borderRadius: 16 },
+});

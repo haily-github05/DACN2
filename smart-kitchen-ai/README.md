@@ -40,13 +40,13 @@ cd DACN2
 Từ thư mục gốc repository, mở Terminal:
 Terminal 1: 
 ```bash
-cd smart-kitchen-ai/mobile
+cd mobile
 npm install
 npx expo start -c
 ```
 Terminal 2: 
 ```bash
-cd ~/Documents/github/DACN2/smart-kitchen-ai/backend
+cd backend
 node server.js
 ```
 

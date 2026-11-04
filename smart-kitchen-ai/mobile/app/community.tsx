@@ -1,25 +1,28 @@
-import React, { useMemo, useState } from "react";
+// Trang: Cộng đồng — danh sách bài viết, thích và lưu bài.
+import { matchesSearch } from "../lib/search";
+import SearchField from "../components/SearchField";
+import UserAvatar from "../components/UserAvatar";
+import FoodImage from "../components/FoodImage";
+import { getPosts, CommunityPost } from "../lib/communityApi";
+import { kitchenRequest } from "../lib/kitchenApi";
+import React, { useCallback, useMemo, useState } from "react";
 import {
   View,
   Text,
-  TextInput,
   ScrollView,
   Pressable,
-  Image,
   StyleSheet,
   Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import {
-  Search,
   Heart,
   MessageCircle,
   Bookmark,
   Plus,
   Sparkles,
   ChevronRight,
-  SlidersHorizontal,
   Share2,
   Users,
   ChefHat,
@@ -47,92 +50,50 @@ const categories = [
   "⚡ Nấu nhanh",
 ];
 
-const initialPosts = [
-  {
-    id: "1",
-    author: "Minh Anh",
-    initials: "MA",
-    time: "2 giờ trước",
-    category: "🍲 Món Việt",
-    title: "Cơm gà áp chảo – bữa trưa đơn giản",
-    description:
-      "Chỉ mất 25 phút để có một bữa cơm đủ chất. Thịt gà mềm, rau củ giòn ngọt, cả nhà đều thích! 🍗",
-    image:
-      "https://images.unsplash.com/photo-1547592180-85f173990554?w=1000&q=85",
-    likes: 128,
-    comments: 24,
-  },
-  {
-    id: "2",
-    author: "Ngọc Hà",
-    initials: "NH",
-    time: "5 giờ trước",
-    category: "🥗 Healthy",
-    title: "Salad rau củ cho ngày bận rộn",
-    description:
-      "Một chút rau xanh, cà chua và sốt tự làm. Vừa nhẹ bụng vừa dễ chuẩn bị. 🥬",
-    image:
-      "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=1000&q=85",
-    likes: 96,
-    comments: 18,
-  },
-  {
-    id: "3",
-    author: "Bảo Trân",
-    initials: "BT",
-    time: "Hôm qua",
-    category: "🍰 Bánh ngọt",
-    title: "Cuối tuần làm bánh cùng gia đình",
-    description:
-      "Thành phẩm nhỏ xinh, thơm mùi bơ. Niềm vui đôi khi chỉ là một buổi chiều trong bếp. 🧁",
-    image:
-      "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=1000&q=85",
-    likes: 204,
-    comments: 32,
-  },
-];
-
-type Post = (typeof initialPosts)[number];
+type Post = CommunityPost;
 
 export default function CommunityScreen() {
   const router = useRouter();
+  const [initialPosts, setPosts] = useState<Post[]>([]);
+  const [busy, setBusy] = useState(false);
 
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("Tất cả");
   const [liked, setLiked] = useState<string[]>([]);
   const [saved, setSaved] = useState<string[]>([]);
+  useFocusEffect(useCallback(() => {
+    let active = true;
+    getPosts().then(rows => {
+      if (!active) return;
+      setPosts(rows); setLiked(rows.filter(p => p.liked).map(p => p.id)); setSaved(rows.filter(p => p.saved).map(p => p.id));
+    }).catch(error => Alert.alert("Không thể tải cộng đồng", error.message));
+    return () => { active = false; };
+  }, []));
+
 
   const posts = useMemo(() => {
-    const keyword = search.trim().toLowerCase();
-
     return initialPosts.filter((post) => {
       const matchCategory = category === "Tất cả" || post.category === category;
 
-      const matchSearch =
-        !keyword ||
-        `${post.title} ${post.author} ${post.description}`
-          .toLowerCase()
-          .includes(keyword);
-
+      const matchSearch = matchesSearch(search, post.title, post.author, post.description, post.category);
       return matchCategory && matchSearch;
     });
-  }, [search, category]);
+  }, [search, category, initialPosts]);
 
-  const toggleLike = (id: string) => {
-    setLiked((current) =>
-      current.includes(id)
-        ? current.filter((item) => item !== id)
-        : [...current, id],
-    );
+  const react = async (id: string, kind: "like" | "save") => {
+    if (busy) return;
+    setBusy(true);
+    const list = kind === "like" ? liked : saved;
+    const active = !list.includes(id);
+    try {
+      await kitchenRequest(`posts/${id}/reactions`, "PUT", { kind, active });
+      const update = (current: string[]) => active ? [...current, id] : current.filter(x => x !== id);
+      if (kind === "like") setLiked(update); else setSaved(update);
+    } catch (error) { Alert.alert("Không thể lưu", error instanceof Error ? error.message : "Vui lòng thử lại"); }
+    finally { setBusy(false); }
   };
-
-  const toggleSave = (id: string) => {
-    setSaved((current) =>
-      current.includes(id)
-        ? current.filter((item) => item !== id)
-        : [...current, id],
-    );
-  };
+  const toggleLike = (id: string) => { void react(id, "like"); };
+  const toggleSave = (id: string) => { void react(id, "save"); };
 
   const openPost = (post: Post) => {
     router.push({
@@ -143,7 +104,7 @@ export default function CommunityScreen() {
 
   return (
     <SafeAreaView style={styles.screen} edges={[]}>
-      <AppHeader showNotification unreadCount={3} />
+      <AppHeader showNotification />
 
       <ScrollView
         style={styles.scroll}
@@ -185,19 +146,7 @@ export default function CommunityScreen() {
         </View>
 
         {/* SEARCH */}
-        <View style={styles.searchBox}>
-          <Search size={19} color={C.muted} />
-
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Tìm món ngon, người chia sẻ..."
-            placeholderTextColor="#A18B81"
-            value={search}
-            onChangeText={setSearch}
-          />
-
-          <SlidersHorizontal size={19} color={C.orange} />
-        </View>
+        <SearchField value={search} onChangeText={setSearch} placeholder="Tìm món ngon, người chia sẻ, hashtag..." style={styles.searchBox} inputStyle={styles.searchInput} />
 
         {/* CATEGORIES */}
         <ScrollView
@@ -230,10 +179,8 @@ export default function CommunityScreen() {
 
         {/* FEATURED */}
         <View style={styles.featuredCard}>
-          <Image
-            source={{
-              uri: "https://images.unsplash.com/photo-1547592180-85f173990554?w=1000&q=85",
-            }}
+          <FoodImage
+            uri="https://images.unsplash.com/photo-1547592180-85f173990554?w=1000&q=85"
             style={styles.featuredImage}
           />
 
@@ -299,9 +246,7 @@ export default function CommunityScreen() {
                   style={styles.authorRow}
                   onPress={() => openPost(post)}
                 >
-                  <View style={styles.avatar}>
-                    <Text style={styles.avatarText}>{post.initials}</Text>
-                  </View>
+                  <UserAvatar uri={post.avatar} initials={post.initials} name={post.author} size={43}/>
 
                   <View style={{ flex: 1 }}>
                     <Text style={styles.authorName}>{post.author}</Text>
@@ -316,12 +261,12 @@ export default function CommunityScreen() {
 
                 {/* CONTENT */}
                 <Pressable onPress={() => openPost(post)}>
-                  <Text style={styles.postTitle}>{post.title}</Text>
+                  <Text style={styles.postTitle}>{post.visibility === "PRIVATE" ? "🔒 " : ""}{post.title}</Text>
 
                   <Text style={styles.postDescription}>{post.description}</Text>
 
-                  <Image
-                    source={{ uri: post.image }}
+                  <FoodImage
+                    uri={post.image}
                     style={styles.postImage}
                     resizeMode="cover"
                   />

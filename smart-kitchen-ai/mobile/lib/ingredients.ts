@@ -1,7 +1,10 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
+// Chức năng: API kho thực phẩm và tiện ích kiểm tra ngày, hạn sử dụng.
+import { apiRequest } from "./api";
+import { getCurrentUserId } from "./auth";
 export const INGREDIENTS_KEY = "smart-kitchen-manual-ingredients-v1";
 export type Ingredient = {
   id: string;
+  ingredientId?: string;
   name: string;
   category: string;
   quantity: number;
@@ -13,81 +16,32 @@ export type Ingredient = {
   createdAt: string;
   image?: string;
 };
-export const SEEDS: Ingredient[] = [
-  {
-    id: "1",
-    name: "Thịt bò Fuji phi lê",
-    category: "Thịt",
-    quantity: 400,
-    unit: "Gram",
-    location: "Ngăn mát tủ lạnh",
-    purchaseDate: "2026-10-22",
-    expiryDate: "2026-10-26",
-    note: "Đóng gói hút chân không · Thịt tươi",
-    createdAt: "2026-10-22T00:00:00.000Z",
-    image: "https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?w=900",
-  },
-  {
-    id: "2",
-    name: "Súp lơ baby hữu cơ",
-    category: "Rau củ",
-    quantity: 300,
-    unit: "Gram",
-    location: "Ngăn mát tủ lạnh",
-    purchaseDate: "2026-10-22",
-    expiryDate: "2026-10-26",
-    note: "Rau củ tươi Đà Lạt",
-    createdAt: "2026-10-22T00:00:00.000Z",
-    image: "https://images.unsplash.com/photo-1459411621453-7b03977f4bfc?w=900",
-  },
-  {
-    id: "3",
-    name: "Sữa chua men sống Probi",
-    category: "Sữa",
-    quantity: 260,
-    unit: "Ml",
-    location: "Ngăn mát tủ lạnh",
-    purchaseDate: "2026-10-22",
-    expiryDate: "2026-11-07",
-    note: "Sữa chua lên men",
-    createdAt: "2026-10-22T00:00:00.000Z",
-    image: "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=900",
-  },
-];
-function isIngredient(x: unknown): x is Ingredient {
-  return (
-    !!x &&
-    typeof x === "object" &&
-    typeof (x as Ingredient).id === "string" &&
-    typeof (x as Ingredient).name === "string"
-  );
-}
+type PantryRow = {
+  id: number; ingredient_id?: number; name: string; category: string; quantity: number; unit: string;
+  location: string; purchase_date: string | null; expiry_date: string | null;
+  note?: string; image_url?: string; created_at?: string;
+};
 export async function getIngredients(): Promise<Ingredient[]> {
-  const raw = await AsyncStorage.getItem(INGREDIENTS_KEY);
-  if (raw === null) {
-    await AsyncStorage.setItem(INGREDIENTS_KEY, JSON.stringify(SEEDS));
-    return [...SEEDS];
-  }
-  const parsed: unknown = JSON.parse(raw);
-  if (!Array.isArray(parsed)) throw new Error("Dữ liệu kho không hợp lệ");
-  return parsed.filter(isIngredient);
+  const rows = await apiRequest<PantryRow[]>(`/api/pantry/${await getCurrentUserId()}`);
+  return rows.map(row => ({
+    id: String(row.id), ingredientId: row.ingredient_id == null ? undefined : String(row.ingredient_id), name: row.name, category: row.category || "Khác",
+    quantity: Number(row.quantity), unit: row.unit, location: row.location || "",
+    purchaseDate: row.purchase_date?.slice(0, 10) || "",
+    expiryDate: row.expiry_date?.slice(0, 10) || "",
+    note: row.note || "", image: row.image_url, createdAt: row.created_at || "",
+  }));
 }
 export async function findIngredient(id: string) {
-  return (await getIngredients()).find((x) => x.id === id) ?? null;
+  return (await getIngredients()).find(item => item.id === id) ?? null;
+}
+export async function addIngredient(item: Ingredient & { ingredientId?: string; mergeExisting?: boolean }) {
+  return apiRequest<{ id: number; merged?: boolean }>(`/api/kitchen/${await getCurrentUserId()}/pantry`, "POST", item);
 }
 export async function updateIngredient(item: Ingredient) {
-  const all = await getIngredients();
-  const i = all.findIndex((x) => x.id === item.id);
-  if (i < 0) throw new Error("Nguyên liệu không còn tồn tại");
-  all[i] = item;
-  await AsyncStorage.setItem(INGREDIENTS_KEY, JSON.stringify(all));
+  return apiRequest(`/api/kitchen/${await getCurrentUserId()}/pantry/${item.id}`, "PUT", item);
 }
 export async function deleteIngredient(id: string) {
-  const all = await getIngredients();
-  await AsyncStorage.setItem(
-    INGREDIENTS_KEY,
-    JSON.stringify(all.filter((x) => x.id !== id)),
-  );
+  return apiRequest(`/api/kitchen/${await getCurrentUserId()}/pantry/${id}`, "DELETE");
 }
 export function daysUntil(iso: string) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(iso)) return null;
@@ -105,4 +59,9 @@ export function dateIsValid(s: string) {
     dt.getUTCMonth() === m - 1 &&
     dt.getUTCDate() === d
   );
+}
+
+export type CatalogIngredient = { id: string; name: string; category: string; unit: string; image: string; inPantry: boolean };
+export async function getIngredientCatalog(): Promise<CatalogIngredient[]> {
+  return apiRequest(`/api/kitchen/${await getCurrentUserId()}/ingredients`);
 }

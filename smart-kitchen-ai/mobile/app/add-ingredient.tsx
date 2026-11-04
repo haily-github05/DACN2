@@ -1,5 +1,6 @@
+// Trang: Thêm nguyên liệu vào kho thực phẩm.
 
-import React, { useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -13,9 +14,16 @@ import {
   Keyboard,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useRouter } from 'expo-router';
+import * as ImagePicker from 'expo-image-picker';
+import FoodImage from '../components/FoodImage';
+import DateField from '../components/DateField';
+import { uploadImage } from '../lib/imageUpload';
+import { addIngredient, getIngredients, Ingredient as PantryIngredient } from '../lib/ingredients';
+import { matchesSearch } from '../lib/search';
+import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import {
+  Camera,
+  ImagePlus,
   ArrowLeft,
   Plus,
   PackagePlus,
@@ -26,7 +34,6 @@ import {
   Snowflake,
   Refrigerator,
   House,
-  CalendarDays,
   StickyNote,
   CheckCircle2,
   Sparkles,
@@ -75,7 +82,6 @@ type Ingredient = {
   createdAt: string;
 };
 
-const STORAGE_KEY = 'smart-kitchen-manual-ingredients-v1';
 
 const CATEGORIES: {
   name: Category;
@@ -107,7 +113,14 @@ function todayString() {
   return `${y}-${m}-${d}`;
 }
 
+function normalizeDateInput(value: string) {
+  const text = value.trim();
+  const local = text.match(/^(\d{1,2})[/-](\d{1,2})[/-](\d{4})$/);
+  return local ? `${local[3]}-${local[2].padStart(2, '0')}-${local[1].padStart(2, '0')}` : text;
+}
+
 function parseDate(value: string): Date | null {
+  value = normalizeDateInput(value);
   if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return null;
 
   const [year, month, day] = value.split('-').map(Number);
@@ -123,140 +136,6 @@ function parseDate(value: string): Date | null {
 
   return date;
 }
-
-export default function AddIngredientScreen() {
-  const router = useRouter();
-
-  const [name, setName] = useState('');
-  const [category, setCategory] = useState<Category>('Rau củ');
-  const [quantity, setQuantity] = useState('');
-  const [unit, setUnit] = useState('g');
-  const [showUnits, setShowUnits] = useState(false);
-
-  const [location, setLocation] =
-    useState<StorageLocation>('Ngăn mát');
-
-  const [purchaseDate, setPurchaseDate] = useState(todayString());
-  const [expiryDate, setExpiryDate] = useState('');
-  const [note, setNote] = useState('');
-  const [saving, setSaving] = useState(false);
-
-  const goBack = () => {
-    Keyboard.dismiss();
-
-    if (router.canGoBack()) {
-      router.back();
-    } else {
-      router.replace('/pantry' as any);
-    }
-  };
-
-  const resetForm = () => {
-    setName('');
-    setCategory('Rau củ');
-    setQuantity('');
-    setUnit('g');
-    setLocation('Ngăn mát');
-    setPurchaseDate(todayString());
-    setExpiryDate('');
-    setNote('');
-    setShowUnits(false);
-  };
-
-  const saveIngredient = async () => {
-    Keyboard.dismiss();
-
-    if (!name.trim()) {
-      Alert.alert('Thiếu tên nguyên liệu', 'Vui lòng nhập tên nguyên liệu.');
-      return;
-    }
-
-    const amount = Number(quantity.replace(',', '.'));
-
-    if (!Number.isFinite(amount) || amount <= 0) {
-      Alert.alert(
-        'Số lượng không hợp lệ',
-        'Vui lòng nhập số lượng lớn hơn 0.'
-      );
-      return;
-    }
-
-    const purchased = parseDate(purchaseDate.trim());
-
-    if (!purchased) {
-      Alert.alert(
-        'Ngày mua không hợp lệ',
-        'Vui lòng nhập ngày mua theo dạng YYYY-MM-DD.'
-      );
-      return;
-    }
-
-    const expiry = parseDate(expiryDate.trim());
-
-    if (!expiry) {
-      Alert.alert(
-        'Hạn sử dụng không hợp lệ',
-        'Vui lòng nhập hạn sử dụng theo dạng YYYY-MM-DD.'
-      );
-      return;
-    }
-
-    if (expiry.getTime() < purchased.getTime()) {
-      Alert.alert(
-        'Kiểm tra ngày',
-        'Hạn sử dụng không được trước ngày mua.'
-      );
-      return;
-    }
-
-    const ingredient: Ingredient = {
-      id: `${Date.now()}-${Math.random()}`,
-      name: name.trim(),
-      category,
-      quantity: String(amount),
-      unit,
-      location,
-      purchaseDate: purchaseDate.trim(),
-      expiryDate: expiryDate.trim(),
-      note: note.trim(),
-      createdAt: new Date().toISOString(),
-    };
-
-    setSaving(true);
-
-    try {
-      const stored = await AsyncStorage.getItem(STORAGE_KEY);
-      const parsed = stored ? JSON.parse(stored) : [];
-      const existing: Ingredient[] = Array.isArray(parsed) ? parsed : [];
-
-      await AsyncStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify([ingredient, ...existing])
-      );
-
-      Alert.alert(
-        'Đã lưu nguyên liệu',
-        `"${ingredient.name}" đã được lưu trên thiết bị.`,
-        [
-          {
-            text: 'Thêm tiếp',
-            onPress: resetForm,
-          },
-          {
-            text: 'Về kho thực phẩm',
-            onPress: () => router.replace('/pantry' as any),
-          },
-        ]
-      );
-    } catch {
-      Alert.alert(
-        'Không thể lưu',
-        'Đã xảy ra lỗi khi lưu nguyên liệu. Vui lòng thử lại.'
-      );
-    } finally {
-      setSaving(false);
-    }
-  };
 
   const SectionTitle = ({
     number,
@@ -280,6 +159,199 @@ export default function AddIngredientScreen() {
       </View>
     </View>
   );
+
+
+export default function AddIngredientScreen() {
+  const router = useRouter();
+  const params = useLocalSearchParams<{ ingredientId?: string; name?: string; category?: string; unit?: string }>();
+  const [catalogId, setCatalogId] = useState(params.ingredientId);
+  const initialCategory: Category = params.category === 'Rau củ' || params.category === 'Trái cây' ? 'Rau củ'
+    : ['Thịt','Hải sản','Thịt cá'].includes(params.category || '') ? 'Thịt cá'
+    : ['Sữa','Trứng','Sữa & trứng'].includes(params.category || '') ? 'Sữa & trứng'
+    : params.category === 'Ngũ cốc' ? 'Ngũ cốc' : params.ingredientId ? 'Khác' : 'Rau củ';
+
+  const [name, setName] = useState(params.name || '');
+  const [category, setCategory] = useState<Category>(initialCategory);
+  const [quantity, setQuantity] = useState('');
+  const [unit, setUnit] = useState(params.unit || 'g');
+  const [showUnits, setShowUnits] = useState(false);
+
+  const [location, setLocation] =
+    useState<StorageLocation>('Ngăn mát');
+
+  const [purchaseDate, setPurchaseDate] = useState(todayString());
+  const [expiryDate, setExpiryDate] = useState('');
+  const [note, setNote] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [image, setImage] = useState('');
+  const saveLock = useRef(false);
+  const [pantry, setPantry] = useState<PantryIngredient[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  useFocusEffect(useCallback(() => {
+    let active = true;
+    getIngredients().then(rows => { if (active) setPantry(rows); })
+      .catch(() => { if (active) setPantry([]); });
+    return () => { active = false; };
+  }, []));
+  const suggestions = name.trim() ? pantry.filter(item => matchesSearch(name, item.name)).slice(0, 5) : [];
+  const selectExisting = (item: PantryIngredient) => {
+    setName(item.name);
+    setCatalogId(item.ingredientId);
+    setImage(item.image || '');
+    setUnit(item.unit);
+    if (LOCATIONS.some(option => option.name === item.location)) setLocation(item.location as StorageLocation);
+    setPurchaseDate(item.purchaseDate || todayString());
+    setExpiryDate(item.expiryDate);
+    setNote(item.note);
+    const group: Category = ['Thịt', 'Hải sản', 'Thịt cá'].includes(item.category) ? 'Thịt cá'
+      : ['Sữa', 'Trứng', 'Sữa & trứng'].includes(item.category) ? 'Sữa & trứng'
+      : ['Rau củ', 'Trái cây'].includes(item.category) ? 'Rau củ'
+      : item.category === 'Ngũ cốc' ? 'Ngũ cốc' : 'Khác';
+    setCategory(group);
+    setShowSuggestions(false);
+  };
+  const changeName = (value: string) => {
+    setName(value);
+    setCatalogId(undefined);
+    setShowSuggestions(true);
+    const exact = pantry.find(item => item.name.trim().toLocaleLowerCase('vi') === value.trim().toLocaleLowerCase('vi'));
+    if (exact) { selectExisting(exact); setShowSuggestions(true); }
+    else setImage('');
+  };
+
+  const chooseImage = async (camera = false) => {
+    if (saving) return;
+    try {
+      if (camera) {
+        const permission = await ImagePicker.requestCameraPermissionsAsync();
+        if (!permission.granted) { Alert.alert('Cần quyền camera', 'Cho phép truy cập camera để chụp ảnh nguyên liệu.'); return; }
+      }
+      const result = camera
+        ? await ImagePicker.launchCameraAsync({ mediaTypes: ['images'], allowsEditing: true, aspect: [4,3], quality: 0.8 })
+        : await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], allowsEditing: true, aspect: [4,3], quality: 0.8 });
+      if (!result.canceled) setImage(result.assets[0].uri);
+    } catch (error) { Alert.alert('Không thể chọn ảnh', error instanceof Error ? error.message : 'Vui lòng thử lại.'); }
+  };
+
+  const goBack = () => {
+    Keyboard.dismiss();
+
+    if (router.canGoBack()) {
+      router.back();
+    } else {
+      router.replace('/pantry' as any);
+    }
+  };
+
+  const resetForm = () => {
+    setCatalogId(undefined);
+    setShowSuggestions(false);
+    setImage('');
+    setName('');
+    setCategory('Rau củ');
+    setQuantity('');
+    setUnit('g');
+    setLocation('Ngăn mát');
+    setPurchaseDate(todayString());
+    setExpiryDate('');
+    setNote('');
+    setShowUnits(false);
+  };
+
+  const saveIngredient = async () => {
+    if (saveLock.current) return;
+    Keyboard.dismiss();
+
+    if (!name.trim()) {
+      Alert.alert('Thiếu tên nguyên liệu', 'Vui lòng nhập tên nguyên liệu.');
+      return;
+    }
+
+    const amount = Number(quantity.replace(',', '.'));
+
+    if (!Number.isFinite(amount) || amount <= 0) {
+      Alert.alert(
+        'Số lượng không hợp lệ',
+        'Vui lòng nhập số lượng lớn hơn 0.'
+      );
+      return;
+    }
+
+    const purchased = parseDate(purchaseDate.trim());
+
+    if (!purchased) {
+      Alert.alert(
+        'Ngày mua không hợp lệ',
+        'Vui lòng nhập ngày mua theo dạng YYYY-MM-DD hoặc DD/MM/YYYY.'
+      );
+      return;
+    }
+
+    const expiry = parseDate(expiryDate.trim());
+
+    if (!expiry) {
+      Alert.alert(
+        'Hạn sử dụng không hợp lệ',
+        'Vui lòng nhập hạn sử dụng theo dạng YYYY-MM-DD hoặc DD/MM/YYYY.'
+      );
+      return;
+    }
+
+    if (expiry.getTime() < purchased.getTime()) {
+      Alert.alert(
+        'Kiểm tra ngày',
+        'Hạn sử dụng không được trước ngày mua.'
+      );
+      return;
+    }
+
+    const ingredient: Ingredient = {
+      id: `${Date.now()}-${Math.random()}`,
+      name: name.trim(),
+      category,
+      quantity: String(amount),
+      unit,
+      location,
+      purchaseDate: normalizeDateInput(purchaseDate),
+      expiryDate: normalizeDateInput(expiryDate),
+      note: note.trim(),
+      createdAt: new Date().toISOString(),
+    };
+
+    saveLock.current = true;
+    setSaving(true);
+
+    try {
+      let uploadedImage = image;
+      if (image && !/^https?:\/\//.test(image) && !image.startsWith('/uploads/')) {
+        uploadedImage = await uploadImage(image, 'pantry');
+        setImage(uploadedImage);
+      }
+      const result = await addIngredient({ ...ingredient, mergeExisting: true, quantity: amount, ingredientId: catalogId, ...(uploadedImage ? { image: uploadedImage } : {}) });
+
+      setPantry(await getIngredients().catch(() => pantry));
+      Alert.alert(
+        'Đã lưu nguyên liệu',
+        result.merged ? `Đã cộng thêm ${amount} ${unit} ${ingredient.name} vào kho.` : `"${ingredient.name}" đã được thêm vào kho thực phẩm.`,
+        [
+          {
+            text: 'Thêm tiếp',
+            onPress: resetForm,
+          },
+          {
+            text: 'Về kho thực phẩm',
+            onPress: () => router.replace('/pantry' as any),
+          },
+        ]
+      );
+    } catch (error) {
+      Alert.alert('Không thể lưu nguyên liệu', error instanceof Error ? error.message : 'Vui lòng thử lại.');
+    } finally {
+      saveLock.current = false;
+      setSaving(false);
+    }
+  };
+
 
   return (
     <SafeAreaView
@@ -335,6 +407,19 @@ export default function AddIngredientScreen() {
             </View>
           </View>
 
+          <View style={styles.formCard}>
+            <Text style={styles.label}>Ảnh nguyên liệu (tùy chọn)</Text>
+            {image ? <View style={{gap:10}}>
+              <FoodImage uri={image} style={{width:'100%',height:180,borderRadius:14}} resizeMode="cover" />
+              <Pressable disabled={saving} onPress={() => setImage('')}><Text style={{color:C.orange,fontWeight:'600'}}>Bỏ ảnh đã chọn</Text></Pressable>
+            </View> : <View style={{padding:22,alignItems:'center',gap:8,backgroundColor:C.cream,borderRadius:14,borderWidth:1,borderColor:C.border}}>
+              <ImagePlus size={30} color={C.orange} /><Text style={{fontSize:12,color:C.muted}}>Thêm ảnh để dễ nhận biết thực phẩm trong kho</Text>
+            </View>}
+            <View style={{flexDirection:'row',gap:10,marginTop:12}}>
+              <Pressable disabled={saving} onPress={() => void chooseImage()} style={{flex:1,minHeight:44,borderRadius:10,backgroundColor:C.peach,flexDirection:'row',alignItems:'center',justifyContent:'center',gap:7}}><ImagePlus size={16} color={C.orange}/><Text style={{color:C.orange,fontSize:12,fontWeight:'600'}}>Chọn từ thư viện</Text></Pressable>
+              <Pressable disabled={saving} onPress={() => void chooseImage(true)} style={{flex:1,minHeight:44,borderRadius:10,backgroundColor:C.peach,flexDirection:'row',alignItems:'center',justifyContent:'center',gap:7}}><Camera size={16} color={C.orange}/><Text style={{color:C.orange,fontSize:12,fontWeight:'600'}}>Chụp ảnh</Text></Pressable>
+            </View>
+          </View>
           {/* PHẦN 1 */}
           <View style={styles.formCard}>
             <SectionTitle
@@ -351,18 +436,37 @@ export default function AddIngredientScreen() {
               <TextInput
                 style={styles.textInput}
                 value={name}
-                onChangeText={setName}
+                onChangeText={changeName}
+                onFocus={() => setShowSuggestions(true)}
                 placeholder="Ví dụ: Cà chua, thịt bò, trứng gà..."
                 placeholderTextColor="#A18B81"
                 maxLength={80}
               />
 
               {name.length > 0 && (
-                <Pressable onPress={() => setName('')}>
+                <Pressable onPress={() => changeName('')}>
                   <X size={17} color={C.muted} />
                 </Pressable>
               )}
             </View>
+
+            {showSuggestions && suggestions.length > 0 && (
+              <View style={styles.suggestions}>
+                <Text style={styles.suggestionHint}>Đã có trong kho · Chọn để dùng ảnh và cộng thêm số lượng</Text>
+                {suggestions.map(item => (
+                  <Pressable key={item.id} onPress={() => selectExisting(item)} style={styles.suggestionRow}>
+                    <FoodImage uri={item.image} style={styles.suggestionImage} />
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.suggestionName}>{item.name}</Text>
+                      <Text style={styles.suggestionHint}>{item.quantity} {item.unit} · {item.location}</Text>
+                      <Text style={styles.suggestionHint}>HSD: {item.expiryDate || 'Chưa có'}</Text>
+                    </View>
+                    <Plus size={18} color={C.orange} />
+                  </Pressable>
+                ))}
+              </View>
+            )}
+            <Text style={styles.suggestionHint}>Cùng đơn vị, nơi bảo quản và ngày mua/hạn dùng sẽ được cộng số lượng; khác thông tin sẽ lưu đợt riêng.</Text>
 
             <Text style={styles.label}>Nhóm thực phẩm</Text>
 
@@ -509,42 +613,20 @@ export default function AddIngredientScreen() {
             <SectionTitle
               number="03"
               title="Ngày mua & hạn sử dụng"
-              subtitle="Theo dõi độ tươi của thực phẩm"
+              subtitle="Nhập YYYY-MM-DD hoặc DD/MM/YYYY"
             />
 
             <Text style={styles.label}>
               Ngày mua <Text style={styles.required}>*</Text>
             </Text>
 
-            <View style={styles.inputWrapper}>
-              <CalendarDays size={19} color={C.orange} />
-              <TextInput
-                style={styles.textInput}
-                value={purchaseDate}
-                onChangeText={setPurchaseDate}
-                placeholder="YYYY-MM-DD"
-                placeholderTextColor="#A18B81"
-                keyboardType="numbers-and-punctuation"
-                maxLength={10}
-              />
-            </View>
+            <DateField title="Ngày mua" value={purchaseDate} onChangeText={setPurchaseDate} maxDate={normalizeDateInput(expiryDate)} disabled={saving} style={styles.inputWrapper} inputStyle={styles.textInput} />
 
             <Text style={styles.label}>
               Hạn sử dụng <Text style={styles.required}>*</Text>
             </Text>
 
-            <View style={styles.inputWrapper}>
-              <CalendarDays size={19} color={C.orange} />
-              <TextInput
-                style={styles.textInput}
-                value={expiryDate}
-                onChangeText={setExpiryDate}
-                placeholder="YYYY-MM-DD"
-                placeholderTextColor="#A18B81"
-                keyboardType="numbers-and-punctuation"
-                maxLength={10}
-              />
-            </View>
+            <DateField title="Hạn sử dụng" value={expiryDate} onChangeText={setExpiryDate} minDate={normalizeDateInput(purchaseDate)} disabled={saving} style={styles.inputWrapper} inputStyle={styles.textInput} />
 
             <View style={styles.dateTip}>
               <Sparkles size={16} color={C.green} />
@@ -671,6 +753,11 @@ export default function AddIngredientScreen() {
 }
 
 const styles = StyleSheet.create({
+  suggestions: { borderWidth: 1, borderColor: C.border, borderRadius: 12, padding: 10, gap: 8, backgroundColor: C.cream },
+  suggestionRow: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 8 },
+  suggestionImage: { width: 45, height: 45, borderRadius: 8 },
+  suggestionName: { color: C.dark, fontWeight: '700', fontSize: 14 },
+  suggestionHint: { color: C.muted, fontSize: 11, lineHeight: 17 },
   screen: {
     flex: 1,
     backgroundColor: C.cream,

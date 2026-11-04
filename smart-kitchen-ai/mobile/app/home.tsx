@@ -1,3 +1,6 @@
+// Trang: Trang chủ — tổng quan kho thực phẩm và gợi ý món ăn.
+import SearchField from "../components/SearchField";
+import FoodImage from "../components/FoodImage";
 import React, { useCallback, useMemo, useState } from "react";
 
 import {
@@ -5,7 +8,6 @@ import {
   Text,
   ScrollView,
   Pressable,
-  TextInput,
   StyleSheet,
   Image,
   Alert,
@@ -20,7 +22,6 @@ import { getHomeData, type HomeRecipe, type HomeData } from "../lib/homeApi";
 import { avatarSource } from "../lib/profileApi";
 
 import {
-  Search,
   Sparkles,
   ArrowRight,
   Refrigerator,
@@ -34,7 +35,6 @@ import {
   ChefHat,
   Users,
   Leaf,
-  X,
   Heart,
 } from "lucide-react-native";
 
@@ -296,29 +296,7 @@ export default function HomeScreen() {
 
         {/* TÌM KIẾM */}
 
-        <View style={styles.searchContainer}>
-          <Search size={20} color={C.orange} />
-
-          <TextInput
-            style={styles.searchInput}
-            value={search}
-            onChangeText={setSearch}
-            placeholder="Tìm món ăn, nguyên liệu, công thức..."
-            placeholderTextColor="#A18B81"
-            returnKeyType="search"
-            onSubmitEditing={searchRecipes}
-          />
-
-          {search.length > 0 ? (
-            <Pressable onPress={() => setSearch("")} hitSlop={8}>
-              <X size={18} color={C.muted} />
-            </Pressable>
-          ) : (
-            <Pressable onPress={() => goTo("/recipes")} hitSlop={8}>
-              <ArrowRight size={19} color={C.orange} />
-            </Pressable>
-          )}
-        </View>
+        <SearchField value={search} onChangeText={setSearch} placeholder="Tìm món ăn, nguyên liệu, công thức..." style={styles.searchContainer} inputStyle={styles.searchInput} onSubmit={searchRecipes} />
 
         {/* CHEF AI */}
 
@@ -485,8 +463,8 @@ export default function HomeScreen() {
                     onPress={() => openRecipe(recipe)}
                   >
                     {recipe.image_url ? (
-                      <Image
-                        source={{ uri: recipe.image_url }}
+                      <FoodImage
+                        uri={recipe.image_url}
                         style={styles.recipeImage}
                         resizeMode="cover"
                       />
