@@ -1,3 +1,4 @@
+import { getAuthUser } from "../lib/auth";
 // Trang: Chi tiết bài viết cộng đồng, công thức chia sẻ và tương tác thích/lưu.
 import React, { useCallback, useRef, useState } from "react";
 import {
@@ -22,15 +23,15 @@ import {
   Globe,
   Heart,
   LockKeyhole,
-  MessageCircle,
   Share2,
   Trash2,
   UtensilsCrossed,
 } from "lucide-react-native";
+import PostComments from "../components/post/PostComments";
 import UserAvatar from "../components/UserAvatar";
 import FoodImage from "../components/FoodImage";
 import AppHeader from "../components/AppHeader";
-import { CommunityPost, deletePost, getPosts } from "../lib/communityApi";
+import { CommunityPost, deletePost, getPosts, followPostAuthor } from "../lib/communityApi";
 import { kitchenRequest } from "../lib/kitchenApi";
 import { parsePostContent } from "../lib/postContent";
 
@@ -67,6 +68,7 @@ export default function PostDetailScreen() {
   const detailsY = useRef(0);
   const reactionLock = useRef(false);
   const [post, setPost] = useState<CommunityPost | null>(null);
+  const [guest, setGuest] = useState(true);
   const [busy, setBusy] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [error, setError] = useState("");
@@ -78,8 +80,9 @@ export default function PostDetailScreen() {
       setPost(null);
       setError("");
       setExpanded(true);
-      getPosts(id)
-        .then((rows) => {
+      Promise.all([getPosts(id),getAuthUser()])
+        .then(([rows,user]) => {
+          if(active) setGuest(!user);
           const found = rows.find((p) => p.id === id);
           if (!found)
             throw new Error(
@@ -98,8 +101,19 @@ export default function PostDetailScreen() {
       };
     }, [id, revision]),
   );
+  const toggleFollow = async () => {
+    if (!post || post.isOwner || reactionLock.current) return;
+    if (!await getAuthUser()) { Alert.alert("Vui lòng đăng nhập", "Đăng nhập để tương tác với bài viết.", [{text:"Để sau",style:"cancel"},{text:"Đăng nhập",onPress:()=>router.push("/login")}]); return; }
+    reactionLock.current = true; setBusy(true);
+    try {
+      const result = await followPostAuthor(post.id, !post.following);
+      setPost(prev => prev?.id === post.id ? {...prev, following:result.following} : prev);
+    } catch (err) { Alert.alert("Không thể theo dõi", err instanceof Error ? err.message : "Vui lòng thử lại"); }
+    finally { reactionLock.current = false; setBusy(false); }
+  };
   const react = async (kind: "like" | "save") => {
     if (!post || reactionLock.current) return;
+    if (!await getAuthUser()) { Alert.alert("Vui lòng đăng nhập", "Đăng nhập để tương tác với bài viết.", [{text:"Để sau",style:"cancel"},{text:"Đăng nhập",onPress:()=>router.push("/login")}]); return; }
     reactionLock.current = true;
     setBusy(true);
     const active = !(kind === "like" ? post.liked : post.saved);
@@ -243,6 +257,7 @@ export default function PostDetailScreen() {
         </View>
       </Modal>
       <ScrollView
+        keyboardShouldPersistTaps="handled"
         ref={scroll}
         contentContainerStyle={s.content}
         showsVerticalScrollIndicator={false}
@@ -294,6 +309,7 @@ export default function PostDetailScreen() {
                 <Text style={s.categoryText}>{post.category}</Text>
               </View>
             </View>
+            {!post.isOwner && <Pressable disabled={busy} onPress={() => void toggleFollow()} style={[s.deleteButton,post.following && {borderWidth:1,borderColor:C.orange}]}><Text style={s.accent}>{post.following ? '✓ Đang theo dõi · Bỏ theo dõi' : '+ Theo dõi người đăng'}</Text></Pressable>}
             {post.isOwner && (
               <Pressable
                 disabled={busy}
@@ -422,19 +438,8 @@ export default function PostDetailScreen() {
                   ))}
               </View>
             )}
-            <View style={s.comments}>
-              <View style={s.detailsHeading}>
-                <MessageCircle size={20} color={C.orange} />
-                <Text style={s.sectionTitle}>Bình luận</Text>
-              </View>
-              <View style={s.commentEmpty}>
-                <MessageCircle size={28} color={C.border} />
-                <Text style={s.emptyTitle}>Tính năng bình luận sắp có</Text>
-                <Text style={s.emptyText}>
-                  Bạn có thể thả tim hoặc lưu lại công thức yêu thích.
-                </Text>
-              </View>
-            </View>
+            <PostComments readOnly={guest} key={post.id} postId={post.id} count={post.comments} onCountChange={delta => setPost(prev => prev?.id === post.id ? {...prev, comments:Math.max(0,prev.comments+delta)} : prev)}/>
+
           </>
         )}
       </ScrollView>

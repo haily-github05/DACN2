@@ -1,3 +1,4 @@
+import RequireLogin from "../components/RequireLogin";
 // Trang: Hoạt động của tôi — món đã nấu, nội dung đã lưu và bài viết của tôi.
 import { matchesSearch } from "../lib/search";
 import SearchField from "../components/SearchField";
@@ -24,7 +25,7 @@ function displayDate(value?: string | null) {
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? "" : date.toLocaleDateString("vi-VN");
 }
-export default function MyActivityScreen() {
+function MyActivityScreen() {
   const router = useRouter();
   const params = useLocalSearchParams<{ tab?: string }>();
   const tab: Tab = params.tab === "saved" || params.tab === "shared" ? params.tab : "cooked";
@@ -149,3 +150,6 @@ export default function MyActivityScreen() {
 const s = StyleSheet.create({
   page:{flex:1,backgroundColor:C.cream},flex:{flex:1},heading:{flexDirection:"row",alignItems:"center",gap:12,padding:18},back:{padding:10,backgroundColor:C.peach,borderRadius:12},title:{fontSize:22,fontWeight:"700",color:C.dark},muted:{fontSize:12,color:C.muted,lineHeight:19,marginTop:5},tabs:{flexDirection:"row",marginHorizontal:18,padding:4,backgroundColor:C.peach,borderRadius:14,gap:4},tab:{flex:1,paddingVertical:12,alignItems:"center",borderRadius:11},selectedTab:{backgroundColor:C.orange},tabText:{fontSize:13,fontWeight:"600",color:C.orange},selectedText:{color:"white"},filters:{flexDirection:"row",gap:8,paddingHorizontal:18,paddingTop:14},chip:{paddingHorizontal:14,paddingVertical:9,borderRadius:20,borderWidth:1,borderColor:C.border},activeChip:{backgroundColor:C.peach,borderColor:C.orange},chipText:{fontSize:12,color:C.orange,fontWeight:"600"},search:{flexDirection:"row",alignItems:"center",gap:10,margin:18,paddingHorizontal:14,borderRadius:12,borderWidth:1,borderColor:C.border,backgroundColor:"white"},searchInput:{flex:1,paddingVertical:12,color:C.dark,fontSize:14},list:{paddingHorizontal:18,paddingBottom:24,gap:12},count:{fontSize:13,color:C.muted,marginBottom:2},card:{backgroundColor:"white",borderRadius:16,borderWidth:1,borderColor:C.border,overflow:"hidden"},cardMain:{padding:12,flexDirection:"row",alignItems:"center",gap:12},image:{width:80,height:86,borderRadius:12},cardTitle:{fontSize:16,lineHeight:22,fontWeight:"700",color:C.dark},badge:{fontSize:11,color:C.orange,lineHeight:18,marginTop:5},row:{flexDirection:"row",alignItems:"center",gap:5},unsave:{borderTopWidth:1,borderColor:C.border,padding:10,flexDirection:"row",alignItems:"center",justifyContent:"flex-end",gap:6},center:{margin:40},empty:{padding:24,gap:20,alignItems:"center"},body:{fontSize:15,lineHeight:24,color:C.muted,textAlign:"center"},cta:{paddingVertical:13,paddingHorizontal:18,borderRadius:12,backgroundColor:C.orange,flexDirection:"row",gap:8,alignItems:"center"},ctaText:{color:"white",fontWeight:"600",fontSize:14},
 });
+
+// Người dùng khách cần đăng nhập trước khi truy cập chức năng cá nhân.
+export default function ProtectedPage() { return <RequireLogin><MyActivityScreen/></RequireLogin>; }

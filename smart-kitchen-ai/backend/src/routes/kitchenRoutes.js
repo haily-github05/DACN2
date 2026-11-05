@@ -98,16 +98,23 @@ router.get("/:userId/ingredients",route(async(req,res)=>{
   const [rows]=await db.query("SELECT i.ingredient_id,i.name,i.category,i.default_unit,i.image_url, (SELECT COUNT(*) FROM pantry_items p WHERE p.ingredient_id=i.ingredient_id AND p.user_id=? AND p.quantity>0) AS pantry_count FROM ingredients i ORDER BY i.name,i.ingredient_id",[req.userId]);
   res.json({success:true,data:rows.map(i=>({id:String(i.ingredient_id),name:i.name,category:i.category||"Khác",unit:i.default_unit,image:i.image_url||"",inPantry:Number(i.pantry_count)>0}))});
 }));
-router.get("/:userId/recipes", route(async (req, res) => {
+async function recipeList(req, res) {
   const [recipes] = await db.query("SELECT * FROM recipes WHERE is_active = 1 ORDER BY recipe_id DESC");
-  const [ingredients] = await db.query(`SELECT ri.*, i.name, COALESCE((SELECT SUM(p.quantity) FROM pantry_items p WHERE p.user_id=? AND p.ingredient_id=ri.ingredient_id AND p.unit=ri.unit AND (p.expiry_date IS NULL OR p.expiry_date >= CURDATE())),0) AS available_quantity FROM recipe_ingredients ri JOIN ingredients i ON i.ingredient_id=ri.ingredient_id`, [req.userId]);
+  const [ingredients] = await db.query(`SELECT ri.*, i.name, COALESCE((SELECT SUM(p.quantity) FROM pantry_items p WHERE p.user_id=? AND p.ingredient_id=ri.ingredient_id AND p.unit=ri.unit AND (p.expiry_date IS NULL OR p.expiry_date >= CURDATE())),0) AS available_quantity FROM recipe_ingredients ri JOIN ingredients i ON i.ingredient_id=ri.ingredient_id`, [req.userId || 0]);
   const [steps] = await db.query("SELECT * FROM recipe_steps ORDER BY step_number");
-  const recommended = await getRecommendations(req.userId, recipes, ingredients);
+  const recommended = req.userId ? await getRecommendations(req.userId, recipes, ingredients) : recipes;
   res.json({ success: true, data: recommended.map(r => {
     const items = ingredients.filter(i => i.recipe_id === r.recipe_id).map(i => ({ id: String(i.ingredient_id), name: i.name, amount: Number(i.quantity), unit: i.unit, available: Number(i.available_quantity) >= Number(i.quantity) }));
     return { preferenceInfo: r.preferenceInfo, id: String(r.recipe_id), name: r.name, description: r.description || "", image: r.image_url || "", minutes: Number(r.prep_time || 0) + Number(r.cook_time || 0), calories: r.calories == null ? null : Number(r.calories), defaultServings: Number(r.default_servings || 1), category: r.cuisine_type || r.region || "Khác", region: r.region || "", match: items.length ? Math.round(items.filter(i=>i.available).length / items.length * 100) : 0, ingredients: items, steps: steps.filter(s => s.recipe_id === r.recipe_id).map(s => ({ title: `Bước ${s.step_number}`, description: s.instruction })) };
   }) });
+}
+router.get("/public-recipes", route(recipeList));
+router.get("/:userId/recipes", route(recipeList));
+router.get("/public-ingredients", route(async (req,res)=>{
+ const [rows]=await db.query("SELECT ingredient_id,name,category,default_unit,image_url FROM ingredients ORDER BY name");
+ res.json({success:true,data:rows.map(i=>({id:String(i.ingredient_id),name:i.name,category:i.category||"Khác",unit:i.default_unit,image:i.image_url||"",inPantry:false}))});
 }));
+
 router.get("/:userId/shopping", route(async (req, res) => {
   const [rows] = await db.query(`SELECT s.shopping_item_id AS id, i.name, i.category, s.quantity_to_buy, s.unit, s.is_purchased, s.note FROM shopping_list_items s JOIN shopping_lists l ON l.shopping_list_id=s.shopping_list_id JOIN ingredients i ON i.ingredient_id=s.ingredient_id WHERE l.user_id=? AND l.status='ACTIVE' ORDER BY s.shopping_item_id`, [req.userId]);
   res.json({ success: true, data: rows.map(r=>({ id:String(r.id), name:r.name, category:r.category || "Khác", quantity:`${Number(r.quantity_to_buy)} ${r.unit}`, checked:!!r.is_purchased, reason:r.note || "" })) });
@@ -204,15 +211,21 @@ router.get("/:userId/activity",route(async(req,res)=>{
   const data=await require("../services/activityService").getActivity(req.userId);
   res.json({success:true,data});
 }));
-router.get("/:userId/posts",route(async(req,res)=>{
+async function listPosts(req,res) {
+  const viewer=req.userId || 0;
   const postId=req.query.id === undefined ? null : id(req.query.id);
   const [rows]=await db.query(`SELECT p.*, u.full_name AS author, u.avatar_url AS author_avatar,
     (SELECT COUNT(*) FROM community_reactions r WHERE r.post_id=p.post_id AND r.kind='like') AS likes,
     EXISTS(SELECT 1 FROM community_reactions r WHERE r.post_id=p.post_id AND r.user_id=? AND r.kind='like') AS liked,
-    EXISTS(SELECT 1 FROM community_reactions r WHERE r.post_id=p.post_id AND r.user_id=? AND r.kind='save') AS saved
-    FROM community_posts p JOIN users u ON u.user_id=p.user_id WHERE (p.visibility='PUBLIC' OR p.user_id=?) ${postId ? "AND p.post_id=?" : ""} ORDER BY p.post_id DESC LIMIT 100`,[req.userId,req.userId,req.userId,...(postId ? [postId] : [])]);
-  res.json({success:true,data:rows.map(r=>({id:String(r.post_id),isOwner:Number(r.user_id)===req.userId,author:r.author,avatar:r.author_avatar||null,initials:r.author.split(/\s+/).map(s=>s[0]).slice(-2).join(""),title:r.title,description:r.description,visibility:r.visibility,category:r.category,image:r.image_url||"",time:r.created_at,likes:Number(r.likes),comments:0,liked:!!r.liked,saved:!!r.saved}))});
-}));
+    EXISTS(SELECT 1 FROM community_reactions r WHERE r.post_id=p.post_id AND r.user_id=? AND r.kind='save') AS saved,
+    (SELECT COUNT(*) FROM community_comments c WHERE c.post_id=p.post_id) AS comments,
+    EXISTS(SELECT 1 FROM user_follows f WHERE f.follower_id=? AND f.followed_id=p.user_id) AS following
+    FROM community_posts p JOIN users u ON u.user_id=p.user_id WHERE (p.visibility='PUBLIC' OR p.user_id=?) ${postId ? "AND p.post_id=?" : ""} ORDER BY p.post_id DESC LIMIT 100`,[viewer,viewer,viewer,viewer,...(postId ? [postId] : [])]);
+  res.json({success:true,data:rows.map(r=>({id:String(r.post_id),isOwner:Number(r.user_id)===req.userId,author:r.author,avatar:r.author_avatar||null,initials:r.author.split(/\s+/).map(s=>s[0]).slice(-2).join(""),title:r.title,description:r.description,visibility:r.visibility,category:r.category,image:r.image_url||"",time:r.created_at,likes:Number(r.likes),comments:Number(r.comments||0),following:!!r.following,liked:!!r.liked,saved:!!r.saved}))});
+}
+router.get("/public-posts",route(listPosts));
+router.get("/:userId/posts",route(listPosts));
+
 router.post("/:userId/posts",route(async(req,res)=>{
   const p=req.body, title=text(p.title,150),description=text(p.description,10000),category=text(p.category,50);
   const image=p.image || "";
@@ -244,6 +257,66 @@ router.put("/:userId/posts/:postId/reactions",route(async(req,res)=>{
   if(active) await db.query("INSERT IGNORE INTO community_reactions (user_id,post_id,kind) VALUES (?,?,?)",[req.userId,id(req.params.postId),kind]);
   else await db.query("DELETE FROM community_reactions WHERE user_id=? AND post_id=? AND kind=?",[req.userId,id(req.params.postId),kind]);
   res.json({success:true,data:null});
+}));
+// Kiểm tra quyền xem bài cho mọi thao tác bình luận/theo dõi.
+async function visiblePost(userId, postId) {
+  userId ||= 0;
+  const [rows] = await db.query("SELECT post_id,user_id FROM community_posts WHERE post_id=? AND (visibility='PUBLIC' OR user_id=?)", [id(postId), userId]);
+  if (!rows.length) throw Object.assign(new Error("Không tìm thấy bài viết"), {status:404});
+  return rows[0];
+}
+const commentData = (r, viewer) => ({ id:String(r.comment_id), parentId:r.parent_comment_id == null ? null : String(r.parent_comment_id), replyCount:Number(r.reply_count||0), author:r.author, avatar:r.avatar_url||null, initials:r.author.split(/\s+/).map(s=>s[0]).slice(-2).join(""), content:r.content, createdAt:r.created_at, isOwner:Number(r.user_id)===viewer });
+async function listComments(req,res) {
+  await visiblePost(req.userId, req.params.postId);
+  const before = req.query.before === undefined ? null : id(req.query.before);
+  const parentId = req.query.parentId === undefined ? null : id(req.query.parentId);
+  const [rows] = await db.query(`SELECT c.*,u.full_name AS author,u.avatar_url,
+    (SELECT COUNT(*) FROM community_comments reply WHERE reply.parent_comment_id=c.comment_id) AS reply_count
+    FROM community_comments c JOIN users u ON u.user_id=c.user_id
+    WHERE c.post_id=? AND ${parentId ? 'c.parent_comment_id=?' : 'c.parent_comment_id IS NULL'}
+    ${before ? 'AND c.comment_id<?' : ''} ORDER BY c.comment_id DESC LIMIT 21`, [id(req.params.postId), ...(parentId ? [parentId] : []), ...(before ? [before] : [])]);
+  res.json({success:true,data:{items:rows.slice(0,20).map(r=>commentData(r,req.userId)),hasMore:rows.length>20}});
+}
+router.get("/public-posts/:postId/comments",route(listComments));
+router.get("/:userId/posts/:postId/comments",route(listComments));
+
+router.post("/:userId/posts/:postId/comments",route(async(req,res)=>{
+  const content = text(req.body.content,2000), postId = id(req.params.postId);
+  if (req.body.parentId != null) {
+    await visiblePost(req.userId, postId);
+    const parentId = id(req.body.parentId);
+    const [parents] = await db.query("SELECT comment_id,parent_comment_id FROM community_comments WHERE comment_id=? AND post_id=?",[parentId,postId]);
+    if (!parents.length) throw Object.assign(new Error("Bình luận đã bị xoá hoặc không thuộc bài viết này"),{status:404});
+    const rootId = parents[0].parent_comment_id || parents[0].comment_id;
+    const [insert] = await db.query("INSERT INTO community_comments (post_id,user_id,content,parent_comment_id) SELECT p.post_id,?,?,c.comment_id FROM community_posts p JOIN community_comments c ON c.post_id=p.post_id WHERE p.post_id=? AND c.comment_id=? AND (p.visibility='PUBLIC' OR p.user_id=?)",[req.userId,content,postId,rootId,req.userId]);
+    if (!insert.affectedRows) throw Object.assign(new Error("Bình luận không còn tồn tại"),{status:404});
+    const [rows] = await db.query("SELECT c.*,u.full_name AS author,u.avatar_url FROM community_comments c JOIN users u ON u.user_id=c.user_id WHERE c.comment_id=?",[insert.insertId]);
+    return res.json({success:true,data:commentData(rows[0],req.userId)});
+  }
+  const [result] = await db.query("INSERT INTO community_comments (post_id,user_id,content) SELECT post_id,?,? FROM community_posts WHERE post_id=? AND (visibility='PUBLIC' OR user_id=?)",[req.userId,content,postId,req.userId]);
+  if (!result.affectedRows) throw Object.assign(new Error("Không tìm thấy bài viết"),{status:404});
+  const [rows] = await db.query("SELECT c.*,u.full_name AS author,u.avatar_url FROM community_comments c JOIN users u ON u.user_id=c.user_id WHERE c.comment_id=?",[result.insertId]);
+  res.json({success:true,data:commentData(rows[0],req.userId)});
+}));
+router.delete("/:userId/posts/:postId/comments/:commentId",route(async(req,res)=>{
+  await visiblePost(req.userId,req.params.postId);
+  const data = await transaction(async conn => {
+    const commentId=id(req.params.commentId), postId=id(req.params.postId);
+    const [owned] = await conn.query("SELECT comment_id FROM community_comments WHERE comment_id=? AND post_id=? AND user_id=? FOR UPDATE",[commentId,postId,req.userId]);
+    if (!owned.length) throw Object.assign(new Error("Không tìm thấy bình luận của bạn"),{status:404});
+    const [[children]] = await conn.query("SELECT COUNT(*) AS count FROM community_comments WHERE parent_comment_id=?",[commentId]);
+    await conn.query("DELETE FROM community_comments WHERE comment_id=? AND post_id=? AND user_id=?",[commentId,postId,req.userId]);
+    return {deletedCount:1+Number(children.count)};
+  });
+  res.json({success:true,data});
+}));
+router.put("/:userId/posts/:postId/follow",route(async(req,res)=>{
+  if (typeof req.body.active!=="boolean") throw fail("Trạng thái theo dõi không hợp lệ");
+  const post=await visiblePost(req.userId,req.params.postId);
+  if (Number(post.user_id)===req.userId) throw fail("Bạn không thể theo dõi chính mình");
+  if (req.body.active) await db.query("INSERT IGNORE INTO user_follows (follower_id,followed_id) VALUES (?,?)",[req.userId,post.user_id]);
+  else await db.query("DELETE FROM user_follows WHERE follower_id=? AND followed_id=?",[req.userId,post.user_id]);
+  res.json({success:true,data:{following:req.body.active}});
 }));
 router.post("/:userId/cooking",route(async(req,res)=>{
   const recipeId=id(req.body.recipeId), servings=id(req.body.servings);

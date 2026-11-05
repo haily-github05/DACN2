@@ -1,3 +1,4 @@
+import RequireLogin from "../components/RequireLogin";
 // Trang: Thực phẩm sắp hết hạn và đã hết hạn.
 import { getIngredients, daysUntil, Ingredient } from "../lib/ingredients";
 import React, { useCallback, useState } from "react";
@@ -17,7 +18,7 @@ import AppHeader from "../components/AppHeader";
 import BottomNav from "../components/BottomNav";
 
 const ORANGE = "#A23A00";
-export default function Screen() {
+function Screen() {
   const router = useRouter();
   const [items, setItems] = useState<Ingredient[]>([]);
   const [loaded, setLoaded] = useState(false);
@@ -299,3 +300,6 @@ const styles = StyleSheet.create({
   secondaryText: { color: ORANGE },
   time: { fontSize: 30, fontWeight: "800", color: ORANGE, textAlign: "center" },
 });
+
+// Người dùng khách cần đăng nhập trước khi truy cập chức năng cá nhân.
+export default function ProtectedPage() { return <RequireLogin><Screen/></RequireLogin>; }

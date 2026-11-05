@@ -1,3 +1,4 @@
+import RequireLogin from "../components/RequireLogin";
 // Trang: Danh sách mua sắm — thêm, đánh dấu đã mua và chuyển vào kho.
 import { matchesSearch } from "../lib/search";
 import SearchField from "../components/SearchField";
@@ -77,7 +78,7 @@ const EMOJI: Record<Category, string> = {
   Khác: "🛍️",
 };
 
-export default function ShoppingListScreen() {
+function ShoppingListScreen() {
   const router = useRouter();
 
   const [items, setItems] = useState<ShoppingItem[]>([]);
@@ -917,3 +918,6 @@ const styles = StyleSheet.create({
     fontWeight: "800",
   },
 });
+
+// Người dùng khách cần đăng nhập trước khi truy cập chức năng cá nhân.
+export default function ProtectedPage() { return <RequireLogin><ShoppingListScreen/></RequireLogin>; }

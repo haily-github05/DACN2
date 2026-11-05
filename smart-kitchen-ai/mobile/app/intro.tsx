@@ -1,4 +1,5 @@
 // Trang: Giới thiệu ngắn gọn — nội dung vừa màn hình, không cuộn.
+import { logoutUser } from "../lib/auth";
 import React from "react";
 import {
   View,
@@ -98,7 +99,7 @@ export default function IntroScreen() {
           >
             <Text style={s.secondaryText}>Tạo tài khoản mới</Text>
           </Pressable>
-          <Pressable style={s.guest} onPress={() => router.push("/home")}>
+          <Pressable style={s.guest} onPress={async () => { await logoutUser(); router.replace("/home"); }}>
             <CheckCircle2 size={16} color={C.orange} />
             <Text style={s.guestText}>Trải nghiệm ngay</Text>
           </Pressable>

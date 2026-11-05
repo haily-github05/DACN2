@@ -1,7 +1,7 @@
 // Chức năng: API công thức, thực đơn, mua sắm, cộng đồng và lịch sử nấu ăn.
 import { sortRecipesByName } from "./recipeOrder";
 import { apiRequest } from "./api";
-import { getCurrentUserId } from "./auth";
+import { getAuthUser, getCurrentUserId } from "./auth";
 export async function kitchenRequest<T>(path: string, method = "GET", body?: unknown) {
   return apiRequest<T>(`/api/kitchen/${await getCurrentUserId()}/${path}`, method, body);
 }
@@ -13,5 +13,5 @@ export type KitchenRecipe = {
   steps: { title: string; description: string }[];
 };
 export const getRecipes = async () => sortRecipesByName(
-  await kitchenRequest<KitchenRecipe[]>("recipes"), recipe => recipe.name,
+  await (await getAuthUser() ? kitchenRequest<KitchenRecipe[]>("recipes") : apiRequest<KitchenRecipe[]>("/api/kitchen/public-recipes")), recipe => recipe.name,
 );

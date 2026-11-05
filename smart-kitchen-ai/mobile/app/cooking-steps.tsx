@@ -1,3 +1,4 @@
+import RequireLogin from "../components/RequireLogin";
 // Trang: Đang nấu ăn — nguyên liệu theo khẩu phần và tiến độ từng bước.
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Alert, Pressable, ScrollView, Text, View } from "react-native";
@@ -8,7 +9,7 @@ import AppHeader from "../components/AppHeader";
 import { getRecipes, KitchenRecipe } from "../lib/kitchenApi";
 import { cookingStyles as s } from "../components/cookingStyles";
 
-export default function CookingStepsScreen() {
+function CookingStepsScreen() {
   const { id, servings: requestedServings } = useLocalSearchParams<{ id?: string; servings?: string }>();
   const router = useRouter();
   const [recipe, setRecipe] = useState<KitchenRecipe | null>(null);
@@ -71,3 +72,6 @@ export default function CookingStepsScreen() {
     </>}
   </SafeAreaView>;
 }
+
+// Người dùng khách cần đăng nhập trước khi truy cập chức năng cá nhân.
+export default function ProtectedPage() { return <RequireLogin><CookingStepsScreen/></RequireLogin>; }

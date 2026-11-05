@@ -112,14 +112,6 @@ export default function HomeScreen() {
         try {
           const user = await getAuthUser();
 
-          if (!user) {
-            if (active) {
-              setCurrentUser(null);
-              router.replace("/login");
-            }
-            return;
-          }
-
           if (active) {
             setCurrentUser(user);
           }
@@ -353,7 +345,7 @@ export default function HomeScreen() {
 
             <View style={styles.pantryInfo}>
               <Text style={styles.pantryNumber}>
-                {loadingHome ? "..." : (homeData?.pantry.total ?? "—")}
+                {loadingHome ? "..." : (currentUser ? (homeData?.pantry.total ?? "—") : "—")}
               </Text>
 
               <Text style={styles.pantryLabel}>Nguyên liệu đang có</Text>
@@ -372,7 +364,7 @@ export default function HomeScreen() {
             <Text style={styles.expiryText}>
               {loadingHome
                 ? "Đang kiểm tra hạn sử dụng..."
-                : `${homeData?.pantry.expiringSoon ?? "—"} nguyên liệu sắp hết hạn`}
+                : currentUser ? `${homeData?.pantry.expiringSoon ?? "—"} nguyên liệu sắp hết hạn` : "Đăng nhập để xem kho của bạn"}
             </Text>
 
             <ArrowRight size={16} color={C.orange} />

@@ -1,3 +1,4 @@
+import RequireLogin from "../components/RequireLogin";
 // Trang: Thiết lập khẩu vị — chế độ ăn, dị ứng, nguyên liệu không thích và ngân sách.
 import React, { useEffect, useState } from "react";
 import {
@@ -155,7 +156,7 @@ function Chips({
     </View>
   );
 }
-export default function OnboardingPreferences() {
+function OnboardingPreferences() {
   const router = useRouter();
   const { from } = useLocalSearchParams<{ from?: string }>();
   const isEditing = from === "profile";
@@ -1007,3 +1008,6 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
 });
+
+// Người dùng khách cần đăng nhập trước khi truy cập chức năng cá nhân.
+export default function ProtectedPage() { return <RequireLogin><OnboardingPreferences/></RequireLogin>; }

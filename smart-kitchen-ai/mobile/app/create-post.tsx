@@ -1,3 +1,4 @@
+import RequireLogin from "../components/RequireLogin";
 // Trang: Tạo bài viết — ảnh bìa, công thức, nguyên liệu, các bước nấu và lưu nháp.
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -116,7 +117,7 @@ function compose(d: Draft) {
     .filter(Boolean)
     .join("\n\n");
 }
-export default function CreatePostScreen() {
+function CreatePostScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const [draft, setDraft] = useState<Draft>(emptyDraft);
@@ -776,3 +777,6 @@ export default function CreatePostScreen() {
     </SafeAreaView>
   );
 }
+
+// Người dùng khách cần đăng nhập trước khi truy cập chức năng cá nhân.
+export default function ProtectedPage() { return <RequireLogin><CreatePostScreen/></RequireLogin>; }

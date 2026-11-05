@@ -1,3 +1,4 @@
+import RequireLogin from "../components/RequireLogin";
 // Trang: Quét nguyên liệu — chọn ảnh để xem luồng nhận diện mẫu.
 import React, { useState } from "react";
 import AppHeader from "../components/AppHeader";
@@ -40,7 +41,7 @@ const COLORS = {
   border: "#EED9CF",
 };
 
-export default function ScanScreen() {
+function ScanScreen() {
   const router = useRouter();
 
   const [photo, setPhoto] = useState<string | null>(null);
@@ -422,3 +423,6 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
 });
+
+// Người dùng khách cần đăng nhập trước khi truy cập chức năng cá nhân.
+export default function ProtectedPage() { return <RequireLogin><ScanScreen/></RequireLogin>; }

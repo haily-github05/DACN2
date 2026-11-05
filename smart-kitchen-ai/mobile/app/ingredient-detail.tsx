@@ -1,3 +1,4 @@
+import RequireLogin from "../components/RequireLogin";
 // Trang: Chi tiết nguyên liệu — số lượng, hạn dùng và nơi bảo quản.
 import FoodImage from "../components/FoodImage";
 import React, { useCallback, useState } from "react";
@@ -53,7 +54,7 @@ const TIPS: Record<string, string> = {
     "Bảo quản rau củ phù hợp từng loại, loại bỏ phần hư hỏng và rửa sạch trước khi chế biến.",
   Sữa: "Giữ lạnh theo hướng dẫn trên bao bì, đậy kín sau khi mở và chú ý hạn sử dụng.",
 };
-export default function IngredientDetailScreen() {
+function IngredientDetailScreen() {
   const router = useRouter();
   const params = useLocalSearchParams<{ id?: string }>();
   const id = Array.isArray(params.id) ? params.id[0] : params.id;
@@ -441,3 +442,6 @@ const s = StyleSheet.create({
     flexShrink: 1,
   },
 });
+
+// Người dùng khách cần đăng nhập trước khi truy cập chức năng cá nhân.
+export default function ProtectedPage() { return <RequireLogin><IngredientDetailScreen/></RequireLogin>; }

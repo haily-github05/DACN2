@@ -1,3 +1,4 @@
+import { logoutUser } from "../lib/auth";
 // Trang: Đăng nhập tài khoản — giữ đầy đủ nội dung, căn chỉnh lại bố cục.
 import React, { useState } from "react";
 import AppHeader from "../components/AppHeader";
@@ -335,6 +336,9 @@ export default function LoginScreen() {
           </Pressable>
         </View>
 
+        <Pressable style={{alignItems:'center',padding:15,marginTop:12}} onPress={async () => { await logoutUser(); router.replace('/home'); }}>
+          <Text style={s.link}>Trải nghiệm ngay</Text>
+        </Pressable>
         <Text style={s.terms}>
           Bằng việc đăng nhập, bạn đồng ý với Điều khoản dịch vụ & Chính sách
           bảo mật của AI FOOD.

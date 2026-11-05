@@ -1,6 +1,6 @@
 // Chức năng: API kho thực phẩm và tiện ích kiểm tra ngày, hạn sử dụng.
 import { apiRequest } from "./api";
-import { getCurrentUserId } from "./auth";
+import { getAuthUser, getCurrentUserId } from "./auth";
 export const INGREDIENTS_KEY = "smart-kitchen-manual-ingredients-v1";
 export type Ingredient = {
   id: string;
@@ -63,5 +63,5 @@ export function dateIsValid(s: string) {
 
 export type CatalogIngredient = { id: string; name: string; category: string; unit: string; image: string; inPantry: boolean };
 export async function getIngredientCatalog(): Promise<CatalogIngredient[]> {
-  return apiRequest(`/api/kitchen/${await getCurrentUserId()}/ingredients`);
+  return await getAuthUser() ? apiRequest(`/api/kitchen/${await getCurrentUserId()}/ingredients`) : apiRequest("/api/kitchen/public-ingredients");
 }

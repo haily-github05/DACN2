@@ -132,7 +132,7 @@ test("posts reject arbitrary local file paths",async()=>{
 test("post listing includes public posts and the current owner's private posts",async()=>{
  queryImpl=async(sql,values)=>{
   assert.match(sql,/p\.visibility='PUBLIC' OR p\.user_id=\?/);
-  assert.deepEqual(values,[7,7,7]);
+  assert.deepEqual(values,[7,7,7,7]);
   return [[]];
  };
  const {result,error}=await request("/:userId/posts","get",undefined);
@@ -310,4 +310,103 @@ test('post ownership comes from the authenticated viewer rather than author name
  assert.equal(error,undefined);
  assert.equal(result.data[0].isOwner,true);
  assert.equal(result.data[1].isOwner,false);
+});
+
+test('empty or oversized comments are rejected before accessing database',async()=>{
+ queryImpl=()=>assert.fail('must not query');
+ for(const content of ['   ','a'.repeat(2001)]){
+  const {error}=await request('/:userId/posts/:postId/comments','post',{content},{postId:'1'});
+  assert.equal(error.status,400);
+ }
+});
+test('comment listing checks private post access first',async()=>{
+ queryImpl=async sql=>{assert.match(sql,/visibility='PUBLIC' OR user_id=\?/);return [[]];};
+ const {error}=await request('/:userId/posts/:postId/comments','get',undefined,{postId:'1'});
+ assert.equal(error.status,404);
+});
+test('comment creation binds author to authenticated user',async()=>{
+ queryImpl=async(sql,values)=>{
+  if(sql.startsWith('INSERT INTO community_comments')){
+   assert.deepEqual(values,[7,'Xin chào',1,7]);assert.match(sql,/visibility='PUBLIC'/);return [{insertId:10,affectedRows:1}];
+  }
+  return [[{comment_id:10,user_id:7,author:'An',content:'Xin chào',created_at:'2026-11-05'}]];
+ };
+ const {result,error}=await request('/:userId/posts/:postId/comments','post',{content:'  Xin chào  ',user_id:999},{postId:'1'});
+ assert.equal(error,undefined);assert.equal(result.data.isOwner,true);assert.equal(result.data.content,'Xin chào');
+});
+test('comment deletion is scoped to post and owner',async()=>{
+ queryImpl=async(sql,values)=>{
+  if(sql.startsWith('SELECT post_id'))return [[{post_id:1,user_id:8}]];
+  assert.equal(sql,'SELECT comment_id FROM community_comments WHERE comment_id=? AND post_id=? AND user_id=? FOR UPDATE');assert.deepEqual(values,[10,1,7]);return [[]];
+ };
+ const {error}=await request('/:userId/posts/:postId/comments/:commentId','delete',undefined,{postId:'1',commentId:'10'});
+ assert.equal(error.status,404);
+});
+test('following own account is rejected',async()=>{
+ queryImpl=async()=>[[{post_id:1,user_id:7}]];
+ const {error}=await request('/:userId/posts/:postId/follow','put',{active:true},{postId:'1'});assert.equal(error.status,400);
+});
+for(const active of [true,false])test(`follow action ${active} uses post author and authenticated viewer`,async()=>{
+ queryImpl=async(sql,values)=>{
+  if(sql.startsWith('SELECT post_id'))return [[{post_id:1,user_id:8}]];
+  assert.match(sql,active?/INSERT IGNORE INTO user_follows/:/DELETE FROM user_follows/);
+  assert.deepEqual(values,[7,8]);return [{affectedRows:1}];
+ };
+ const {result,error}=await request('/:userId/posts/:postId/follow','put',{active,user_id:99},{postId:'1'});
+ assert.equal(error,undefined);assert.equal(result.data.following,active);
+});
+test('reply rejects a parent from a different post',async()=>{
+ queryImpl=async sql=>sql.startsWith('SELECT post_id')?[[{post_id:1,user_id:8}]]:[[]];
+ const {error}=await request('/:userId/posts/:postId/comments','post',{content:'Trả lời',parentId:'10'},{postId:'1'});
+ assert.equal(error.status,404);
+});
+test('reply to a reply stays in the original thread',async()=>{
+ queryImpl=async(sql,values)=>{
+  if(sql.startsWith('SELECT post_id'))return [[{post_id:1,user_id:8}]];
+  if(sql.startsWith('SELECT comment_id,parent_comment_id')){assert.deepEqual(values,[11,1]);return [[{comment_id:11,parent_comment_id:10}]];}
+  if(sql.startsWith('INSERT INTO community_comments')){assert.deepEqual(values,[7,'Trả lời',1,10,7]);return [{insertId:12,affectedRows:1}];}
+  return [[{comment_id:12,parent_comment_id:10,user_id:7,author:'An',content:'Trả lời'}]];
+ };
+ const {result,error}=await request('/:userId/posts/:postId/comments','post',{content:'Trả lời',parentId:'11'},{postId:'1'});
+ assert.equal(error,undefined);assert.equal(result.data.parentId,'10');
+});
+
+test('guest recipes use only public catalog data and never a user pantry',async()=>{
+ const layer=router.stack.find(l=>l.route?.path==='/public-recipes');
+ assert(layer);
+ queryImpl=async(sql,values)=>{
+  assert.doesNotMatch(sql,/FROM users/);
+  if(sql.startsWith('SELECT * FROM recipes'))return [[{recipe_id:1,name:'Canh rau',calories:100}]];
+  if(sql.includes('available_quantity')){assert.deepEqual(values,[0]);return [[]];}
+  return [[]];
+ };
+ let result,error;
+ await layer.route.stack[0].handle({query:{}},{json:value=>{result=value;}},e=>{error=e;});
+ assert.equal(error,undefined);assert.equal(result.data[0].name,'Canh rau');assert.equal(result.data[0].match,0);
+});
+test('guest ingredient catalog exposes no pantry state',async()=>{
+ const layer=router.stack.find(l=>l.route?.path==='/public-ingredients');
+ queryImpl=async sql=>{assert.doesNotMatch(sql,/pantry_items|user_id/);return [[{ingredient_id:1,name:'Khoai tây',default_unit:'g'}]];};
+ let result,error;
+ await layer.route.stack[0].handle({query:{}},{json:value=>{result=value;}},e=>{error=e;});
+ assert.equal(error,undefined);assert.equal(result.data[0].inPantry,false);
+});
+
+test('guest post listing uses no account and includes only public visibility',async()=>{
+ queryImpl=async(sql,values)=>{
+  assert.deepEqual(values,[0,0,0,0]);
+  assert.match(sql,/p.visibility='PUBLIC' OR p.user_id=\?/);
+  return [[{post_id:1,user_id:8,author:'An',visibility:'PUBLIC',title:'Bài công khai'}]];
+ };
+ const layer=router.stack.find(l=>l.route?.path==='/public-posts');
+ let result,error;
+ await layer.route.stack[0].handle({query:{}},{json:r=>{result=r;}},e=>{error=e;});
+ assert.equal(error,undefined);assert.equal(result.data[0].isOwner,false);
+});
+test('guest comments cannot read private posts',async()=>{
+ queryImpl=async(sql,values)=>{assert.deepEqual(values,[1,0]);assert.match(sql,/visibility='PUBLIC'/);return [[]];};
+ const layer=router.stack.find(l=>l.route?.path==='/public-posts/:postId/comments');
+ let error;
+ await layer.route.stack[0].handle({query:{},params:{postId:'1'}},{json:()=>assert.fail('no data')},e=>{error=e;});
+ assert.equal(error.status,404);
 });

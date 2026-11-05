@@ -1,3 +1,4 @@
+import RequireLogin from "../components/RequireLogin";
 // Trang: Kho thực phẩm — xem, tìm kiếm và lọc nguyên liệu đang có.
 import IngredientCatalogResults from "../components/IngredientCatalogResults";
 import { matchesSearch } from "../lib/search";
@@ -668,7 +669,7 @@ function PantryContent({initialSearch}:{initialSearch:string}) {
   );
 }
 
-export default function PantryScreen() {
+function PantryScreen() {
  const params=useLocalSearchParams<{search?:string}>();
  const query=typeof params.search==="string"?params.search:"";
  return <PantryContent key={query} initialSearch={query}/>;
@@ -1271,3 +1272,6 @@ const styles = StyleSheet.create({
     fontWeight: "800",
   },
 });
+
+// Người dùng khách cần đăng nhập trước khi truy cập chức năng cá nhân.
+export default function ProtectedPage() { return <RequireLogin><PantryScreen/></RequireLogin>; }

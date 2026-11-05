@@ -1,3 +1,4 @@
+import { getAuthUser } from "../lib/auth";
 // Trang: Cộng đồng — danh sách bài viết, thích và lưu bài.
 import { matchesSearch } from "../lib/search";
 import SearchField from "../components/SearchField";
@@ -82,6 +83,7 @@ export default function CommunityScreen() {
 
   const react = async (id: string, kind: "like" | "save") => {
     if (busy) return;
+    if (!await getAuthUser()) { Alert.alert("Vui lòng đăng nhập", "Đăng nhập để thích và lưu bài viết.", [{text:"Để sau",style:"cancel"},{text:"Đăng nhập",onPress:()=>router.push("/login")}]); return; }
     setBusy(true);
     const list = kind === "like" ? liked : saved;
     const active = !list.includes(id);
@@ -290,7 +292,7 @@ export default function CommunityScreen() {
                         isLiked && { color: "#E44836" },
                       ]}
                     >
-                      {post.likes + (isLiked ? 1 : 0)}
+                      {Math.max(0, post.likes + Number(isLiked) - Number(post.liked))}
                     </Text>
                   </Pressable>
 

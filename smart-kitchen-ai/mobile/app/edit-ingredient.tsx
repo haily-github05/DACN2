@@ -1,3 +1,4 @@
+import RequireLogin from "../components/RequireLogin";
 // Trang: Chỉnh sửa thông tin nguyên liệu trong kho.
 import React, { useCallback, useState } from "react";
 import {
@@ -130,7 +131,7 @@ function SelectField({
     </View>
   );
 }
-export default function EditIngredient() {
+function EditIngredient() {
   const router = useRouter();
   const params = useLocalSearchParams<{ id?: string }>();
   const id = Array.isArray(params.id) ? params.id[0] : params.id;
@@ -427,3 +428,6 @@ const s = StyleSheet.create({
   },
   saveText: { color: "white", fontWeight: "800", fontSize: 14 },
 });
+
+// Người dùng khách cần đăng nhập trước khi truy cập chức năng cá nhân.
+export default function ProtectedPage() { return <RequireLogin><EditIngredient/></RequireLogin>; }

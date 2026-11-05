@@ -1,3 +1,4 @@
+import RequireLogin from "../components/RequireLogin";
 // Trang: Kết quả quét mẫu — chỉnh sửa, xác nhận và lưu nguyên liệu vào kho.
 import { kitchenRequest } from "../lib/kitchenApi";
 import React, { useState } from "react";
@@ -76,7 +77,7 @@ const initialIngredients: Ingredient[] = [
   },
 ];
 
-export default function ScanResultScreen() {
+function ScanResultScreen() {
   const router = useRouter();
 
   const [ingredients, setIngredients] =
@@ -492,3 +493,6 @@ const styles = StyleSheet.create({
     fontWeight: "800",
   },
 });
+
+// Người dùng khách cần đăng nhập trước khi truy cập chức năng cá nhân.
+export default function ProtectedPage() { return <RequireLogin><ScanResultScreen/></RequireLogin>; }

@@ -1,3 +1,4 @@
+import RequireLogin from "../components/RequireLogin";
 // Trang: Thêm nguyên liệu vào kho thực phẩm.
 
 import React, { useCallback, useRef, useState } from 'react';
@@ -161,7 +162,7 @@ function parseDate(value: string): Date | null {
   );
 
 
-export default function AddIngredientScreen() {
+function AddIngredientScreen() {
   const router = useRouter();
   const params = useLocalSearchParams<{ ingredientId?: string; name?: string; category?: string; unit?: string }>();
   const [catalogId, setCatalogId] = useState(params.ingredientId);
@@ -1152,3 +1153,6 @@ const styles = StyleSheet.create({
     fontWeight: '800',
   },
 });
+
+// Người dùng khách cần đăng nhập trước khi truy cập chức năng cá nhân.
+export default function ProtectedPage() { return <RequireLogin><AddIngredientScreen/></RequireLogin>; }

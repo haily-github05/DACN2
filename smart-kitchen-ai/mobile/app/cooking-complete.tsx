@@ -1,3 +1,4 @@
+import RequireLogin from "../components/RequireLogin";
 // Trang: Hoàn thành nấu ăn — xác nhận khẩu phần và lưu lịch sử món đã nấu.
 import React, { useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Alert, Pressable, ScrollView, Text, TextInput, View } from "react-native";
@@ -9,7 +10,7 @@ import AppHeader from "../components/AppHeader";
 import FoodImage from "../components/FoodImage";
 import { cookingStyles as s } from "../components/cookingStyles";
 
-export default function CookingCompleteScreen() {
+function CookingCompleteScreen() {
   const { id, servings: requestedServings } = useLocalSearchParams<{ id?: string; servings?: string }>();
   const router = useRouter();
   const [recipe, setRecipe] = useState<KitchenRecipe | null>(null);
@@ -85,3 +86,6 @@ export default function CookingCompleteScreen() {
     </ScrollView>
   </SafeAreaView>;
 }
+
+// Người dùng khách cần đăng nhập trước khi truy cập chức năng cá nhân.
+export default function ProtectedPage() { return <RequireLogin><CookingCompleteScreen/></RequireLogin>; }

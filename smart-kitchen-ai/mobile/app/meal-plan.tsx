@@ -1,3 +1,4 @@
+import RequireLogin from "../components/RequireLogin";
 import { suggestDayMenu, suggestMeal } from "../lib/mealSuggestions";
 // Trang: Thực đơn — lập kế hoạch các bữa ăn theo ngày và tuần.
 import { sortRecipesByName } from "../lib/recipeOrder";
@@ -124,7 +125,7 @@ function emptyDay(): DayPlan {
   };
 }
 
-export default function MealPlanScreen() {
+function MealPlanScreen() {
   const router = useRouter();
 
   const [weekStart, setWeekStart] = useState(() => startOfWeek(new Date()));
@@ -757,3 +758,6 @@ const styles = StyleSheet.create({
     fontWeight: "800",
   },
 });
+
+// Người dùng khách cần đăng nhập trước khi truy cập chức năng cá nhân.
+export default function ProtectedPage() { return <RequireLogin><MealPlanScreen/></RequireLogin>; }

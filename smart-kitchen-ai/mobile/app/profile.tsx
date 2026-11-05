@@ -1,3 +1,4 @@
+import RequireLogin from "../components/RequireLogin";
 // Trang: Cá nhân — hồ sơ, thống kê hoạt động và thiết lập khẩu vị.
 import React, { useState, useCallback } from "react";
 
@@ -135,7 +136,7 @@ type IconComponent = React.ComponentType<{
   );
 
 
-export default function ProfileScreen() {
+function ProfileScreen() {
   const router = useRouter();
 
   const [stats, setStats] = useState<ProfileStats | null>(null);
@@ -1326,3 +1327,6 @@ const styles = StyleSheet.create({
     color: C.white,
   },
 });
+
+// Người dùng khách cần đăng nhập trước khi truy cập chức năng cá nhân.
+export default function ProtectedPage() { return <RequireLogin><ProfileScreen/></RequireLogin>; }

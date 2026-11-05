@@ -1,3 +1,4 @@
+import RequireLogin from "../components/RequireLogin";
 // Trang: Chỉnh sửa hồ sơ cá nhân.
 import React, { useCallback, useState } from "react";
 import {
@@ -79,7 +80,7 @@ async function readJson(response: Response): Promise<any> {
   return body;
 }
 
-export default function EditProfileScreen() {
+function EditProfileScreen() {
   const router = useRouter();
   const [userId, setUserId] = useState<number | null>(null);
   const [name, setName] = useState("");
@@ -504,3 +505,6 @@ const styles = StyleSheet.create({
   disabled: { opacity: 0.6 },
   error: { color: "#C34237", fontSize: 13, textAlign: "center" },
 });
+
+// Người dùng khách cần đăng nhập trước khi truy cập chức năng cá nhân.
+export default function ProtectedPage() { return <RequireLogin><EditProfileScreen/></RequireLogin>; }

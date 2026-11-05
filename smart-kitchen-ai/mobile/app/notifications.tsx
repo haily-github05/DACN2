@@ -1,3 +1,4 @@
+import RequireLogin from "../components/RequireLogin";
 // Trang: Trung tâm thông báo — kho gần hết hạn, lịch nấu, tương tác và mua sắm.
 import React, {useMemo,useState} from "react";
 import {ActivityIndicator,Alert,FlatList,Pressable,ScrollView,StyleSheet,Text,View} from "react-native";
@@ -27,7 +28,7 @@ function timeLabel(item:AppNotification) {
  return Number.isNaN(date.getTime()) ? "" : item.category==="social"||item.category==="shopping"
   ? "Mới cập nhật" : date.toLocaleDateString("vi-VN");
 }
-export default function NotificationsScreen() {
+function NotificationsScreen() {
  const router=useRouter();
  const state=useNotifications();
  const [filter,setFilter]=useState<"all"|NotificationCategory>("all");
@@ -112,3 +113,6 @@ export default function NotificationsScreen() {
 const s=StyleSheet.create({
  page:{flex:1,backgroundColor:C.cream},heading:{flexDirection:"row",alignItems:"center",gap:7,paddingHorizontal:12,paddingVertical:12},iconButton:{padding:8},title:{fontSize:22,fontWeight:"700",color:C.dark},spacer:{flex:1},newBadge:{backgroundColor:C.orange,paddingHorizontal:8,paddingVertical:3,borderRadius:12},newText:{fontSize:11,fontWeight:"700",color:"white"},filters:{paddingHorizontal:18,paddingBottom:16,gap:8},chip:{paddingHorizontal:14,paddingVertical:9,borderRadius:22,borderWidth:1,borderColor:C.border,backgroundColor:"white"},activeChip:{backgroundColor:C.orange,borderColor:C.orange},chipText:{fontSize:12,fontWeight:"600",color:C.muted},activeText:{color:"white"},content:{paddingHorizontal:18,paddingBottom:24,gap:12},urgent:{padding:16,gap:16,borderRadius:16,borderWidth:1,borderColor:"#EDBBA6",backgroundColor:C.peach,marginBottom:2},row:{flexDirection:"row",alignItems:"center",gap:10},rowTop:{flexDirection:"row",alignItems:"flex-start",gap:10},flex:{flex:1},urgentIcon:{padding:12,borderRadius:13,backgroundColor:"#FFE1D2"},urgentTag:{fontSize:10,fontWeight:"700",color:C.orange,marginBottom:6},cardTitle:{fontSize:15,fontWeight:"700",lineHeight:22,color:C.dark},body:{fontSize:12,color:C.muted,lineHeight:19,marginTop:4},primary:{minHeight:44,flexDirection:"row",alignItems:"center",justifyContent:"center",gap:7,paddingHorizontal:10,borderRadius:9,backgroundColor:C.orange},primaryText:{fontSize:12,fontWeight:"700",color:"white",flexShrink:1},secondary:{minHeight:44,alignItems:"center",justifyContent:"center",paddingHorizontal:8,borderRadius:9,borderWidth:1,borderColor:C.border,backgroundColor:"white"},link:{fontSize:12,fontWeight:"600",color:C.orange},helper:{fontSize:11,color:C.muted,lineHeight:18,marginBottom:4},section:{flexDirection:"row",alignItems:"center",justifyContent:"space-between",paddingVertical:5},sectionTitle:{fontSize:15,fontWeight:"700",color:C.dark},small:{fontSize:10,color:C.muted},card:{padding:14,borderRadius:14,borderWidth:1,borderColor:C.border,backgroundColor:"white"},unreadCard:{borderColor:"#DBB29F"},expiredCard:{borderColor:"#E5AAA0"},categoryIcon:{padding:9,borderRadius:11,backgroundColor:C.peach},socialIcon:{backgroundColor:"#FFF0EC"},dot:{position:"absolute",right:-2,top:-2,width:7,height:7,borderRadius:4,backgroundColor:C.orange},between:{flexDirection:"row",alignItems:"center",justifyContent:"space-between",gap:8,marginBottom:5},category:{fontSize:9,fontWeight:"700",color:C.orange,flexShrink:1},info:{flexDirection:"row",alignItems:"center",gap:5,backgroundColor:C.cream,padding:6,borderRadius:6,marginTop:9,alignSelf:"flex-start"},infoText:{fontSize:10,color:C.orange},actions:{flexDirection:"row",alignItems:"center",gap:12,flexWrap:"wrap",marginTop:9},action:{flexDirection:"row",alignItems:"center",gap:3,paddingVertical:6},thumb:{width:44,height:44,borderRadius:9},empty:{alignItems:"center",gap:14,padding:28},error:{flex:1,padding:24,gap:16,justifyContent:"center"},
 });
+
+// Người dùng khách cần đăng nhập trước khi truy cập chức năng cá nhân.
+export default function ProtectedPage() { return <RequireLogin><NotificationsScreen/></RequireLogin>; }
