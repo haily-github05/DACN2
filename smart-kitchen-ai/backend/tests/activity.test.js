@@ -15,7 +15,7 @@ test("activity queries only the requested owner and respects saved post visibili
  const result=await getActivity(7);
  assert.deepEqual(calls.map(call=>call.values),[[7],[7],[7,7],[7]]);
  assert.match(calls[0].sql,/h\.history_id,h\.servings,h\.rating,h\.note/);
- assert.match(calls[2].sql,/s\.kind='save' AND \(p\.visibility='PUBLIC' OR p\.user_id=\?\)/);
+ assert.match(calls[2].sql,/s\.kind='save' AND \(\(p\.visibility='PUBLIC' AND p\.moderation_status='APPROVED'\) OR p\.user_id=\?\)/);
  assert.match(calls[3].sql,/WHERE p\.user_id=\?/);
  assert.equal(result.cooked[0].id,"10");
  assert.equal(result.cooked[0].cookCount,3);

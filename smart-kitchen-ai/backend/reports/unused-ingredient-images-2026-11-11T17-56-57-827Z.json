@@ -1,0 +1,266 @@
+{
+  "mode": "AUDIT_ONLY",
+  "scope": "backend/uploads/ingredients",
+  "createdAt": "2026-11-11T17:56:57.827Z",
+  "files": 114,
+  "referenced": 63,
+  "unused": [
+    {
+      "name": "ingredient-9118.jpg",
+      "bytes": 168120,
+      "modifiedAt": "2026-11-11T17:04:44.921Z"
+    },
+    {
+      "name": "ingredient-9119.jpg",
+      "bytes": 98634,
+      "modifiedAt": "2026-11-11T17:04:44.922Z"
+    },
+    {
+      "name": "ingredient-9120.jpg",
+      "bytes": 292398,
+      "modifiedAt": "2026-11-11T17:04:44.923Z"
+    },
+    {
+      "name": "ingredient-9127.jpg",
+      "bytes": 163513,
+      "modifiedAt": "2026-11-11T17:04:44.929Z"
+    },
+    {
+      "name": "ingredient-9128.jpg",
+      "bytes": 179886,
+      "modifiedAt": "2026-11-11T17:04:44.930Z"
+    },
+    {
+      "name": "ingredient-9129.jpg",
+      "bytes": 163702,
+      "modifiedAt": "2026-11-11T17:04:44.931Z"
+    },
+    {
+      "name": "ingredient-9131.jpg",
+      "bytes": 159719,
+      "modifiedAt": "2026-11-11T17:04:44.933Z"
+    },
+    {
+      "name": "ingredient-9132.jpg",
+      "bytes": 44596,
+      "modifiedAt": "2026-11-11T17:04:44.934Z"
+    },
+    {
+      "name": "ingredient-9135.jpg",
+      "bytes": 143135,
+      "modifiedAt": "2026-11-11T17:04:44.936Z"
+    },
+    {
+      "name": "ingredient-9138.jpg",
+      "bytes": 178259,
+      "modifiedAt": "2026-11-11T17:04:44.938Z"
+    },
+    {
+      "name": "ingredient-9139.jpg",
+      "bytes": 211568,
+      "modifiedAt": "2026-11-11T17:04:44.940Z"
+    },
+    {
+      "name": "ingredient-9142.jpg",
+      "bytes": 123699,
+      "modifiedAt": "2026-11-11T17:04:44.942Z"
+    },
+    {
+      "name": "ingredient-9143.jpg",
+      "bytes": 217308,
+      "modifiedAt": "2026-11-11T17:04:44.943Z"
+    },
+    {
+      "name": "ingredient-9144.jpg",
+      "bytes": 183620,
+      "modifiedAt": "2026-11-11T17:04:44.945Z"
+    },
+    {
+      "name": "ingredient-9145.jpg",
+      "bytes": 147359,
+      "modifiedAt": "2026-11-11T17:04:44.946Z"
+    },
+    {
+      "name": "ingredient-9147.jpg",
+      "bytes": 400817,
+      "modifiedAt": "2026-11-11T17:04:44.948Z"
+    },
+    {
+      "name": "ingredient-9148.jpg",
+      "bytes": 219077,
+      "modifiedAt": "2026-11-11T17:04:44.950Z"
+    },
+    {
+      "name": "ingredient-9150.jpg",
+      "bytes": 103426,
+      "modifiedAt": "2026-11-11T17:04:44.951Z"
+    },
+    {
+      "name": "ingredient-9153.jpg",
+      "bytes": 241262,
+      "modifiedAt": "2026-11-11T17:04:44.954Z"
+    },
+    {
+      "name": "ingredient-9157.jpg",
+      "bytes": 203078,
+      "modifiedAt": "2026-11-11T17:04:44.957Z"
+    },
+    {
+      "name": "ingredient-9158.jpg",
+      "bytes": 129097,
+      "modifiedAt": "2026-11-11T17:04:44.958Z"
+    },
+    {
+      "name": "ingredient-9159.jpg",
+      "bytes": 176120,
+      "modifiedAt": "2026-11-11T17:04:44.958Z"
+    },
+    {
+      "name": "ingredient-9162.jpg",
+      "bytes": 164631,
+      "modifiedAt": "2026-11-11T17:04:44.960Z"
+    },
+    {
+      "name": "ingredient-9166.jpg",
+      "bytes": 116351,
+      "modifiedAt": "2026-11-11T17:04:44.964Z"
+    },
+    {
+      "name": "ingredient-9167.jpg",
+      "bytes": 193644,
+      "modifiedAt": "2026-11-11T17:04:44.965Z"
+    },
+    {
+      "name": "ingredient-9168.jpg",
+      "bytes": 172117,
+      "modifiedAt": "2026-11-11T17:04:44.966Z"
+    },
+    {
+      "name": "ingredient-9170.jpg",
+      "bytes": 216298,
+      "modifiedAt": "2026-11-11T17:04:44.967Z"
+    },
+    {
+      "name": "ingredient-9171.jpg",
+      "bytes": 87689,
+      "modifiedAt": "2026-11-11T17:04:44.968Z"
+    },
+    {
+      "name": "ingredient-9172.jpg",
+      "bytes": 368235,
+      "modifiedAt": "2026-11-11T17:04:44.968Z"
+    },
+    {
+      "name": "ingredient-9176.jpg",
+      "bytes": 108304,
+      "modifiedAt": "2026-11-11T17:04:44.972Z"
+    },
+    {
+      "name": "ingredient-9177.jpg",
+      "bytes": 103941,
+      "modifiedAt": "2026-11-11T17:04:44.972Z"
+    },
+    {
+      "name": "ingredient-9178.jpg",
+      "bytes": 148027,
+      "modifiedAt": "2026-11-11T17:04:44.974Z"
+    },
+    {
+      "name": "ingredient-9179.jpg",
+      "bytes": 188366,
+      "modifiedAt": "2026-11-11T17:04:44.975Z"
+    },
+    {
+      "name": "ingredient-9180.jpg",
+      "bytes": 192725,
+      "modifiedAt": "2026-11-11T17:04:44.975Z"
+    },
+    {
+      "name": "ingredient-9181.jpg",
+      "bytes": 139503,
+      "modifiedAt": "2026-11-11T17:04:44.976Z"
+    },
+    {
+      "name": "ingredient-9183.jpg",
+      "bytes": 167535,
+      "modifiedAt": "2026-11-11T17:04:44.978Z"
+    },
+    {
+      "name": "ingredient-9184.jpg",
+      "bytes": 156011,
+      "modifiedAt": "2026-11-11T17:04:44.978Z"
+    },
+    {
+      "name": "ingredient-9185.jpg",
+      "bytes": 120587,
+      "modifiedAt": "2026-11-11T17:04:44.980Z"
+    },
+    {
+      "name": "ingredient-9187.jpg",
+      "bytes": 105649,
+      "modifiedAt": "2026-11-11T17:04:44.981Z"
+    },
+    {
+      "name": "ingredient-9189.jpg",
+      "bytes": 237974,
+      "modifiedAt": "2026-11-11T17:04:44.982Z"
+    },
+    {
+      "name": "ingredient-9190.jpg",
+      "bytes": 134564,
+      "modifiedAt": "2026-11-11T17:04:44.983Z"
+    },
+    {
+      "name": "ingredient-9191.jpg",
+      "bytes": 227303,
+      "modifiedAt": "2026-11-11T17:04:44.983Z"
+    },
+    {
+      "name": "ingredient-9193.jpg",
+      "bytes": 224084,
+      "modifiedAt": "2026-11-11T17:04:44.985Z"
+    },
+    {
+      "name": "ingredient-9194.jpg",
+      "bytes": 214677,
+      "modifiedAt": "2026-11-11T17:04:44.989Z"
+    },
+    {
+      "name": "ingredient-9196.jpg",
+      "bytes": 197175,
+      "modifiedAt": "2026-11-11T17:04:44.991Z"
+    },
+    {
+      "name": "ingredient-9200.jpg",
+      "bytes": 184650,
+      "modifiedAt": "2026-11-11T17:04:44.995Z"
+    },
+    {
+      "name": "ingredient-9202.jpg",
+      "bytes": 95854,
+      "modifiedAt": "2026-11-11T17:04:44.996Z"
+    },
+    {
+      "name": "ingredient-9203.jpg",
+      "bytes": 118673,
+      "modifiedAt": "2026-11-11T17:04:44.997Z"
+    },
+    {
+      "name": "ingredient-9208.jpg",
+      "bytes": 127047,
+      "modifiedAt": "2026-11-11T17:04:45.001Z"
+    },
+    {
+      "name": "ingredient-9209.jpg",
+      "bytes": 310258,
+      "modifiedAt": "2026-11-11T17:04:45.001Z"
+    },
+    {
+      "name": "ingredient-9210.jpg",
+      "bytes": 155959,
+      "modifiedAt": "2026-11-11T17:04:45.002Z"
+    }
+  ],
+  "deleted": [],
+  "skipped": []
+}

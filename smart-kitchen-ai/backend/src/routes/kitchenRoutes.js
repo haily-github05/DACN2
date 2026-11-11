@@ -4,6 +4,7 @@ const { getRecommendations } = require("../services/recipeRecommendationService"
 const express = require("express");
 const db = require("../config/db");
 const router = express.Router();
+router.get('/post-categories', (req,res)=>res.json({success:true,data:require('../config/postCategories')}));
 router.use("/:userId/posts", requirePostUser);
 router.use("/:userId/activity", requirePostUser);
 router.use("/:userId/notifications", requirePostUser);
@@ -220,8 +221,8 @@ async function listPosts(req,res) {
     EXISTS(SELECT 1 FROM community_reactions r WHERE r.post_id=p.post_id AND r.user_id=? AND r.kind='save') AS saved,
     (SELECT COUNT(*) FROM community_comments c WHERE c.post_id=p.post_id) AS comments,
     EXISTS(SELECT 1 FROM user_follows f WHERE f.follower_id=? AND f.followed_id=p.user_id) AS following
-    FROM community_posts p JOIN users u ON u.user_id=p.user_id WHERE (p.visibility='PUBLIC' OR p.user_id=?) ${postId ? "AND p.post_id=?" : ""} ORDER BY p.post_id DESC LIMIT 100`,[viewer,viewer,viewer,viewer,...(postId ? [postId] : [])]);
-  res.json({success:true,data:rows.map(r=>({id:String(r.post_id),isOwner:Number(r.user_id)===req.userId,author:r.author,avatar:r.author_avatar||null,initials:r.author.split(/\s+/).map(s=>s[0]).slice(-2).join(""),title:r.title,description:r.description,visibility:r.visibility,category:r.category,image:r.image_url||"",time:r.created_at,likes:Number(r.likes),comments:Number(r.comments||0),following:!!r.following,liked:!!r.liked,saved:!!r.saved}))});
+    FROM community_posts p JOIN users u ON u.user_id=p.user_id WHERE ${postId ? "((p.visibility='PUBLIC' AND p.moderation_status='APPROVED') OR p.user_id=?) AND p.post_id=?" : "(p.visibility='PUBLIC' AND p.moderation_status='APPROVED')"} ORDER BY p.post_id DESC LIMIT 100`,[viewer,viewer,viewer,...(postId ? [viewer,postId] : [])]);
+  res.json({success:true,data:rows.map(r=>({id:String(r.post_id),isOwner:Number(r.user_id)===req.userId,author:r.author,avatar:r.author_avatar||null,initials:r.author.split(/\s+/).map(s=>s[0]).slice(-2).join(""),title:r.title,description:r.description,visibility:r.visibility,moderationStatus:r.moderation_status,rejectionReason:r.rejection_reason||null,category:r.category,image:r.image_url||"",time:r.created_at,likes:Number(r.likes),comments:Number(r.comments||0),following:!!r.following,liked:!!r.liked,saved:!!r.saved}))});
 }
 router.get("/public-posts",route(listPosts));
 router.get("/:userId/posts",route(listPosts));
@@ -240,8 +241,8 @@ router.post("/:userId/posts",route(async(req,res)=>{
       if(!owned.length) throw fail("Vui lòng chọn lại ảnh bìa để tải lên cho tài khoản của bạn");
     }
   }
-  const [r]=await db.query("INSERT INTO community_posts (user_id,title,description,category,image_url,visibility) VALUES (?,?,?,?,?,?)",[req.userId,title,description,category,image,visibility]);
-  res.json({success:true,data:{id:String(r.insertId)}});
+  const [r]=await db.query("INSERT INTO community_posts (user_id,title,description,category,image_url,visibility,moderation_status) VALUES (?,?,?,?,?,?,'PENDING')",[req.userId,title,description,category,image,visibility]);
+  res.json({success:true,data:{id:String(r.insertId),moderationStatus:"PENDING"}});
 }));
 router.delete("/:userId/posts/:postId",route(async(req,res)=>{
   const [result] = await db.query("DELETE FROM community_posts WHERE post_id=? AND user_id=?", [id(req.params.postId), req.userId]);
@@ -252,7 +253,7 @@ router.delete("/:userId/posts/:postId",route(async(req,res)=>{
 router.put("/:userId/posts/:postId/reactions",route(async(req,res)=>{
   const {kind,active}=req.body;
   if(!["like","save"].includes(kind)||typeof active!=="boolean") throw fail("Tương tác không hợp lệ");
-  const [posts]=await db.query("SELECT post_id FROM community_posts WHERE post_id=? AND (visibility='PUBLIC' OR user_id=?)",[id(req.params.postId),req.userId]);
+  const [posts]=await db.query("SELECT post_id FROM community_posts WHERE post_id=? AND ((visibility='PUBLIC' AND moderation_status='APPROVED') OR user_id=?)",[id(req.params.postId),req.userId]);
   if(!posts.length) return res.status(404).json({success:false,message:"Không tìm thấy bài viết"});
   if(active) await db.query("INSERT IGNORE INTO community_reactions (user_id,post_id,kind) VALUES (?,?,?)",[req.userId,id(req.params.postId),kind]);
   else await db.query("DELETE FROM community_reactions WHERE user_id=? AND post_id=? AND kind=?",[req.userId,id(req.params.postId),kind]);
@@ -261,7 +262,7 @@ router.put("/:userId/posts/:postId/reactions",route(async(req,res)=>{
 // Kiểm tra quyền xem bài cho mọi thao tác bình luận/theo dõi.
 async function visiblePost(userId, postId) {
   userId ||= 0;
-  const [rows] = await db.query("SELECT post_id,user_id FROM community_posts WHERE post_id=? AND (visibility='PUBLIC' OR user_id=?)", [id(postId), userId]);
+  const [rows] = await db.query("SELECT post_id,user_id FROM community_posts WHERE post_id=? AND ((visibility='PUBLIC' AND moderation_status='APPROVED') OR user_id=?)", [id(postId), userId]);
   if (!rows.length) throw Object.assign(new Error("Không tìm thấy bài viết"), {status:404});
   return rows[0];
 }
@@ -288,12 +289,12 @@ router.post("/:userId/posts/:postId/comments",route(async(req,res)=>{
     const [parents] = await db.query("SELECT comment_id,parent_comment_id FROM community_comments WHERE comment_id=? AND post_id=?",[parentId,postId]);
     if (!parents.length) throw Object.assign(new Error("Bình luận đã bị xoá hoặc không thuộc bài viết này"),{status:404});
     const rootId = parents[0].parent_comment_id || parents[0].comment_id;
-    const [insert] = await db.query("INSERT INTO community_comments (post_id,user_id,content,parent_comment_id) SELECT p.post_id,?,?,c.comment_id FROM community_posts p JOIN community_comments c ON c.post_id=p.post_id WHERE p.post_id=? AND c.comment_id=? AND (p.visibility='PUBLIC' OR p.user_id=?)",[req.userId,content,postId,rootId,req.userId]);
+    const [insert] = await db.query("INSERT INTO community_comments (post_id,user_id,content,parent_comment_id) SELECT p.post_id,?,?,c.comment_id FROM community_posts p JOIN community_comments c ON c.post_id=p.post_id WHERE p.post_id=? AND c.comment_id=? AND ((p.visibility='PUBLIC' AND p.moderation_status='APPROVED') OR p.user_id=?)",[req.userId,content,postId,rootId,req.userId]);
     if (!insert.affectedRows) throw Object.assign(new Error("Bình luận không còn tồn tại"),{status:404});
     const [rows] = await db.query("SELECT c.*,u.full_name AS author,u.avatar_url FROM community_comments c JOIN users u ON u.user_id=c.user_id WHERE c.comment_id=?",[insert.insertId]);
     return res.json({success:true,data:commentData(rows[0],req.userId)});
   }
-  const [result] = await db.query("INSERT INTO community_comments (post_id,user_id,content) SELECT post_id,?,? FROM community_posts WHERE post_id=? AND (visibility='PUBLIC' OR user_id=?)",[req.userId,content,postId,req.userId]);
+  const [result] = await db.query("INSERT INTO community_comments (post_id,user_id,content) SELECT post_id,?,? FROM community_posts WHERE post_id=? AND ((visibility='PUBLIC' AND moderation_status='APPROVED') OR user_id=?)",[req.userId,content,postId,req.userId]);
   if (!result.affectedRows) throw Object.assign(new Error("Không tìm thấy bài viết"),{status:404});
   const [rows] = await db.query("SELECT c.*,u.full_name AS author,u.avatar_url FROM community_comments c JOIN users u ON u.user_id=c.user_id WHERE c.comment_id=?",[result.insertId]);
   res.json({success:true,data:commentData(rows[0],req.userId)});

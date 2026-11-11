@@ -29,9 +29,24 @@ export type HomeUser = {
   avatar_url: string | null;
 };
 export async function getHomeData(): Promise<HomeData> {
-  if (!await getAuthUser()) {
+  if (!(await getAuthUser())) {
     const recipes = await getRecipes();
-    return {user:{user_id:0,full_name:"Bạn",avatar_url:null},pantry:{total:0,expiringSoon:0},recipes:recipes.slice(0,10).map(r=>({recipe_id:Number(r.id),name:r.name,description:r.description,image_url:r.image,region:r.region||null,prep_time:0,cook_time:r.minutes,estimated_cost:null}))};
+    return {
+      user: { user_id: 0, full_name: "Bạn", avatar_url: null },
+      pantry: { total: 0, expiringSoon: 0 },
+      recipes: recipes
+        .slice(0, 10)
+        .map((r) => ({
+          recipe_id: Number(r.id),
+          name: r.name,
+          description: r.description,
+          image_url: r.image,
+          region: r.region || null,
+          prep_time: 0,
+          cook_time: r.minutes,
+          estimated_cost: null,
+        })),
+    };
   }
   const userId = await getCurrentUserId();
 
@@ -48,18 +63,17 @@ export async function getHomeData(): Promise<HomeData> {
     throw new Error("Chưa cấu hình địa chỉ backend");
   }
 
-  const response = await fetch(
-    `${baseUrl}/api/home/${userId}`
-  );
+  const response = await fetch(`${baseUrl}/api/home/${userId}`);
 
   const result = await response.json();
 
   if (!response.ok || !result.success) {
-    throw new Error(
-      result.message || "Không thể tải Home"
-    );
+    throw new Error(result.message || "Không thể tải Home");
   }
 
   const data: HomeData = result.data;
-  return { ...data, recipes: sortRecipesByName(data.recipes, recipe => recipe.name) };
+  return {
+    ...data,
+    recipes: sortRecipesByName(data.recipes, (recipe) => recipe.name),
+  };
 }

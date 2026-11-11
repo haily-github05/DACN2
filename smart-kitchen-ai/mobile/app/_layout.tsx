@@ -5,7 +5,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function RootLayout() {
   return (
-    <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: "#FFF8F6" }}>
+    <SafeAreaView
+      edges={["top"]}
+      style={{ flex: 1, backgroundColor: "#FFF8F6" }}
+    >
       <StatusBar style="dark" />
       <Slot />
     </SafeAreaView>

@@ -14,5 +14,8 @@ const db = require("../src/config/db");
   for (const statement of communitySql.split(";").filter(s => s.trim())) await db.query(statement);
   const [replyColumns] = await db.query("SHOW COLUMNS FROM community_comments LIKE 'parent_comment_id'");
   if (!replyColumns.length) await db.query(fs.readFileSync(path.join(__dirname, "../migrations/20261105_comment_replies.sql"), "utf8"));
+  await require("./migrate-user-roles").ensureUserRoles();
+  await require("./migrate-post-moderation").ensurePostModeration();
+  await require("./migrate-user-management").ensureUserManagement();
   console.log("Đã cập nhật cấu trúc dữ liệu.");
 })().catch(error => { console.error(error.message); process.exitCode = 1; }).finally(() => db.end());

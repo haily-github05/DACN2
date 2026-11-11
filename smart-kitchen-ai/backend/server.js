@@ -18,6 +18,7 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use(require("./src/services/accountStatusService").checkAccountStatus);
 
 app.use("/uploads/posts", require("./src/routes/postMediaAccess"));
 
@@ -37,6 +38,12 @@ app.get("/api/health", (req, res) => {
 
 // API đăng nhập và đăng ký
 app.use("/api/auth", authRoutes);
+app.use("/api/admin", require("./src/routes/adminRoutes"));
+app.use("/api/admin", require("./src/routes/adminPostRoutes"));
+app.use("/api/admin", require("./src/routes/adminUserRoutes"));
+app.use("/api/admin", require("./src/routes/adminIngredientRoutes"));
+app.use("/api/admin", require("./src/routes/adminRecipeRoutes"));
+app.use("/api/admin", require("./src/routes/adminSettingsRoutes"));
 
 // API lấy thông tin và chỉnh sửa hồ sơ
 app.use("/api/profile", profileRoutes);

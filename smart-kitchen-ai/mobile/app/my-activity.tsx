@@ -125,7 +125,7 @@ function MyActivityScreen() {
                 {tab === "cooked" && <Text style={s.badge}>Đã nấu {item.cookCount} lần · {displayDate(item.cookedAt)}</Text>}
               </> : <>
                 <Text style={s.muted} numberOfLines={1}>{item.author} · {displayDate(item.createdAt)}</Text>
-                <View style={s.row}>{item.visibility === "PRIVATE" ? <Lock size={12} color={C.orange} /> : <Globe size={12} color={C.orange} />}<Text style={s.badge}>{item.visibility === "PRIVATE" ? "Chỉ mình tôi" : "Công khai"}</Text></View>
+                <View style={s.row}>{item.visibility === "PRIVATE" ? <Lock size={12} color={C.orange} /> : <Globe size={12} color={C.orange} />}<Text style={s.badge}>{item.visibility === "PRIVATE" ? "Chỉ mình tôi" : item.moderationStatus === "PENDING" ? "Chờ duyệt" : item.moderationStatus === "REJECTED" ? "Bị từ chối" : item.moderationStatus === "HIDDEN" ? "Đã ẩn" : "Công khai"}</Text></View>
               </>}
             </View><ChevronRight size={18} color={C.orange} />
           </Pressable>

@@ -129,10 +129,11 @@ test("posts reject arbitrary local file paths",async()=>{
   const {error}=await request("/:userId/posts","post",{title:"Món ăn",description:"Nội dung",category:"Món Việt",image:"file:///private/photo.jpg"});
   assert.equal(error.status,400);
 });
-test("post listing includes public posts and the current owner's private posts",async()=>{
+test("community feed includes only approved public posts even for the owner",async()=>{
  queryImpl=async(sql,values)=>{
-  assert.match(sql,/p\.visibility='PUBLIC' OR p\.user_id=\?/);
-  assert.deepEqual(values,[7,7,7,7]);
+  assert.match(sql,/WHERE \(p\.visibility='PUBLIC' AND p\.moderation_status='APPROVED'\)/);
+  assert.doesNotMatch(sql,/OR p\.user_id=\?/);
+  assert.deepEqual(values,[7,7,7]);
   return [[]];
  };
  const {result,error}=await request("/:userId/posts","get",undefined);
@@ -320,7 +321,7 @@ test('empty or oversized comments are rejected before accessing database',async(
  }
 });
 test('comment listing checks private post access first',async()=>{
- queryImpl=async sql=>{assert.match(sql,/visibility='PUBLIC' OR user_id=\?/);return [[]];};
+ queryImpl=async sql=>{assert.match(sql,/visibility='PUBLIC' AND moderation_status='APPROVED'\) OR user_id=\?/);return [[]];};
  const {error}=await request('/:userId/posts/:postId/comments','get',undefined,{postId:'1'});
  assert.equal(error.status,404);
 });
@@ -394,8 +395,8 @@ test('guest ingredient catalog exposes no pantry state',async()=>{
 
 test('guest post listing uses no account and includes only public visibility',async()=>{
  queryImpl=async(sql,values)=>{
-  assert.deepEqual(values,[0,0,0,0]);
-  assert.match(sql,/p.visibility='PUBLIC' OR p.user_id=\?/);
+  assert.deepEqual(values,[0,0,0]);
+  assert.match(sql,/WHERE \(p.visibility='PUBLIC' AND p.moderation_status='APPROVED'\)/);
   return [[{post_id:1,user_id:8,author:'An',visibility:'PUBLIC',title:'Bài công khai'}]];
  };
  const layer=router.stack.find(l=>l.route?.path==='/public-posts');
@@ -409,4 +410,10 @@ test('guest comments cannot read private posts',async()=>{
  let error;
  await layer.route.stack[0].handle({query:{},params:{postId:'1'}},{json:()=>assert.fail('no data')},e=>{error=e;});
  assert.equal(error.status,404);
+});
+
+test('new public submissions cannot set their own approval status',async()=>{
+ queryImpl=async(sql,values)=>{assert.match(sql,/moderation_status\) VALUES \(\?,\?,\?,\?,\?,\?,'PENDING'\)/);assert.equal(values.length,6);return [{insertId:88}];};
+ const {result,error}=await request('/:userId/posts','post',{title:'Bài mới',description:'Nội dung',category:'Món ăn',moderationStatus:'APPROVED',reviewed_by:7});
+ assert.equal(error,undefined);assert.equal(result.data.moderationStatus,'PENDING');
 });

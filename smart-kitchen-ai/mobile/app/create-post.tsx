@@ -19,6 +19,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   ArrowLeft,
   Camera,
+  ChevronDown,
   Check,
   ChefHat,
   Clock3,
@@ -32,6 +33,7 @@ import {
   Trash2,
   Users,
 } from "lucide-react-native";
+import { apiRequest } from "../lib/api";
 import { kitchenRequest } from "../lib/kitchenApi";
 import { getCurrentUserId } from "../lib/auth";
 import { uploadPostImage } from "../lib/communityApi";
@@ -66,7 +68,7 @@ const emptyDraft = (): Draft => ({
   title: "",
   description: "",
   image: "",
-  category: "🍲 Món Việt",
+  category: "Món Việt",
   tags: "",
   minutes: "20",
   servings: "2",
@@ -124,6 +126,16 @@ function CreatePostScreen() {
   const [ready, setReady] = useState(false);
   const [busy, setBusy] = useState(false);
   const [accepted, setAccepted] = useState(false);
+  const [categories,setCategories] = useState<string[]>([]);
+  const [categoryAliases,setCategoryAliases] = useState<Record<string,string>>({});
+  const [categoryOpen,setCategoryOpen] = useState(false);
+  const [categoryError,setCategoryError] = useState("");
+  const [categoryRetry,setCategoryRetry] = useState(0);
+  useEffect(()=>{
+    let active=true;
+    apiRequest<{postCategories:string[];categoryAliases:Record<string,string>}>("/api/kitchen/post-categories").then(data=>{if(active){setCategoryError("");setCategories(data.postCategories);setCategoryAliases(data.categoryAliases);}}).catch(error=>{if(active)setCategoryError(error instanceof Error?error.message:"Không tải được danh mục.");});
+    return()=>{active=false;};
+  },[categoryRetry]);
   const draftKey = useRef("");
   const lock = useRef(false);
   useEffect(() => {
@@ -174,6 +186,7 @@ function CreatePostScreen() {
   };
   const issues = () => {
     const missing: string[] = [];
+    if (!draft.category.trim()) missing.push("Danh mục bài viết");
     if (!draft.title.trim()) missing.push("Tên món / tiêu đề");
     if (!draft.description.trim()) missing.push("Mô tả / nội dung");
     if (draft.mode === "recipe") {
@@ -269,7 +282,7 @@ function CreatePostScreen() {
         title: draft.title.trim(),
         description,
         image,
-        category: draft.category,
+        category: categoryAliases[draft.category] || draft.category,
         visibility: draft.visibility,
       });
       await AsyncStorage.removeItem(draftKey.current).catch(() => {});
@@ -418,24 +431,18 @@ function CreatePostScreen() {
                   placeholderTextColor="#A38D82"
                 />
               </Field>
-              <Field label="Phân loại">
-                <View style={s.chips}>
-                  {[
-                    "🍲 Món Việt",
-                    "🥗 Healthy",
-                    "🍰 Bánh ngọt",
-                    "⚡ Nấu nhanh",
-                  ].map((c) => (
-                    <Pressable
-                      key={c}
-                      disabled={busy}
-                      onPress={() => update("category", c)}
-                      style={[s.chip, draft.category === c && s.selected]}
-                    >
-                      <Text style={s.small}>{c}</Text>
-                    </Pressable>
-                  ))}
-                </View>
+              <Field label="Danh mục bài viết">
+                <Pressable disabled={busy} accessibilityRole="button" accessibilityLabel="Chọn danh mục bài viết" accessibilityState={{expanded:categoryOpen}} onPress={()=>setCategoryOpen(value=>!value)} style={[s.input,s.spread]}>
+                  <Text style={s.tabText}>{categoryAliases[draft.category]||draft.category||"Chọn danh mục"}</Text><ChevronDown size={18} color={accent}/>
+                </Pressable>
+                {categoryError && <View style={{gap:8,marginTop:10}}><Text style={s.sub}>{categoryError}</Text><Pressable onPress={()=>{setCategoryError("");setCategoryRetry(value=>value+1);}}><Text style={s.small}>Tải lại danh mục</Text></Pressable></View>}
+                {categoryOpen && <View style={[s.chips,{marginTop:10}]}>
+                  {!categories.length&&!categoryError&&<Text style={s.sub}>Đang tải danh mục…</Text>}
+                  {categories.map(category=>{
+                    const chosen=(categoryAliases[draft.category]||draft.category)===category;
+                    return <Pressable key={category} disabled={busy} accessibilityRole="radio" accessibilityState={{checked:chosen}} onPress={()=>{update("category",category);setCategoryOpen(false);}} style={[s.chip,{borderWidth:1,borderColor:chosen?accent:"#EED9CF",minHeight:44,flexDirection:"row",alignItems:"center",gap:7},chosen&&s.selected]}><Text style={s.small}>{category}</Text>{chosen&&<Check size={15} color={accent}/>}</Pressable>;
+                  })}
+                </View>}
               </Field>
               <Field label="Hashtag">
                 <TextInput
@@ -724,7 +731,7 @@ function CreatePostScreen() {
                 ))}
               </View>
               <Text style={s.sub}>
-                {draft.visibility === 'PUBLIC' ? 'Mọi người trong cộng đồng có thể xem bài viết.' : 'Bài viết cá nhân chỉ hiển thị với tài khoản của bạn.'}
+                {draft.visibility === 'PUBLIC' ? 'Bài công khai được gửi cho admin duyệt. Mọi người chỉ xem được sau khi bài được chấp nhận.' : 'Bài viết cá nhân chỉ hiển thị với tài khoản của bạn.'}
               </Text>
               <Pressable
                 disabled={busy}
@@ -768,7 +775,7 @@ function CreatePostScreen() {
                 <Send size={18} color="white" />
               )}
               <Text style={s.buttonText}>
-                {busy ? "Đang xử lý…" : draft.visibility === "PRIVATE" ? "Lưu bài cá nhân" : "Chia sẻ cùng Cộng đồng"}
+                {busy ? "Đang xử lý…" : draft.visibility === "PRIVATE" ? "Lưu bài cá nhân" : "Gửi bài để duyệt"}
               </Text>
             </Pressable>
           </View>

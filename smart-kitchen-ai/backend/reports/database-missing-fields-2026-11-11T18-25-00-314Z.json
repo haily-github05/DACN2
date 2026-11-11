@@ -1,0 +1,330 @@
+{
+  "generatedAt": "2026-11-11T18:25:00.321Z",
+  "tables": [
+    {
+      "table": "admin_post_reads",
+      "total": 0,
+      "missing": []
+    },
+    {
+      "table": "ai_messages",
+      "total": 6,
+      "missing": []
+    },
+    {
+      "table": "community_comments",
+      "total": 3,
+      "missing": [
+        {
+          "column": "parent_comment_id",
+          "type": "bigint",
+          "nullable": true,
+          "nulls": 2,
+          "empty": 0
+        }
+      ]
+    },
+    {
+      "table": "community_posts",
+      "total": 2,
+      "missing": [
+        {
+          "column": "rejection_reason",
+          "type": "varchar",
+          "nullable": true,
+          "nulls": 1,
+          "empty": 0
+        },
+        {
+          "column": "reviewed_by",
+          "type": "bigint",
+          "nullable": true,
+          "nulls": 1,
+          "empty": 0
+        },
+        {
+          "column": "reviewed_at",
+          "type": "datetime",
+          "nullable": true,
+          "nulls": 1,
+          "empty": 0
+        }
+      ]
+    },
+    {
+      "table": "community_reactions",
+      "total": 2,
+      "missing": []
+    },
+    {
+      "table": "cooking_history",
+      "total": 4,
+      "missing": [
+        {
+          "column": "plan_item_id",
+          "type": "bigint",
+          "nullable": true,
+          "nulls": 4,
+          "empty": 0
+        },
+        {
+          "column": "rating",
+          "type": "tinyint",
+          "nullable": true,
+          "nulls": 1,
+          "empty": 0
+        },
+        {
+          "column": "note",
+          "type": "text",
+          "nullable": true,
+          "nulls": 1,
+          "empty": 0
+        }
+      ]
+    },
+    {
+      "table": "ingredients",
+      "total": 114,
+      "missing": []
+    },
+    {
+      "table": "meal_plan_items",
+      "total": 65,
+      "missing": [
+        {
+          "column": "planned_cost",
+          "type": "decimal",
+          "nullable": true,
+          "nulls": 56,
+          "empty": 0
+        },
+        {
+          "column": "note",
+          "type": "varchar",
+          "nullable": true,
+          "nulls": 65,
+          "empty": 0
+        }
+      ]
+    },
+    {
+      "table": "meal_plans",
+      "total": 12,
+      "missing": [
+        {
+          "column": "budget_total",
+          "type": "decimal",
+          "nullable": true,
+          "nulls": 9,
+          "empty": 0
+        },
+        {
+          "column": "updated_at",
+          "type": "datetime",
+          "nullable": true,
+          "nulls": 12,
+          "empty": 0
+        }
+      ]
+    },
+    {
+      "table": "pantry_items",
+      "total": 32,
+      "missing": [
+        {
+          "column": "updated_at",
+          "type": "datetime",
+          "nullable": true,
+          "nulls": 2,
+          "empty": 0
+        },
+        {
+          "column": "note",
+          "type": "text",
+          "nullable": true,
+          "nulls": 30,
+          "empty": 2
+        }
+      ]
+    },
+    {
+      "table": "recipe_favorites",
+      "total": 1,
+      "missing": []
+    },
+    {
+      "table": "recipe_ingredients",
+      "total": 637,
+      "missing": [
+        {
+          "column": "note",
+          "type": "varchar",
+          "nullable": true,
+          "nulls": 555,
+          "empty": 0
+        }
+      ]
+    },
+    {
+      "table": "recipe_steps",
+      "total": 224,
+      "missing": [
+        {
+          "column": "image_url",
+          "type": "varchar",
+          "nullable": true,
+          "nulls": 224,
+          "empty": 0
+        },
+        {
+          "column": "duration_minutes",
+          "type": "int",
+          "nullable": true,
+          "nulls": 200,
+          "empty": 0
+        }
+      ]
+    },
+    {
+      "table": "recipes",
+      "total": 108,
+      "missing": []
+    },
+    {
+      "table": "shopping_list_items",
+      "total": 9,
+      "missing": [
+        {
+          "column": "purchased_quantity",
+          "type": "decimal",
+          "nullable": true,
+          "nulls": 9,
+          "empty": 0
+        },
+        {
+          "column": "note",
+          "type": "varchar",
+          "nullable": true,
+          "nulls": 9,
+          "empty": 0
+        }
+      ]
+    },
+    {
+      "table": "shopping_lists",
+      "total": 3,
+      "missing": [
+        {
+          "column": "updated_at",
+          "type": "datetime",
+          "nullable": true,
+          "nulls": 3,
+          "empty": 0
+        }
+      ]
+    },
+    {
+      "table": "user_follows",
+      "total": 0,
+      "missing": []
+    },
+    {
+      "table": "users",
+      "total": 3,
+      "missing": [
+        {
+          "column": "avatar_url",
+          "type": "varchar",
+          "nullable": true,
+          "nulls": 2,
+          "empty": 0
+        },
+        {
+          "column": "diet_type",
+          "type": "varchar",
+          "nullable": true,
+          "nulls": 2,
+          "empty": 0
+        },
+        {
+          "column": "taste_preference",
+          "type": "longtext",
+          "nullable": true,
+          "nulls": 2,
+          "empty": 0
+        },
+        {
+          "column": "region_preference",
+          "type": "varchar",
+          "nullable": true,
+          "nulls": 2,
+          "empty": 0
+        },
+        {
+          "column": "budget_per_day",
+          "type": "decimal",
+          "nullable": true,
+          "nulls": 2,
+          "empty": 0
+        },
+        {
+          "column": "max_cooking_time",
+          "type": "int",
+          "nullable": true,
+          "nulls": 2,
+          "empty": 0
+        },
+        {
+          "column": "allergies",
+          "type": "longtext",
+          "nullable": true,
+          "nulls": 2,
+          "empty": 0
+        },
+        {
+          "column": "disliked_ingredients",
+          "type": "longtext",
+          "nullable": true,
+          "nulls": 2,
+          "empty": 0
+        },
+        {
+          "column": "updated_at",
+          "type": "datetime",
+          "nullable": true,
+          "nulls": 2,
+          "empty": 0
+        },
+        {
+          "column": "email",
+          "type": "varchar",
+          "nullable": true,
+          "nulls": 2,
+          "empty": 0
+        },
+        {
+          "column": "google_id",
+          "type": "varchar",
+          "nullable": true,
+          "nulls": 3,
+          "empty": 0
+        },
+        {
+          "column": "locked_reason",
+          "type": "varchar",
+          "nullable": true,
+          "nulls": 3,
+          "empty": 0
+        },
+        {
+          "column": "last_login_at",
+          "type": "datetime",
+          "nullable": true,
+          "nulls": 3,
+          "empty": 0
+        }
+      ]
+    }
+  ]
+}

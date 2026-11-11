@@ -17,31 +17,63 @@ export type Ingredient = {
   image?: string;
 };
 type PantryRow = {
-  id: number; ingredient_id?: number; name: string; category: string; quantity: number; unit: string;
-  location: string; purchase_date: string | null; expiry_date: string | null;
-  note?: string; image_url?: string; created_at?: string;
+  id: number;
+  ingredient_id?: number;
+  name: string;
+  category: string;
+  quantity: number;
+  unit: string;
+  location: string;
+  purchase_date: string | null;
+  expiry_date: string | null;
+  note?: string;
+  image_url?: string;
+  created_at?: string;
 };
 export async function getIngredients(): Promise<Ingredient[]> {
-  const rows = await apiRequest<PantryRow[]>(`/api/pantry/${await getCurrentUserId()}`);
-  return rows.map(row => ({
-    id: String(row.id), ingredientId: row.ingredient_id == null ? undefined : String(row.ingredient_id), name: row.name, category: row.category || "Khác",
-    quantity: Number(row.quantity), unit: row.unit, location: row.location || "",
+  const rows = await apiRequest<PantryRow[]>(
+    `/api/pantry/${await getCurrentUserId()}`,
+  );
+  return rows.map((row) => ({
+    id: String(row.id),
+    ingredientId:
+      row.ingredient_id == null ? undefined : String(row.ingredient_id),
+    name: row.name,
+    category: row.category || "Khác",
+    quantity: Number(row.quantity),
+    unit: row.unit,
+    location: row.location || "",
     purchaseDate: row.purchase_date?.slice(0, 10) || "",
     expiryDate: row.expiry_date?.slice(0, 10) || "",
-    note: row.note || "", image: row.image_url, createdAt: row.created_at || "",
+    note: row.note || "",
+    image: row.image_url,
+    createdAt: row.created_at || "",
   }));
 }
 export async function findIngredient(id: string) {
-  return (await getIngredients()).find(item => item.id === id) ?? null;
+  return (await getIngredients()).find((item) => item.id === id) ?? null;
 }
-export async function addIngredient(item: Ingredient & { ingredientId?: string; mergeExisting?: boolean }) {
-  return apiRequest<{ id: number; merged?: boolean }>(`/api/kitchen/${await getCurrentUserId()}/pantry`, "POST", item);
+export async function addIngredient(
+  item: Ingredient & { ingredientId?: string; mergeExisting?: boolean },
+) {
+  return apiRequest<{ id: number; merged?: boolean }>(
+    `/api/kitchen/${await getCurrentUserId()}/pantry`,
+    "POST",
+    item,
+  );
 }
 export async function updateIngredient(item: Ingredient) {
-  return apiRequest(`/api/kitchen/${await getCurrentUserId()}/pantry/${item.id}`, "PUT", item);
+  return apiRequest(
+    `/api/kitchen/${await getCurrentUserId()}/pantry/${item.id}`,
+    "PUT",
+    item,
+  );
 }
 export async function deleteIngredient(id: string) {
-  return apiRequest(`/api/kitchen/${await getCurrentUserId()}/pantry/${id}`, "DELETE");
+  return apiRequest(
+    `/api/kitchen/${await getCurrentUserId()}/pantry/${id}`,
+    "DELETE",
+  );
 }
 export function daysUntil(iso: string) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(iso)) return null;
@@ -61,7 +93,16 @@ export function dateIsValid(s: string) {
   );
 }
 
-export type CatalogIngredient = { id: string; name: string; category: string; unit: string; image: string; inPantry: boolean };
+export type CatalogIngredient = {
+  id: string;
+  name: string;
+  category: string;
+  unit: string;
+  image: string;
+  inPantry: boolean;
+};
 export async function getIngredientCatalog(): Promise<CatalogIngredient[]> {
-  return await getAuthUser() ? apiRequest(`/api/kitchen/${await getCurrentUserId()}/ingredients`) : apiRequest("/api/kitchen/public-ingredients");
+  return (await getAuthUser())
+    ? apiRequest(`/api/kitchen/${await getCurrentUserId()}/ingredients`)
+    : apiRequest("/api/kitchen/public-ingredients");
 }

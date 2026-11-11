@@ -40,25 +40,28 @@ const authController = {
 
   login: async (req, res) => {
     try {
-      const { phone, password } = req.body;
-      const normalizedPhone = typeof phone === 'string' ? phone.replace(/\s/g, '') : '';
+      const { password } = req.body;
+      const rawIdentifier = req.body.identifier ?? req.body.email ?? req.body.phone;
+      const value = typeof rawIdentifier === 'string' ? rawIdentifier.trim() : '';
+      const isEmail = value.includes('@');
+      const identifier = isEmail ? value.toLowerCase() : value.replace(/\s/g, '');
 
-      if (!normalizedPhone || typeof password !== 'string' || !password) {
-        return res.status(400).json({ success: false, message: 'Vui lòng nhập số điện thoại và mật khẩu' });
+      if (!identifier || typeof password !== 'string' || !password) {
+        return res.status(400).json({ success: false, message: 'Vui lòng nhập email hoặc số điện thoại và mật khẩu' });
       }
-      if (!/^(0[35789]\d{8}|[35789]\d{8})$/.test(normalizedPhone)) {
-        return res.status(400).json({ success: false, message: 'Số điện thoại không hợp lệ' });
+      if (isEmail ? identifier.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identifier) : !/^(0[35789]\d{8}|[35789]\d{8})$/.test(identifier)) {
+        return res.status(400).json({ success: false, message: 'Email hoặc số điện thoại không hợp lệ' });
       }
 
-      const user = await authService.authenticateUser(normalizedPhone, password);
+      const user = await authService.authenticateUser(identifier, password);
       if (!user) {
-        return res.status(401).json({ success: false, message: 'Số điện thoại hoặc mật khẩu không đúng' });
+        return res.status(401).json({ success: false, message: 'Email, số điện thoại hoặc mật khẩu không đúng' });
       }
 
       return res.json({ success: true, message: 'Đăng nhập thành công', data: { ...user, token: createToken(user.user_id) } });
     } catch (error) {
       console.error('Login error:', error.message);
-      return res.status(500).json({ success: false, message: 'Lỗi hệ thống khi đăng nhập' });
+      return res.status(error.status===403?403:500).json({ success: false, message: error.status===403?error.message:'Lỗi hệ thống khi đăng nhập' });
     }
   },
 };

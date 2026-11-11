@@ -264,6 +264,7 @@ export default function CommunityScreen() {
                 {/* CONTENT */}
                 <Pressable onPress={() => openPost(post)}>
                   <Text style={styles.postTitle}>{post.visibility === "PRIVATE" ? "🔒 " : ""}{post.title}</Text>
+                  {post.visibility !== "PRIVATE" && post.moderationStatus !== "APPROVED" && <Text style={styles.postDescription}>{post.moderationStatus === "REJECTED" ? "Bị từ chối" : post.moderationStatus === "HIDDEN" ? "Đã ẩn khỏi cộng đồng" : "Chờ admin duyệt"}</Text>}
 
                   <Text style={styles.postDescription}>{post.description}</Text>
 

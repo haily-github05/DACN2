@@ -1,0 +1,1605 @@
+{
+  "basis": "Ước tính thao tác và chờ theo hướng dẫn hiện tại",
+  "changes": [
+    {
+      "id": 9625,
+      "recipeId": 9201,
+      "step": 1,
+      "instruction": "Luộc gà với nước vừa ngập đến khi chín; vớt ráo và thấm khô da. Nấu gạo với phần nước luộc gà.",
+      "before": null,
+      "after": 45
+    },
+    {
+      "id": 9626,
+      "recipeId": 9201,
+      "step": 2,
+      "instruction": "Chiên gà trong dầu nóng, trở mặt đến khi da vàng giòn. Pha nước mắm với tỏi và một ít nước luộc gà; ăn cùng cơm, dưa leo.",
+      "before": null,
+      "after": 15
+    },
+    {
+      "id": 9627,
+      "recipeId": 9202,
+      "step": 1,
+      "instruction": "Ướp sườn với tỏi, nửa phần nước mắm và đường trong 20 phút; nấu gạo thành cơm.",
+      "before": null,
+      "after": 25
+    },
+    {
+      "id": 9628,
+      "recipeId": 9202,
+      "step": 2,
+      "instruction": "Nướng sườn ở 190°C khoảng 20–25 phút, trở mặt đến khi chín. Làm nóng dầu với hành; pha nước mắm còn lại với nước, đường, ăn cùng rau và cơm.",
+      "before": null,
+      "after": 25
+    },
+    {
+      "id": 9629,
+      "recipeId": 9203,
+      "step": 1,
+      "instruction": "Luộc gà cùng gừng và muối đến khi chín, giữ nước luộc.",
+      "before": null,
+      "after": 30
+    },
+    {
+      "id": 9630,
+      "recipeId": 9203,
+      "step": 2,
+      "instruction": "Đảo gạo với dầu rồi nấu bằng nước luộc gà. Xé gà, dọn cùng cơm, dưa leo và hành lá.",
+      "before": null,
+      "after": 30
+    },
+    {
+      "id": 9631,
+      "recipeId": 9204,
+      "step": 1,
+      "instruction": "Cắt nhỏ cà rốt, làm sạch tôm mực; đánh tan trứng. Xào tôm mực với một nửa dầu đến chín rồi để riêng.",
+      "before": null,
+      "after": 20
+    },
+    {
+      "id": 9632,
+      "recipeId": 9204,
+      "step": 2,
+      "instruction": "Chiên trứng, thêm cơm và cà rốt đảo nóng đều. Cho hải sản, nước tương, hành lá vào đảo đến khi tất cả chín.",
+      "before": null,
+      "after": 10
+    },
+    {
+      "id": 9633,
+      "recipeId": 9205,
+      "step": 1,
+      "instruction": "Cắt hạt lựu cà rốt và lạp xưởng. Luộc đậu Hà Lan, cà rốt đến chín; đánh tan trứng.",
+      "before": null,
+      "after": 15
+    },
+    {
+      "id": 9634,
+      "recipeId": 9205,
+      "step": 2,
+      "instruction": "Chiên trứng với dầu, thêm cơm và lạp xưởng đảo chín. Cho rau củ và nước tương vào, đảo đến nóng đều.",
+      "before": null,
+      "after": 15
+    },
+    {
+      "id": 9635,
+      "recipeId": 9206,
+      "step": 1,
+      "instruction": "Nấu gạo thành cơm. Cắt bò khối nhỏ, ướp nước tương và tiêu; cắt ớt chuông, hành tây.",
+      "before": null,
+      "after": 25
+    },
+    {
+      "id": 9636,
+      "recipeId": 9206,
+      "step": 2,
+      "instruction": "Phi tỏi với dầu, áp chảo bò rồi thêm rau củ, đảo nhanh đến chín; dọn với cơm.",
+      "before": null,
+      "after": 10
+    },
+    {
+      "id": 9637,
+      "recipeId": 9207,
+      "step": 1,
+      "instruction": "Nấu gạo thành cơm. Ướp cá với nước mắm, hành tím và tiêu trong 15 phút.",
+      "before": null,
+      "after": 25
+    },
+    {
+      "id": 9638,
+      "recipeId": 9207,
+      "step": 2,
+      "instruction": "Đun đường với dầu đến màu cánh gián, thêm cá và nước vừa xâm xấp. Kho nhỏ lửa 25–30 phút đến cá chín, nước sánh; ăn với cơm.",
+      "before": null,
+      "after": 30
+    },
+    {
+      "id": 9639,
+      "recipeId": 9208,
+      "step": 1,
+      "instruction": "Nấu cơm, luộc trứng chín rồi bóc vỏ. Chần thịt và rửa sạch.",
+      "before": null,
+      "after": 20
+    },
+    {
+      "id": 9640,
+      "recipeId": 9208,
+      "step": 2,
+      "instruction": "Ướp thịt với hành, nước mắm, đường; cho nước dừa vào kho 30 phút, thêm trứng và kho tiếp đến thịt mềm. Dọn cùng cơm.",
+      "before": null,
+      "after": 45
+    },
+    {
+      "id": 9641,
+      "recipeId": 9209,
+      "step": 1,
+      "instruction": "Nấu cơm. Ướp gà với mật ong, nước tương, tỏi 20 phút; luộc cà rốt, bông cải chín.",
+      "before": null,
+      "after": 25
+    },
+    {
+      "id": 9642,
+      "recipeId": 9209,
+      "step": 2,
+      "instruction": "Nướng gà ở 180°C khoảng 25–30 phút, trở mặt và kiểm tra chín bên trong; dọn với cơm và rau.",
+      "before": null,
+      "after": 30
+    },
+    {
+      "id": 9643,
+      "recipeId": 9210,
+      "step": 1,
+      "instruction": "Thái nấm và rau củ. Xào từng loại với một ít dầu đến chín; chiên trứng chín.",
+      "before": null,
+      "after": 20
+    },
+    {
+      "id": 9644,
+      "recipeId": 9210,
+      "step": 2,
+      "instruction": "Hâm nóng cơm, xếp rau nấm và trứng lên trên, thêm nước tương và trộn đều khi ăn.",
+      "before": null,
+      "after": 10
+    },
+    {
+      "id": 9645,
+      "recipeId": 9211,
+      "step": 1,
+      "instruction": "Chần rửa xương. Ninh xương với hành, gừng nướng, quế, hồi và 800 ml nước trong 2 giờ, hớt bọt.",
+      "before": null,
+      "after": 125
+    },
+    {
+      "id": 9646,
+      "recipeId": 9211,
+      "step": 2,
+      "instruction": "Lọc nước dùng, nêm muối và nước mắm. Trụng bánh phở, thái bò mỏng; cho bò vào nước dùng sôi đến chín rồi chan lên phở, thêm hành.",
+      "before": null,
+      "after": 10
+    },
+    {
+      "id": 9647,
+      "recipeId": 9212,
+      "step": 1,
+      "instruction": "Luộc gà với hành, gừng và 700 ml nước; hớt bọt, nấu đến gà chín rồi xé thịt.",
+      "before": null,
+      "after": 40
+    },
+    {
+      "id": 9648,
+      "recipeId": 9212,
+      "step": 2,
+      "instruction": "Nêm nước dùng bằng muối, nước mắm. Trụng bánh phở; xếp gà, hành, rau mùi rồi chan nước dùng sôi.",
+      "before": null,
+      "after": 15
+    },
+    {
+      "id": 9649,
+      "recipeId": 9213,
+      "step": 1,
+      "instruction": "Chần xương và bò, ninh cùng sả với 800 ml nước khoảng 75–90 phút đến mềm.",
+      "before": null,
+      "after": 90
+    },
+    {
+      "id": 9650,
+      "recipeId": 9213,
+      "step": 2,
+      "instruction": "Hòa mắm ruốc với nước, lọc lấy phần trong vào nồi, nêm nước mắm và ớt. Trụng bún, thái bò chín, chan nước dùng và thêm hành.",
+      "before": null,
+      "after": 15
+    },
+    {
+      "id": 9651,
+      "recipeId": 9214,
+      "step": 1,
+      "instruction": "Giã cua, lọc với 600 ml nước, bỏ vỏ. Đun nhẹ cho riêu kết lại rồi vớt riêng; chiên đậu hũ.",
+      "before": null,
+      "after": 25
+    },
+    {
+      "id": 9652,
+      "recipeId": 9214,
+      "step": 2,
+      "instruction": "Xào cà chua với hành và dầu, thêm vào nước cua. Cho trứng đánh tan, đậu, riêu vào nấu chín, nêm nước mắm, chan lên bún.",
+      "before": null,
+      "after": 20
+    },
+    {
+      "id": 9653,
+      "recipeId": 9215,
+      "step": 1,
+      "instruction": "Ướp thịt với tỏi, một phần nước mắm, đường và dầu 20 phút. Thái mỏng đu đủ, cà rốt và ngâm giấm đường.",
+      "before": null,
+      "after": 25
+    },
+    {
+      "id": 9654,
+      "recipeId": 9215,
+      "step": 2,
+      "instruction": "Nướng thịt ở 190°C 20–25 phút, trở mặt đến chín. Pha nước mắm còn lại với nước, giấm, đường; ăn cùng bún và rau rửa sạch.",
+      "before": null,
+      "after": 25
+    },
+    {
+      "id": 9655,
+      "recipeId": 9216,
+      "step": 1,
+      "instruction": "Ướp thịt với sả, tỏi, dầu và một phần nước mắm trong 20 phút; rang chín đậu phộng.",
+      "before": null,
+      "after": 25
+    },
+    {
+      "id": 9656,
+      "recipeId": 9216,
+      "step": 2,
+      "instruction": "Nướng thịt ở 190°C 20–25 phút đến chín. Pha nước mắm, đường, chanh với nước; xếp bún, rau, thịt, đậu phộng rồi rưới nước chấm.",
+      "before": null,
+      "after": 25
+    },
+    {
+      "id": 9657,
+      "recipeId": 9217,
+      "step": 1,
+      "instruction": "Lọc cá lấy thịt, kiểm tra bỏ xương; ninh xương cá với 600 ml nước 20 phút rồi lọc kỹ.",
+      "before": null,
+      "after": 30
+    },
+    {
+      "id": 9658,
+      "recipeId": 9217,
+      "step": 2,
+      "instruction": "Chiên cá chín; xào cà chua, thêm nước dùng và nước mắm, đun sôi. Chan lên bún, thêm cá, thì là và hành.",
+      "before": null,
+      "after": 20
+    },
+    {
+      "id": 9659,
+      "recipeId": 9218,
+      "step": 1,
+      "instruction": "Luộc măng trong nhiều nước, đổ bỏ nước luộc rồi rửa lại. Làm sạch vịt, luộc với gừng và 700 ml nước đến chín.",
+      "before": null,
+      "after": 45
+    },
+    {
+      "id": 9660,
+      "recipeId": 9218,
+      "step": 2,
+      "instruction": "Thêm măng vào nước vịt nấu 15 phút, nêm muối và nước mắm; chặt vịt, dọn cùng bún và hành.",
+      "before": null,
+      "after": 20
+    },
+    {
+      "id": 9661,
+      "recipeId": 9219,
+      "step": 1,
+      "instruction": "Cắt đậu, nấm và rau củ; chiên đậu vàng, xào cà rốt và nấm đến chín.",
+      "before": null,
+      "after": 20
+    },
+    {
+      "id": 9662,
+      "recipeId": 9219,
+      "step": 2,
+      "instruction": "Cho bún, cải thìa và nước tương vào đảo nhẹ, thêm một ít nước nếu khô; xào đến nóng đều và cải chín.",
+      "before": null,
+      "after": 10
+    },
+    {
+      "id": 9663,
+      "recipeId": 9220,
+      "step": 1,
+      "instruction": "Ngâm miến và nấm riêng, rửa sạch. Luộc gà với gừng, muối và 650 ml nước đến chín rồi xé.",
+      "before": null,
+      "after": 35
+    },
+    {
+      "id": 9664,
+      "recipeId": 9220,
+      "step": 2,
+      "instruction": "Thêm nấm vào nước dùng nấu chín, nêm nước mắm. Cho miến vào nấu vừa mềm, dọn cùng gà và hành.",
+      "before": null,
+      "after": 15
+    },
+    {
+      "id": 9665,
+      "recipeId": 9221,
+      "step": 1,
+      "instruction": "Chần xương, ninh với 800 ml nước 60 phút. Luộc thịt và tôm trong nước dùng đến chín, vớt ra thái thịt.",
+      "before": null,
+      "after": 75
+    },
+    {
+      "id": 9666,
+      "recipeId": 9221,
+      "step": 2,
+      "instruction": "Lọc và nêm nước dùng. Trụng hủ tiếu, nấu chín giá đỗ; xếp thịt tôm, thêm hành rồi chan nước dùng.",
+      "before": null,
+      "after": 15
+    },
+    {
+      "id": 9667,
+      "recipeId": 9222,
+      "step": 1,
+      "instruction": "Ướp gà với nghệ, hành và nước mắm 15 phút; rang chín đậu phộng, rửa rau.",
+      "before": null,
+      "after": 20
+    },
+    {
+      "id": 9668,
+      "recipeId": 9222,
+      "step": 2,
+      "instruction": "Xào săn gà với dầu, thêm 350 ml nước, om đến chín. Trụng mì, xếp gà, rau, đậu phộng rồi chan ít nước dùng.",
+      "before": null,
+      "after": 30
+    },
+    {
+      "id": 9669,
+      "recipeId": 9223,
+      "step": 1,
+      "instruction": "Luộc mì theo hướng dẫn trên gói rồi để ráo. Thái bò mỏng, cắt cải.",
+      "before": null,
+      "after": 12
+    },
+    {
+      "id": 9670,
+      "recipeId": 9223,
+      "step": 2,
+      "instruction": "Phi tỏi, xào bò đến chín rồi để riêng. Xào cải, thêm mì, bò và nước tương; đảo nóng đều.",
+      "before": null,
+      "after": 10
+    },
+    {
+      "id": 9671,
+      "recipeId": 9224,
+      "step": 1,
+      "instruction": "Luộc mì rồi để ráo. Làm sạch tôm, mực, cắt rau củ.",
+      "before": null,
+      "after": 15
+    },
+    {
+      "id": 9672,
+      "recipeId": 9224,
+      "step": 2,
+      "instruction": "Phi tỏi, xào tôm mực đến chín, thêm rau củ và chút nước; khi rau chín cho mì, nước tương vào đảo đều.",
+      "before": null,
+      "after": 15
+    },
+    {
+      "id": 9673,
+      "recipeId": 9225,
+      "step": 1,
+      "instruction": "Luộc gà với gừng và 700 ml nước đến chín rồi xé thịt.",
+      "before": null,
+      "after": 25
+    },
+    {
+      "id": 9674,
+      "recipeId": 9225,
+      "step": 2,
+      "instruction": "Cho gạo vào nước luộc nấu nhỏ lửa, khuấy thường xuyên đến nhừ. Thêm gà, nước mắm, muối và hành, đun sôi lại.",
+      "before": null,
+      "after": 30
+    },
+    {
+      "id": 9675,
+      "recipeId": 9226,
+      "step": 1,
+      "instruction": "Nấu gạo với 700 ml nước đến nhừ. Băm thịt và hành tím.",
+      "before": null,
+      "after": 35
+    },
+    {
+      "id": 9676,
+      "recipeId": 9226,
+      "step": 2,
+      "instruction": "Phi hành với dầu, xào thịt chín rồi cho vào cháo, nêm nước mắm và nấu thêm 5 phút; thêm hành lá.",
+      "before": null,
+      "after": 10
+    },
+    {
+      "id": 9677,
+      "recipeId": 9227,
+      "step": 1,
+      "instruction": "Nấu gạo với 650 ml nước đến nhừ. Thái nhỏ cà rốt, lọc hết xương cá.",
+      "before": null,
+      "after": 30
+    },
+    {
+      "id": 9678,
+      "recipeId": 9227,
+      "step": 2,
+      "instruction": "Thêm cà rốt vào cháo nấu mềm; cho cá và gừng vào nấu 8–10 phút đến cá chín, dằm nhỏ và nêm muối.",
+      "before": null,
+      "after": 15
+    },
+    {
+      "id": 9679,
+      "recipeId": 9228,
+      "step": 1,
+      "instruction": "Ngâm đậu xanh 2 giờ, vo gạo và rửa đậu.",
+      "before": null,
+      "after": 125
+    },
+    {
+      "id": 9680,
+      "recipeId": 9228,
+      "step": 2,
+      "instruction": "Nấu gạo, đậu với 750 ml nước đến mềm nhừ, khuấy tránh bén đáy, nêm muối và thêm nước nếu cần.",
+      "before": null,
+      "after": 40
+    },
+    {
+      "id": 9681,
+      "recipeId": 9229,
+      "step": 1,
+      "instruction": "Rửa rau, thái dưa leo; làm nóng bánh mì.",
+      "before": null,
+      "after": 10
+    },
+    {
+      "id": 9682,
+      "recipeId": 9229,
+      "step": 2,
+      "instruction": "Chiên trứng với dầu đến lòng trắng và lòng đỏ chín, kẹp vào bánh cùng rau, thêm nước tương.",
+      "before": null,
+      "after": 8
+    },
+    {
+      "id": 9683,
+      "recipeId": 9230,
+      "step": 1,
+      "instruction": "Ướp thịt với sả, tỏi, nước mắm và dầu 20 phút. Ngâm cà rốt thái sợi với giấm, đường.",
+      "before": null,
+      "after": 25
+    },
+    {
+      "id": 9684,
+      "recipeId": 9230,
+      "step": 2,
+      "instruction": "Nướng thịt ở 190°C khoảng 20 phút đến chín, thái miếng; kẹp vào bánh mì nóng cùng dưa leo, cà rốt.",
+      "before": null,
+      "after": 25
+    },
+    {
+      "id": 9685,
+      "recipeId": 9231,
+      "step": 1,
+      "instruction": "Ngâm, rửa, thái mộc nhĩ; băm thịt. Xào thịt, mộc nhĩ, hành với một ít dầu và nước mắm đến chín.",
+      "before": null,
+      "after": 20
+    },
+    {
+      "id": 9686,
+      "recipeId": 9231,
+      "step": 2,
+      "instruction": "Hòa hai loại bột với 250 ml nước. Tráng lớp mỏng trên chảo chống dính có dầu, đậy đến bột trong, lấy ra thêm nhân và cuộn.",
+      "before": null,
+      "after": 20
+    },
+    {
+      "id": 9687,
+      "recipeId": 9232,
+      "step": 1,
+      "instruction": "Hòa bột, nghệ, nước cốt dừa và 100 ml nước. Xào tôm và thịt thái mỏng đến chín.",
+      "before": null,
+      "after": 15
+    },
+    {
+      "id": 9688,
+      "recipeId": 9232,
+      "step": 2,
+      "instruction": "Láng dầu chảo nóng, đổ lớp bột mỏng, thêm nhân và giá, đậy cho giá chín rồi mở nắp chiên giòn; gập bánh, ăn với rau và nước mắm pha nước.",
+      "before": null,
+      "after": 25
+    },
+    {
+      "id": 9689,
+      "recipeId": 9233,
+      "step": 1,
+      "instruction": "Hòa bột, nước cốt dừa và 80 ml nước, thêm hành thái nhỏ; làm sạch tôm.",
+      "before": null,
+      "after": 10
+    },
+    {
+      "id": 9690,
+      "recipeId": 9233,
+      "step": 2,
+      "instruction": "Làm nóng khuôn bánh khọt với dầu, đổ bột và đặt tôm lên. Đậy đến tôm, bột chín rồi mở cho giòn; ăn cùng rau và nước mắm pha loãng.",
+      "before": null,
+      "after": 25
+    },
+    {
+      "id": 9691,
+      "recipeId": 9234,
+      "step": 1,
+      "instruction": "Luộc chín thịt và tôm, thái thịt, bóc tôm; rửa rau và thái dưa leo.",
+      "before": null,
+      "after": 25
+    },
+    {
+      "id": 9692,
+      "recipeId": 9234,
+      "step": 2,
+      "instruction": "Làm ẩm bánh tráng, xếp rau, bún, thịt tôm rồi cuốn chặt. Pha nước mắm với đường, chanh và nước để chấm.",
+      "before": null,
+      "after": 10
+    },
+    {
+      "id": 9693,
+      "recipeId": 9235,
+      "step": 1,
+      "instruction": "Ngâm miến, mộc nhĩ rồi cắt nhỏ; trộn với thịt băm, cà rốt bào, trứng và nước mắm.",
+      "before": null,
+      "after": 20
+    },
+    {
+      "id": 9694,
+      "recipeId": 9235,
+      "step": 2,
+      "instruction": "Cuốn nhân trong bánh tráng, gấp kín. Chiên lửa vừa khoảng 12–15 phút, trở đều đến nhân chín, vỏ giòn; để ráo dầu.",
+      "before": null,
+      "after": 25
+    },
+    {
+      "id": 9695,
+      "recipeId": 9236,
+      "step": 1,
+      "instruction": "Thái thịt ba chỉ mỏng vừa, băm hành tím; pha nước mắm với đường.",
+      "before": null,
+      "after": 10
+    },
+    {
+      "id": 9696,
+      "recipeId": 9236,
+      "step": 2,
+      "instruction": "Rang thịt trên chảo đến ra mỡ và cạnh vàng, chắt bớt mỡ. Thêm hành và nước mắm, đảo nhỏ lửa đến thịt chín, thêm hành lá.",
+      "before": null,
+      "after": 20
+    },
+    {
+      "id": 9697,
+      "recipeId": 9237,
+      "step": 1,
+      "instruction": "Ướp thịt với nước mắm, tiêu, hành 15 phút.",
+      "before": null,
+      "after": 20
+    },
+    {
+      "id": 9698,
+      "recipeId": 9237,
+      "step": 2,
+      "instruction": "Thắng đường với dầu, thêm thịt đảo săn rồi thêm 150 ml nước. Kho nhỏ lửa khoảng 30 phút đến thịt mềm, nước sánh.",
+      "before": null,
+      "after": 35
+    },
+    {
+      "id": 9699,
+      "recipeId": 9238,
+      "step": 1,
+      "instruction": "Chần thịt, luộc trứng chín rồi bóc vỏ. Ướp thịt với hành, nước mắm và đường 20 phút.",
+      "before": null,
+      "after": 35
+    },
+    {
+      "id": 9700,
+      "recipeId": 9238,
+      "step": 2,
+      "instruction": "Cho thịt, nước dừa vào nồi kho nhỏ lửa 35 phút; thêm trứng kho tiếp 15 phút đến thịt mềm.",
+      "before": null,
+      "after": 50
+    },
+    {
+      "id": 9701,
+      "recipeId": 9239,
+      "step": 1,
+      "instruction": "Chần sườn, rửa sạch, để ráo; áp chảo với dầu cho vàng hai mặt.",
+      "before": null,
+      "after": 15
+    },
+    {
+      "id": 9702,
+      "recipeId": 9239,
+      "step": 2,
+      "instruction": "Phi tỏi, xào cà chua, thêm giấm, đường, nước mắm và 100 ml nước. Cho sườn vào om 20 phút đến chín mềm, sốt sánh.",
+      "before": null,
+      "after": 25
+    },
+    {
+      "id": 9703,
+      "recipeId": 9240,
+      "step": 1,
+      "instruction": "Ướp sườn với mật ong, nước tương, tỏi và dầu ít nhất 30 phút.",
+      "before": null,
+      "after": 35
+    },
+    {
+      "id": 9704,
+      "recipeId": 9240,
+      "step": 2,
+      "instruction": "Nướng ở 180°C khoảng 30 phút, trở mặt giữa chừng; kiểm tra phần sát xương chín hoàn toàn trước khi dọn.",
+      "before": null,
+      "after": 35
+    },
+    {
+      "id": 9705,
+      "recipeId": 9241,
+      "step": 1,
+      "instruction": "Luộc thịt với nước vừa ngập đến chín, vớt ráo và thái mỏng. Rửa rau, thái dưa leo.",
+      "before": null,
+      "after": 30
+    },
+    {
+      "id": 9706,
+      "recipeId": 9241,
+      "step": 2,
+      "instruction": "Làm ẩm bánh tráng, cuốn thịt và rau. Pha nước mắm với tỏi, đường, chanh và nước để chấm.",
+      "before": null,
+      "after": 10
+    },
+    {
+      "id": 9707,
+      "recipeId": 9242,
+      "step": 1,
+      "instruction": "Thái thịt mỏng, băm sả, tỏi, ớt; ướp thịt với nước mắm, đường 15 phút.",
+      "before": null,
+      "after": 20
+    },
+    {
+      "id": 9708,
+      "recipeId": 9242,
+      "step": 2,
+      "instruction": "Phi sả, tỏi với dầu rồi xào thịt lửa vừa đến chín; thêm ớt, đảo đến thịt săn và thơm.",
+      "before": null,
+      "after": 15
+    },
+    {
+      "id": 9709,
+      "recipeId": 9243,
+      "step": 1,
+      "instruction": "Cắt bò khối, ướp nước mắm, đường, tỏi 20 phút; cắt cà rốt.",
+      "before": null,
+      "after": 25
+    },
+    {
+      "id": 9710,
+      "recipeId": 9243,
+      "step": 2,
+      "instruction": "Xào săn bò với dầu, thêm sả, quế, hồi và 600 ml nước, hầm 70 phút. Thêm cà rốt nấu đến bò và cà rốt mềm, gắp bỏ quế hồi.",
+      "before": null,
+      "after": 85
+    },
+    {
+      "id": 9711,
+      "recipeId": 9244,
+      "step": 1,
+      "instruction": "Cắt bò khối, ướp muối và rượu vang 20 phút. Cắt cà chua, cà rốt.",
+      "before": null,
+      "after": 25
+    },
+    {
+      "id": 9712,
+      "recipeId": 9244,
+      "step": 2,
+      "instruction": "Phi tỏi, xào bò và cà chua, thêm 500 ml nước, hầm nhỏ lửa 70 phút. Thêm cà rốt nấu mềm, mở nắp đun thêm cho sốt sánh.",
+      "before": null,
+      "after": 85
+    },
+    {
+      "id": 9713,
+      "recipeId": 9245,
+      "step": 1,
+      "instruction": "Thái bò mỏng, ướp nước tương, tiêu 10 phút; bổ múi hành tây.",
+      "before": null,
+      "after": 15
+    },
+    {
+      "id": 9714,
+      "recipeId": 9245,
+      "step": 2,
+      "instruction": "Phi tỏi với dầu, xào bò nhanh rồi để riêng. Xào hành đến vừa chín, cho bò lại chảo đảo chín đều.",
+      "before": null,
+      "after": 10
+    },
+    {
+      "id": 9715,
+      "recipeId": 9246,
+      "step": 1,
+      "instruction": "Thái bò mỏng, ướp nước tương 10 phút; cắt khúc cần tây.",
+      "before": null,
+      "after": 15
+    },
+    {
+      "id": 9716,
+      "recipeId": 9246,
+      "step": 2,
+      "instruction": "Phi tỏi, xào bò đến chín rồi để riêng. Xào cần tây vừa chín, thêm bò, đảo đều rồi tắt bếp.",
+      "before": null,
+      "after": 10
+    },
+    {
+      "id": 9717,
+      "recipeId": 9247,
+      "step": 1,
+      "instruction": "Băm bò, trộn sả, tỏi, nước mắm và tiêu. Rửa, thấm khô lá lốt.",
+      "before": null,
+      "after": 15
+    },
+    {
+      "id": 9718,
+      "recipeId": 9247,
+      "step": 2,
+      "instruction": "Cuốn thịt vào lá, phết dầu và nướng ở 180°C khoảng 12–15 phút, trở mặt đến phần nhân chín hoàn toàn.",
+      "before": null,
+      "after": 20
+    },
+    {
+      "id": 9719,
+      "recipeId": 9248,
+      "step": 1,
+      "instruction": "Cắt bò và rau củ thành khối. Phi tỏi, xào bò săn với dầu và muối.",
+      "before": null,
+      "after": 15
+    },
+    {
+      "id": 9720,
+      "recipeId": 9248,
+      "step": 2,
+      "instruction": "Thêm 600 ml nước hầm nhỏ lửa 65 phút. Cho khoai, cà rốt, hành vào hầm thêm 20–25 phút đến mềm.",
+      "before": null,
+      "after": 90
+    },
+    {
+      "id": 9721,
+      "recipeId": 9249,
+      "step": 1,
+      "instruction": "Chặt gà miếng vừa, thái gừng, ướp gà với nước mắm, đường và hành 15 phút.",
+      "before": null,
+      "after": 20
+    },
+    {
+      "id": 9722,
+      "recipeId": 9249,
+      "step": 2,
+      "instruction": "Xào gà với dầu và gừng, thêm 120 ml nước, kho nhỏ lửa 25–30 phút đến gà chín, sốt sánh.",
+      "before": null,
+      "after": 30
+    },
+    {
+      "id": 9723,
+      "recipeId": 9250,
+      "step": 1,
+      "instruction": "Thấm khô gà, chiên lửa vừa khoảng 20 phút, trở đều đến chín bên trong rồi để ráo.",
+      "before": null,
+      "after": 25
+    },
+    {
+      "id": 9724,
+      "recipeId": 9250,
+      "step": 2,
+      "instruction": "Chắt dầu còn ít, phi tỏi; thêm nước mắm, đường và 30 ml nước. Cho gà vào đảo cho sốt bám đều.",
+      "before": null,
+      "after": 10
+    },
+    {
+      "id": 9725,
+      "recipeId": 9251,
+      "step": 1,
+      "instruction": "Ướp gà với muối, xếp gừng và một nửa hành dưới xửng.",
+      "before": null,
+      "after": 10
+    },
+    {
+      "id": 9726,
+      "recipeId": 9251,
+      "step": 2,
+      "instruction": "Hấp gà 30–35 phút đến chín, thêm hành còn lại trong 3 phút cuối. Chặt miếng, rưới nước hấp lên trên.",
+      "before": null,
+      "after": 35
+    },
+    {
+      "id": 9727,
+      "recipeId": 9252,
+      "step": 1,
+      "instruction": "Băm sả tỏi, trộn nước mắm, đường, dầu và ướp gà 30 phút.",
+      "before": null,
+      "after": 35
+    },
+    {
+      "id": 9728,
+      "recipeId": 9252,
+      "step": 2,
+      "instruction": "Nướng gà ở 180°C khoảng 30 phút, trở mặt đến chín bên trong; tránh để sả cháy đen.",
+      "before": null,
+      "after": 35
+    },
+    {
+      "id": 9729,
+      "recipeId": 9253,
+      "step": 1,
+      "instruction": "Thái gà mỏng, ướp nước tương 10 phút; thái nấm.",
+      "before": null,
+      "after": 15
+    },
+    {
+      "id": 9730,
+      "recipeId": 9253,
+      "step": 2,
+      "instruction": "Phi tỏi, xào gà đến chín, thêm nấm và 30 ml nước; đảo đến nấm chín và nước cạn bớt.",
+      "before": null,
+      "after": 15
+    },
+    {
+      "id": 9731,
+      "recipeId": 9254,
+      "step": 1,
+      "instruction": "Bỏ tâm sen nếu còn, ngâm và rửa nấm; chần gà rồi rửa sạch.",
+      "before": null,
+      "after": 20
+    },
+    {
+      "id": 9732,
+      "recipeId": 9254,
+      "step": 2,
+      "instruction": "Hầm gà, sen, gừng với 650 ml nước 35 phút; thêm nấm và muối, hầm tiếp đến gà chín mềm, sen bở.",
+      "before": null,
+      "after": 45
+    },
+    {
+      "id": 9733,
+      "recipeId": 9255,
+      "step": 1,
+      "instruction": "Thấm khô cá, chiên với dầu đến vàng hai mặt.",
+      "before": null,
+      "after": 15
+    },
+    {
+      "id": 9734,
+      "recipeId": 9255,
+      "step": 2,
+      "instruction": "Phi tỏi, xào cà chua, thêm nước mắm, đường và 100 ml nước. Cho cá vào om 10–15 phút đến chín, sốt sánh.",
+      "before": null,
+      "after": 20
+    },
+    {
+      "id": 9735,
+      "recipeId": 9256,
+      "step": 1,
+      "instruction": "Ướp cá với nước mắm, hành và tiêu 15 phút.",
+      "before": null,
+      "after": 20
+    },
+    {
+      "id": 9736,
+      "recipeId": 9256,
+      "step": 2,
+      "instruction": "Thắng đường với dầu, thêm cá và 150 ml nước. Kho nhỏ lửa 25–30 phút đến cá chín, nước sánh.",
+      "before": null,
+      "after": 35
+    },
+    {
+      "id": 9737,
+      "recipeId": 9257,
+      "step": 1,
+      "instruction": "Làm sạch cá, khứa nhẹ thân, xếp trên gừng trong đĩa sâu.",
+      "before": null,
+      "after": 10
+    },
+    {
+      "id": 9738,
+      "recipeId": 9257,
+      "step": 2,
+      "instruction": "Rưới nước tương và dầu, hấp 20–25 phút đến thịt chín tách xương; thêm hành hấp tiếp 2 phút.",
+      "before": null,
+      "after": 27
+    },
+    {
+      "id": 9739,
+      "recipeId": 9258,
+      "step": 1,
+      "instruction": "Làm sạch cá, khứa thân và thấm thật khô; rửa rau.",
+      "before": null,
+      "after": 10
+    },
+    {
+      "id": 9740,
+      "recipeId": 9258,
+      "step": 2,
+      "instruction": "Chiên cá lửa vừa 15–20 phút, trở mặt đến chín giòn rồi để ráo. Ăn với rau và nước mắm pha chanh, nước.",
+      "before": null,
+      "after": 25
+    },
+    {
+      "id": 9741,
+      "recipeId": 9259,
+      "step": 1,
+      "instruction": "Làm sạch cá, ướp nước mắm và hành 15 phút; cắt cà chua.",
+      "before": null,
+      "after": 20
+    },
+    {
+      "id": 9742,
+      "recipeId": 9259,
+      "step": 2,
+      "instruction": "Xào cà chua với dầu, thêm cá, đường và 180 ml nước; kho nhỏ lửa 30–35 phút đến cá chín mềm.",
+      "before": null,
+      "after": 40
+    },
+    {
+      "id": 9743,
+      "recipeId": 9260,
+      "step": 1,
+      "instruction": "Lọc chanh dây lấy nước; ướp cá với muối và thấm khô.",
+      "before": null,
+      "after": 10
+    },
+    {
+      "id": 9744,
+      "recipeId": 9260,
+      "step": 2,
+      "instruction": "Áp chảo cá với dầu 4–5 phút mỗi mặt tùy độ dày đến chín. Nấu nước chanh dây, đường và 30 ml nước thành sốt, rưới lên cá.",
+      "before": null,
+      "after": 15
+    },
+    {
+      "id": 9745,
+      "recipeId": 9261,
+      "step": 1,
+      "instruction": "Cắt rau củ vừa ăn, trộn dầu, tỏi, muối rồi xếp cùng cá lên khay.",
+      "before": null,
+      "after": 15
+    },
+    {
+      "id": 9746,
+      "recipeId": 9261,
+      "step": 2,
+      "instruction": "Nướng ở 190°C 18–20 phút đến cá và rau chín; nếu rau chưa mềm, lấy cá ra và nướng rau thêm.",
+      "before": null,
+      "after": 25
+    },
+    {
+      "id": 9747,
+      "recipeId": 9262,
+      "step": 1,
+      "instruction": "Làm sạch tôm. Dầm me với 80 ml nước ấm rồi lọc bỏ hạt.",
+      "before": null,
+      "after": 10
+    },
+    {
+      "id": 9748,
+      "recipeId": 9262,
+      "step": 2,
+      "instruction": "Phi tỏi, xào tôm, thêm nước me, đường, nước mắm; đảo đến tôm chín và sốt sánh.",
+      "before": null,
+      "after": 15
+    },
+    {
+      "id": 9749,
+      "recipeId": 9263,
+      "step": 1,
+      "instruction": "Làm sạch tôm, để ráo; băm tỏi.",
+      "before": null,
+      "after": 10
+    },
+    {
+      "id": 9750,
+      "recipeId": 9263,
+      "step": 2,
+      "instruction": "Phi tỏi với dầu, cho tôm vào đảo; thêm nước mắm, đường và 40 ml nước, rim đến tôm chín, sốt bám đều.",
+      "before": null,
+      "after": 12
+    },
+    {
+      "id": 9751,
+      "recipeId": 9264,
+      "step": 1,
+      "instruction": "Làm sạch tôm, đập dập sả và thái gừng.",
+      "before": null,
+      "after": 10
+    },
+    {
+      "id": 9752,
+      "recipeId": 9264,
+      "step": 2,
+      "instruction": "Xếp sả, gừng với 80 ml nước, thêm tôm và muối; đậy hấp 8–10 phút đến tôm chuyển màu và chín đều.",
+      "before": null,
+      "after": 10
+    },
+    {
+      "id": 9753,
+      "recipeId": 9265,
+      "step": 1,
+      "instruction": "Bóc tôm, bỏ chỉ lưng; chần bông cải, cà rốt 2–3 phút.",
+      "before": null,
+      "after": 15
+    },
+    {
+      "id": 9754,
+      "recipeId": 9265,
+      "step": 2,
+      "instruction": "Phi tỏi, xào tôm đến chín, thêm rau và nước tương; đảo thêm 2–3 phút cho rau chín vừa.",
+      "before": null,
+      "after": 10
+    },
+    {
+      "id": 9755,
+      "recipeId": 9266,
+      "step": 1,
+      "instruction": "Làm sạch, cắt mực, chần nhanh rồi để ráo; thái rau củ.",
+      "before": null,
+      "after": 15
+    },
+    {
+      "id": 9756,
+      "recipeId": 9266,
+      "step": 2,
+      "instruction": "Phi tỏi, xào cà chua, dứa và hành, thêm mực, nước mắm, đường; đảo đến mực chín, rau vừa mềm.",
+      "before": null,
+      "after": 15
+    },
+    {
+      "id": 9757,
+      "recipeId": 9267,
+      "step": 1,
+      "instruction": "Làm sạch mực, để ráo; thái gừng và hành.",
+      "before": null,
+      "after": 10
+    },
+    {
+      "id": 9758,
+      "recipeId": 9267,
+      "step": 2,
+      "instruction": "Hấp mực cùng gừng, hành khoảng 8–10 phút đến chín. Pha nước mắm với chanh và nước để chấm.",
+      "before": null,
+      "after": 12
+    },
+    {
+      "id": 9759,
+      "recipeId": 9268,
+      "step": 1,
+      "instruction": "Làm sạch mực, cắt khoanh và thấm khô. Đánh trứng với muối.",
+      "before": null,
+      "after": 10
+    },
+    {
+      "id": 9760,
+      "recipeId": 9268,
+      "step": 2,
+      "instruction": "Nhúng mực qua trứng, áo bột mì rồi chiên lửa vừa đến mực chín, lớp bột vàng giòn; vớt ráo dầu.",
+      "before": null,
+      "after": 15
+    },
+    {
+      "id": 9761,
+      "recipeId": 9269,
+      "step": 1,
+      "instruction": "Ngâm nghêu trong nước sạch để nhả cát, chà rửa và loại bỏ con hỏng; đập dập sả.",
+      "before": null,
+      "after": 65
+    },
+    {
+      "id": 9762,
+      "recipeId": 9269,
+      "step": 2,
+      "instruction": "Đun 100 ml nước với sả, gừng, ớt, thêm nghêu và đậy hấp đến mở miệng; bỏ con không mở sau khi nấu.",
+      "before": null,
+      "after": 10
+    },
+    {
+      "id": 9763,
+      "recipeId": 9270,
+      "step": 1,
+      "instruction": "Làm sạch cá, cắt rau củ; dầm me với nước ấm rồi lọc bỏ hạt.",
+      "before": null,
+      "after": 15
+    },
+    {
+      "id": 9764,
+      "recipeId": 9270,
+      "step": 2,
+      "instruction": "Đun 600 ml nước với me, cà chua, dứa, thêm cá nấu chín. Thêm đậu bắp, giá, nêm nước mắm, đường, nấu rau chín rồi thêm rau ngổ.",
+      "before": null,
+      "after": 20
+    },
+    {
+      "id": 9765,
+      "recipeId": 9271,
+      "step": 1,
+      "instruction": "Tuốt, rửa và vò nhẹ rau ngót; băm thịt, hành.",
+      "before": null,
+      "after": 10
+    },
+    {
+      "id": 9766,
+      "recipeId": 9271,
+      "step": 2,
+      "instruction": "Phi hành, xào thịt chín rồi thêm 500 ml nước. Khi sôi cho rau vào nấu 5–7 phút, nêm nước mắm.",
+      "before": null,
+      "after": 12
+    },
+    {
+      "id": 9767,
+      "recipeId": 9272,
+      "step": 1,
+      "instruction": "Rửa cắt cải, băm thịt; thái gừng.",
+      "before": null,
+      "after": 10
+    },
+    {
+      "id": 9768,
+      "recipeId": 9272,
+      "step": 2,
+      "instruction": "Đun 500 ml nước, cho thịt vào khuấy tơi và nấu chín. Thêm cải, gừng, nước mắm, nấu đến rau mềm vừa.",
+      "before": null,
+      "after": 12
+    },
+    {
+      "id": 9769,
+      "recipeId": 9273,
+      "step": 1,
+      "instruction": "Gọt bí, bỏ ruột già, thái lát; bóc tôm bỏ chỉ, băm sơ.",
+      "before": null,
+      "after": 10
+    },
+    {
+      "id": 9770,
+      "recipeId": 9273,
+      "step": 2,
+      "instruction": "Phi hành, xào tôm với dầu rồi thêm 550 ml nước. Cho bí vào nấu chín trong, nêm nước mắm.",
+      "before": null,
+      "after": 15
+    },
+    {
+      "id": 9771,
+      "recipeId": 9274,
+      "step": 1,
+      "instruction": "Làm sạch, giã cua và lọc với 550 ml nước, bỏ hết vỏ; rửa và thái rau.",
+      "before": null,
+      "after": 20
+    },
+    {
+      "id": 9772,
+      "recipeId": 9274,
+      "step": 2,
+      "instruction": "Đun nước cua lửa nhỏ để riêu kết lại, thêm muối rồi cho rau vào nấu 4–5 phút đến chín.",
+      "before": null,
+      "after": 15
+    },
+    {
+      "id": 9773,
+      "recipeId": 9275,
+      "step": 1,
+      "instruction": "Ngâm mộc nhĩ, băm cùng thịt và hành; trộn nước mắm, tiêu. Bỏ ruột khổ qua, nhồi nhân.",
+      "before": null,
+      "after": 25
+    },
+    {
+      "id": 9774,
+      "recipeId": 9275,
+      "step": 2,
+      "instruction": "Cho khổ qua vào 600 ml nước sôi, hạ lửa nấu 25–30 phút đến nhân chín và khổ qua mềm.",
+      "before": null,
+      "after": 30
+    },
+    {
+      "id": 9775,
+      "recipeId": 9276,
+      "step": 1,
+      "instruction": "Ngâm rong biển theo hướng dẫn trên gói, rửa và cắt nhỏ; cắt đậu hũ.",
+      "before": null,
+      "after": 15
+    },
+    {
+      "id": 9776,
+      "recipeId": 9276,
+      "step": 2,
+      "instruction": "Đun 500 ml nước cùng gừng, cho đậu và rong biển vào nấu 5–7 phút; nêm muối, dầu mè.",
+      "before": null,
+      "after": 10
+    },
+    {
+      "id": 9777,
+      "recipeId": 9277,
+      "step": 1,
+      "instruction": "Ngâm nấm hương, rửa các loại nấm, bỏ gốc và thái vừa ăn; cắt cà rốt.",
+      "before": null,
+      "after": 25
+    },
+    {
+      "id": 9778,
+      "recipeId": 9277,
+      "step": 2,
+      "instruction": "Nấu cà rốt với 550 ml nước 7 phút, thêm nấm, nêm muối và nấu thêm 5–7 phút đến chín.",
+      "before": null,
+      "after": 15
+    },
+    {
+      "id": 9779,
+      "recipeId": 9278,
+      "step": 1,
+      "instruction": "Gọt khoai, rửa rồi băm hoặc nạo nhỏ; băm thịt và hành tím.",
+      "before": null,
+      "after": 10
+    },
+    {
+      "id": 9780,
+      "recipeId": 9278,
+      "step": 2,
+      "instruction": "Phi hành, xào thịt chín, thêm 550 ml nước. Cho khoai vào khuấy đều, nấu 15 phút đến sánh chín, nêm nước mắm và hành lá.",
+      "before": null,
+      "after": 20
+    },
+    {
+      "id": 9781,
+      "recipeId": 9279,
+      "step": 1,
+      "instruction": "Nhặt, rửa rau, cắt khúc; đập dập tỏi.",
+      "before": null,
+      "after": 10
+    },
+    {
+      "id": 9782,
+      "recipeId": 9279,
+      "step": 2,
+      "instruction": "Phi tỏi với dầu, cho rau cùng 30 ml nước vào đảo lửa lớn đến chín, nêm muối rồi dọn ngay.",
+      "before": null,
+      "after": 8
+    },
+    {
+      "id": 9783,
+      "recipeId": 9280,
+      "step": 1,
+      "instruction": "Rửa cải, bổ đôi cây lớn; thái nấm và băm tỏi.",
+      "before": null,
+      "after": 10
+    },
+    {
+      "id": 9784,
+      "recipeId": 9280,
+      "step": 2,
+      "instruction": "Phi tỏi, xào nấm 4–5 phút, thêm cải và 30 ml nước. Nêm nước tương, đảo đến cải chín.",
+      "before": null,
+      "after": 10
+    },
+    {
+      "id": 9785,
+      "recipeId": 9281,
+      "step": 1,
+      "instruction": "Cắt bông cải thành nhánh đều, rửa kỹ.",
+      "before": null,
+      "after": 10
+    },
+    {
+      "id": 9786,
+      "recipeId": 9281,
+      "step": 2,
+      "instruction": "Luộc trong nước sôi 4–6 phút đến chín vừa, vớt ráo và dùng nước tương để chấm.",
+      "before": null,
+      "after": 6
+    },
+    {
+      "id": 9787,
+      "recipeId": 9282,
+      "step": 1,
+      "instruction": "Tước xơ, rửa và cắt đậu que; băm tỏi.",
+      "before": null,
+      "after": 10
+    },
+    {
+      "id": 9788,
+      "recipeId": 9282,
+      "step": 2,
+      "instruction": "Phi tỏi, xào đậu với muối và 60 ml nước, đậy 5–7 phút rồi đảo đến đậu chín hoàn toàn.",
+      "before": null,
+      "after": 12
+    },
+    {
+      "id": 9789,
+      "recipeId": 9283,
+      "step": 1,
+      "instruction": "Rửa cà tím, để nguyên quả, khía vài đường nhỏ.",
+      "before": null,
+      "after": 5
+    },
+    {
+      "id": 9790,
+      "recipeId": 9283,
+      "step": 2,
+      "instruction": "Nướng ở 200°C khoảng 25 phút đến mềm, bóc vỏ. Làm nóng dầu rồi cho hành vào; rưới lên cà cùng nước mắm pha đường và nước.",
+      "before": null,
+      "after": 30
+    },
+    {
+      "id": 9791,
+      "recipeId": 9284,
+      "step": 1,
+      "instruction": "Thấm khô đậu, cắt miếng; băm sả, ớt.",
+      "before": null,
+      "after": 10
+    },
+    {
+      "id": 9792,
+      "recipeId": 9284,
+      "step": 2,
+      "instruction": "Chiên đậu vàng đều rồi để riêng. Chừa ít dầu, đảo sả ớt với muối đến thơm; thêm đậu đảo cho gia vị bám đều.",
+      "before": null,
+      "after": 15
+    },
+    {
+      "id": 9793,
+      "recipeId": 9285,
+      "step": 1,
+      "instruction": "Cắt đậu và nấm vừa ăn, băm tỏi; áp chảo đậu cho vàng.",
+      "before": null,
+      "after": 15
+    },
+    {
+      "id": 9794,
+      "recipeId": 9285,
+      "step": 2,
+      "instruction": "Phi tỏi, xào nấm, thêm đậu, nước tương, đường và 120 ml nước. Kho 15 phút đến chín thấm vị.",
+      "before": null,
+      "after": 20
+    },
+    {
+      "id": 9795,
+      "recipeId": 9286,
+      "step": 1,
+      "instruction": "Thái nấm dọc thành lát dày khoảng 1 cm; băm tỏi.",
+      "before": null,
+      "after": 10
+    },
+    {
+      "id": 9796,
+      "recipeId": 9286,
+      "step": 2,
+      "instruction": "Áp chảo nấm với dầu 3–4 phút mỗi mặt. Thêm tỏi, nước tương, tiêu và 20 ml nước, đảo đến nấm chín, sốt bám đều.",
+      "before": null,
+      "after": 10
+    },
+    {
+      "id": 9797,
+      "recipeId": 9287,
+      "step": 1,
+      "instruction": "Luộc gà chín rồi xé; thái mỏng bắp cải, cà rốt và rửa rau răm.",
+      "before": null,
+      "after": 35
+    },
+    {
+      "id": 9798,
+      "recipeId": 9287,
+      "step": 2,
+      "instruction": "Pha nước mắm, đường, chanh và 20 ml nước. Trộn rau với gà, rưới nước trộn, đảo đều rồi dùng ngay.",
+      "before": null,
+      "after": 5
+    },
+    {
+      "id": 9799,
+      "recipeId": 9288,
+      "step": 1,
+      "instruction": "Bào xoài, rửa rau răm; ngâm tôm khô rồi hấp chín, rang chín đậu phộng.",
+      "before": null,
+      "after": 25
+    },
+    {
+      "id": 9800,
+      "recipeId": 9288,
+      "step": 2,
+      "instruction": "Pha nước mắm, đường, chanh với một ít nước. Trộn xoài, tôm và rau với nước trộn, rắc đậu phộng.",
+      "before": null,
+      "after": 5
+    },
+    {
+      "id": 9801,
+      "recipeId": 9289,
+      "step": 1,
+      "instruction": "Rửa sạch rau, để ráo và cắt vừa ăn; mở cá ngừ đóng hộp, để ráo.",
+      "before": null,
+      "after": 10
+    },
+    {
+      "id": 9802,
+      "recipeId": 9289,
+      "step": 2,
+      "instruction": "Pha dầu ô liu, chanh và muối; trộn với rau rồi thêm cá ngừ, đảo nhẹ và dùng ngay.",
+      "before": null,
+      "after": 5
+    },
+    {
+      "id": 9803,
+      "recipeId": 9290,
+      "step": 1,
+      "instruction": "Ướp gà với nửa phần muối. Rửa sạch và cắt rau.",
+      "before": null,
+      "after": 15
+    },
+    {
+      "id": 9804,
+      "recipeId": 9290,
+      "step": 2,
+      "instruction": "Áp chảo gà với nửa phần dầu đến chín hoàn toàn, thái lát. Pha dầu còn lại, chanh, muối rồi trộn cùng rau và gà.",
+      "before": null,
+      "after": 15
+    },
+    {
+      "id": 9805,
+      "recipeId": 9291,
+      "step": 1,
+      "instruction": "Gọt và cắt khoai, cà rốt; luộc đến mềm rồi để nguội. Luộc trứng chín, bóc vỏ và thái miếng.",
+      "before": null,
+      "after": 25
+    },
+    {
+      "id": 9806,
+      "recipeId": 9291,
+      "step": 2,
+      "instruction": "Trộn khoai, cà rốt, trứng với mayonnaise và muối, giữ lạnh nếu chưa dùng ngay.",
+      "before": null,
+      "after": 5
+    },
+    {
+      "id": 9807,
+      "recipeId": 9292,
+      "step": 1,
+      "instruction": "Đánh trứng với nước mắm và hành thái nhỏ; cắt cà chua.",
+      "before": null,
+      "after": 10
+    },
+    {
+      "id": 9808,
+      "recipeId": 9292,
+      "step": 2,
+      "instruction": "Xào cà chua với dầu đến mềm, cho trứng vào, dàn đều và chiên lửa nhỏ đến chín cả hai mặt.",
+      "before": null,
+      "after": 10
+    },
+    {
+      "id": 9809,
+      "recipeId": 9293,
+      "step": 1,
+      "instruction": "Đánh trứng với 60 ml nước, trộn thịt băm, hành, nước mắm và tiêu.",
+      "before": null,
+      "after": 10
+    },
+    {
+      "id": 9810,
+      "recipeId": 9293,
+      "step": 2,
+      "instruction": "Cho hỗn hợp vào bát chịu nhiệt, hấp 20–25 phút đến trứng đông và thịt chín hoàn toàn ở giữa.",
+      "before": null,
+      "after": 25
+    },
+    {
+      "id": 9811,
+      "recipeId": 9294,
+      "step": 1,
+      "instruction": "Luộc trứng chín, làm nguội và bóc vỏ.",
+      "before": null,
+      "after": 15
+    },
+    {
+      "id": 9812,
+      "recipeId": 9294,
+      "step": 2,
+      "instruction": "Đun nước tương, đường, hành và 150 ml nước. Cho trứng vào kho nhỏ lửa 15 phút, trở đều cho thấm.",
+      "before": null,
+      "after": 20
+    },
+    {
+      "id": 9813,
+      "recipeId": 9295,
+      "step": 1,
+      "instruction": "Gọt khoai, cắt khối và luộc 15–20 phút đến mềm, chắt ráo.",
+      "before": null,
+      "after": 25
+    },
+    {
+      "id": 9814,
+      "recipeId": 9295,
+      "step": 2,
+      "instruction": "Nghiền khi còn nóng, thêm bơ và sữa làm ấm từng ít một; trộn mịn và nêm muối.",
+      "before": null,
+      "after": 5
+    },
+    {
+      "id": 9815,
+      "recipeId": 9296,
+      "step": 1,
+      "instruction": "Gọt vỏ, bỏ hạt và cắt bí thành miếng đều.",
+      "before": null,
+      "after": 10
+    },
+    {
+      "id": 9816,
+      "recipeId": 9296,
+      "step": 2,
+      "instruction": "Hấp trên nước sôi 12–15 phút đến mềm, thử bằng nĩa rồi lấy ra dùng nóng.",
+      "before": null,
+      "after": 15
+    },
+    {
+      "id": 9817,
+      "recipeId": 9297,
+      "step": 1,
+      "instruction": "Luộc gà trong 500 ml nước đến chín rồi xé. Cắt nhỏ ngô non, cho vào nước luộc nấu mềm.",
+      "before": null,
+      "after": 30
+    },
+    {
+      "id": 9818,
+      "recipeId": 9297,
+      "step": 2,
+      "instruction": "Thêm gà, muối; hòa bột năng với 30 ml nước, khuấy vào nồi. Rót trứng đánh tan thành dòng, khuấy đến chín, thêm hành.",
+      "before": null,
+      "after": 10
+    },
+    {
+      "id": 9819,
+      "recipeId": 9298,
+      "step": 1,
+      "instruction": "Ngâm và thái nấm; kiểm tra thịt cua bỏ hết mảnh vỏ. Đun nấm, ngô trong 500 ml nước đến chín.",
+      "before": null,
+      "after": 25
+    },
+    {
+      "id": 9820,
+      "recipeId": 9298,
+      "step": 2,
+      "instruction": "Thêm cua nấu chín, nêm muối. Hòa bột năng với 30 ml nước, khuấy vào nồi, rót trứng đánh tan và đun đến chín; thêm hành.",
+      "before": null,
+      "after": 10
+    },
+    {
+      "id": 9821,
+      "recipeId": 9299,
+      "step": 1,
+      "instruction": "Ngâm đậu xanh 2 giờ, rửa sạch rồi nấu với 500 ml nước đến mềm.",
+      "before": null,
+      "after": 150
+    },
+    {
+      "id": 9822,
+      "recipeId": 9299,
+      "step": 2,
+      "instruction": "Thêm đường phèn, khuấy tan, nấu thêm 5 phút. Đun nóng nước cốt dừa riêng rồi rưới lên chè khi dùng.",
+      "before": null,
+      "after": 10
+    },
+    {
+      "id": 9823,
+      "recipeId": 9300,
+      "step": 1,
+      "instruction": "Rửa sạch dâu, gọt chuối và xoài; cắt trái cây vừa ăn.",
+      "before": null,
+      "after": 7
+    },
+    {
+      "id": 9824,
+      "recipeId": 9300,
+      "step": 2,
+      "instruction": "Cho sữa chua ra bát, thêm trái cây và trộn nhẹ. Dùng ngay hoặc đậy kín và bảo quản trong ngăn mát.",
+      "before": null,
+      "after": 3
+    }
+  ]
+}

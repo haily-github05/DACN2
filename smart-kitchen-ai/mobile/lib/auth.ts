@@ -15,7 +15,7 @@ export type AuthUser = {
 
 export async function saveAuthUser(
   user: AuthUser,
-  remember = true
+  remember = true,
 ): Promise<void> {
   const userId = Number(user.user_id);
 
@@ -29,18 +29,15 @@ export async function saveAuthUser(
   };
 
   if (remember) {
-    await AsyncStorage.setItem(
-      AUTH_KEY,
-      JSON.stringify(sessionUser)
-    );
+    await AsyncStorage.setItem(AUTH_KEY, JSON.stringify(sessionUser));
   } else {
     await AsyncStorage.removeItem(AUTH_KEY);
   }
 }
 
 export async function getAuthUser(): Promise<AuthUser | null> {
-    if (sessionUser) return sessionUser;
-    
+  if (sessionUser) return sessionUser;
+
   try {
     const saved = await AsyncStorage.getItem(AUTH_KEY);
 
@@ -71,7 +68,6 @@ export async function getCurrentUserId(): Promise<number> {
 
   return Number(user.user_id);
 }
-
 
 export async function logoutUser(): Promise<void> {
   await AsyncStorage.removeItem(AUTH_KEY);

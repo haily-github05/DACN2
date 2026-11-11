@@ -2,7 +2,7 @@
 const db=require("../config/db");
 const {getRecommendations}=require("./recipeRecommendationService");
 async function getNotifications(userId) {
- const [[pantry],[meals],[reactions],[purchases],[comments]]=await Promise.all([
+ const [[pantry],[meals],[reactions],[purchases],[comments],[decisions]]=await Promise.all([
   db.query(`SELECT p.pantry_item_id AS id,i.name,p.quantity,p.unit,
     DATE_FORMAT(p.expiry_date,'%Y-%m-%d') AS expiry_date,
     DATE_FORMAT(DATE_SUB(p.expiry_date,INTERVAL 3 DAY),'%Y-%m-%d') AS event_date,
@@ -31,8 +31,12 @@ async function getNotifications(userId) {
     JOIN users u ON u.user_id=c.user_id
     LEFT JOIN community_comments parent ON parent.comment_id=c.parent_comment_id AND parent.post_id=c.post_id
     WHERE c.user_id<>? AND (p.user_id=? OR parent.user_id=?)
-      AND (p.visibility='PUBLIC' OR p.user_id=?)
+      AND ((p.visibility='PUBLIC' AND p.moderation_status='APPROVED') OR p.user_id=?)
     ORDER BY c.comment_id DESC LIMIT 100`,[userId,userId,userId,userId]),
+  db.query(`SELECT post_id,title,image_url,moderation_status,rejection_reason,reviewed_at
+    FROM community_posts WHERE user_id=? AND visibility='PUBLIC'
+      AND moderation_status IN ('APPROVED','REJECTED','HIDDEN') AND reviewed_at IS NOT NULL
+    ORDER BY reviewed_at DESC,post_id DESC LIMIT 100`,[userId]),
  ]);
  const allowed=meals.length ? await getRecommendations(userId,meals) : [];
  const result=pantry.map(item=>({
@@ -58,6 +62,14 @@ async function getNotifications(userId) {
    body:`“${comment.title}”: ${String(comment.content).slice(0,180)}`,
    image:comment.image_url,occurredAt:comment.created_at,
    route:'/post-detail',params:{id:String(comment.post_id)},action:reply?'Xem trả lời':'Xem bình luận'});
+ }
+ for(const post of decisions) {
+  const rejected=post.moderation_status==='REJECTED',hidden=post.moderation_status==='HIDDEN';
+  const stamp=new Date(post.reviewed_at).toISOString();
+  result.push({id:`moderation:${post.post_id}:${post.moderation_status}:${stamp}`,category:'social',
+   title:rejected?'Bài viết của bạn bị từ chối':hidden?'Bài viết của bạn đã bị ẩn':'Bài viết của bạn đã được duyệt',
+   body:rejected?`Bài “${post.title}” không được đăng lên cộng đồng. Lý do: ${post.rejection_reason||'Nội dung chưa phù hợp.'}`:hidden?`Bài “${post.title}” đã được admin ẩn khỏi cộng đồng.`:`Bài “${post.title}” đã được xuất bản lên cộng đồng.`,
+   image:post.image_url||'',occurredAt:post.reviewed_at,route:'/post-detail',params:{id:String(post.post_id)},action:rejected?'Xem lý do từ chối':'Xem bài viết'});
  }
  const grouped=new Map();
  for(const item of purchases) {if(!grouped.has(item.shopping_list_id)) grouped.set(item.shopping_list_id,[]);grouped.get(item.shopping_list_id).push(item);}

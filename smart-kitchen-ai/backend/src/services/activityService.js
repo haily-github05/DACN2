@@ -8,7 +8,7 @@ const recipeCard = row => ({
 });
 const postCard = row => ({
   id: String(row.post_id), kind: "post", title: row.title, image: row.image_url || "",
-  author: row.full_name, visibility: row.visibility, createdAt: row.created_at,
+  author: row.full_name, visibility: row.visibility, moderationStatus: row.moderation_status, rejectionReason: row.rejection_reason || null, createdAt: row.created_at,
 });
 async function getActivity(userId) {
   const [[cooked], [savedRecipes], [savedPosts], [shared]] = await Promise.all([
@@ -19,12 +19,12 @@ async function getActivity(userId) {
     db.query(`SELECT r.recipe_id, r.name, r.image_url, r.prep_time, r.cook_time, r.calories
       FROM recipe_favorites f JOIN recipes r ON r.recipe_id=f.recipe_id
       WHERE f.user_id=? ORDER BY r.name, r.recipe_id`, [userId]),
-    db.query(`SELECT p.post_id,p.title,p.image_url,p.visibility,p.created_at,u.full_name
+    db.query(`SELECT p.post_id,p.title,p.image_url,p.visibility,p.moderation_status,p.rejection_reason,p.created_at,u.full_name
       FROM community_reactions s JOIN community_posts p ON p.post_id=s.post_id
       JOIN users u ON u.user_id=p.user_id
-      WHERE s.user_id=? AND s.kind='save' AND (p.visibility='PUBLIC' OR p.user_id=?)
+      WHERE s.user_id=? AND s.kind='save' AND ((p.visibility='PUBLIC' AND p.moderation_status='APPROVED') OR p.user_id=?)
       ORDER BY p.created_at DESC,p.post_id DESC`, [userId,userId]),
-    db.query(`SELECT p.post_id,p.title,p.image_url,p.visibility,p.created_at,u.full_name
+    db.query(`SELECT p.post_id,p.title,p.image_url,p.visibility,p.moderation_status,p.rejection_reason,p.created_at,u.full_name
       FROM community_posts p JOIN users u ON u.user_id=p.user_id
       WHERE p.user_id=? ORDER BY p.created_at DESC,p.post_id DESC`, [userId]),
   ]);

@@ -1,0 +1,10 @@
+{
+  "mode": "APPLY",
+  "scope": "backend/uploads/ingredients",
+  "createdAt": "2026-11-11T17:57:50.796Z",
+  "files": 114,
+  "referenced": 114,
+  "unused": [],
+  "deleted": [],
+  "skipped": []
+}

@@ -170,6 +170,10 @@ export default function PostDetailScreen() {
       Alert.alert("Bài viết cá nhân", "Bài viết này chỉ hiển thị với bạn.");
       return;
     }
+    if (post.moderationStatus !== "APPROVED") {
+      Alert.alert("Bài chưa được duyệt", "Bài viết chưa được xuất bản lên cộng đồng.");
+      return;
+    }
     try {
       await Share.share({
         title: post.title,
@@ -300,7 +304,7 @@ export default function PostDetailScreen() {
                   )}
                   <Text style={s.small}>
                     {postedAt(post.time)} ·{" "}
-                    {privatePost ? "Chỉ mình tôi" : "Công khai"}
+                    {privatePost ? "Chỉ mình tôi" : post.moderationStatus === "PENDING" ? "Chờ duyệt" : post.moderationStatus === "REJECTED" ? "Bị từ chối" : post.moderationStatus === "HIDDEN" ? "Đã ẩn" : "Công khai"}
                   </Text>
                 </View>
               </View>
@@ -321,6 +325,9 @@ export default function PostDetailScreen() {
                 <Text style={s.accent}>Xoá bài viết</Text>
               </Pressable>
             )}
+            {!privatePost && post.moderationStatus === "PENDING" && <Text style={s.body}>Bài đang chờ admin duyệt. Hiện chỉ bạn và admin xem được bài này.</Text>}
+            {!privatePost && post.moderationStatus === "REJECTED" && <Text style={s.body}>Bài bị từ chối. Lý do: {post.rejectionReason || "Nội dung chưa phù hợp."}</Text>}
+            {!privatePost && post.moderationStatus === "HIDDEN" && <Text style={s.body}>Bài viết đã được admin ẩn khỏi cộng đồng. Chỉ bạn và admin xem được bài này.</Text>}
             <Text style={s.title}>{post.title}</Text>
             {!!content.intro && <Text style={s.body}>{content.intro}</Text>}
             {!!content.tags.length && (

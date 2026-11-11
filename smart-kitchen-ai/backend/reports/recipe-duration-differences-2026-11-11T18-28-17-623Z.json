@@ -1,0 +1,305 @@
+{
+  "note": "Chỉ báo cáo chênh lệch; chưa điều chỉnh tổng thời gian món. Các bước có thể gồm thời gian chờ hoặc thao tác song song.",
+  "items": [
+    {
+      "id": 9201,
+      "name": "Cơm gà xối mỡ",
+      "recipeMinutes": 45,
+      "stepMinutes": 60
+    },
+    {
+      "id": 9203,
+      "name": "Cơm gà Hải Nam",
+      "recipeMinutes": 50,
+      "stepMinutes": 60
+    },
+    {
+      "id": 9207,
+      "name": "Cơm cá kho tộ",
+      "recipeMinutes": 50,
+      "stepMinutes": 55
+    },
+    {
+      "id": 9208,
+      "name": "Cơm thịt kho trứng",
+      "recipeMinutes": 60,
+      "stepMinutes": 65
+    },
+    {
+      "id": 9209,
+      "name": "Cơm gà nướng mật ong",
+      "recipeMinutes": 45,
+      "stepMinutes": 55
+    },
+    {
+      "id": 9215,
+      "name": "Bún chả Hà Nội",
+      "recipeMinutes": 40,
+      "stepMinutes": 50
+    },
+    {
+      "id": 9216,
+      "name": "Bún thịt nướng",
+      "recipeMinutes": 40,
+      "stepMinutes": 50
+    },
+    {
+      "id": 9217,
+      "name": "Bún cá",
+      "recipeMinutes": 45,
+      "stepMinutes": 50
+    },
+    {
+      "id": 9218,
+      "name": "Bún măng vịt",
+      "recipeMinutes": 60,
+      "stepMinutes": 65
+    },
+    {
+      "id": 9222,
+      "name": "Mì Quảng gà",
+      "recipeMinutes": 45,
+      "stepMinutes": 50
+    },
+    {
+      "id": 9225,
+      "name": "Cháo gà",
+      "recipeMinutes": 50,
+      "stepMinutes": 55
+    },
+    {
+      "id": 9228,
+      "name": "Cháo đậu xanh",
+      "recipeMinutes": 50,
+      "stepMinutes": 165
+    },
+    {
+      "id": 9230,
+      "name": "Bánh mì thịt nướng",
+      "recipeMinutes": 35,
+      "stepMinutes": 50
+    },
+    {
+      "id": 9235,
+      "name": "Nem rán",
+      "recipeMinutes": 35,
+      "stepMinutes": 45
+    },
+    {
+      "id": 9236,
+      "name": "Thịt heo rang cháy cạnh",
+      "recipeMinutes": 25,
+      "stepMinutes": 30
+    },
+    {
+      "id": 9237,
+      "name": "Thịt kho tiêu",
+      "recipeMinutes": 40,
+      "stepMinutes": 55
+    },
+    {
+      "id": 9238,
+      "name": "Thịt kho tàu",
+      "recipeMinutes": 60,
+      "stepMinutes": 85
+    },
+    {
+      "id": 9239,
+      "name": "Sườn xào chua ngọt",
+      "recipeMinutes": 45,
+      "stepMinutes": 40
+    },
+    {
+      "id": 9240,
+      "name": "Sườn nướng mật ong",
+      "recipeMinutes": 40,
+      "stepMinutes": 70
+    },
+    {
+      "id": 9242,
+      "name": "Thịt heo xào sả ớt",
+      "recipeMinutes": 30,
+      "stepMinutes": 35
+    },
+    {
+      "id": 9243,
+      "name": "Bò kho cà rốt",
+      "recipeMinutes": 105,
+      "stepMinutes": 110
+    },
+    {
+      "id": 9244,
+      "name": "Bò sốt vang",
+      "recipeMinutes": 105,
+      "stepMinutes": 110
+    },
+    {
+      "id": 9245,
+      "name": "Bò xào hành tây",
+      "recipeMinutes": 18,
+      "stepMinutes": 25
+    },
+    {
+      "id": 9246,
+      "name": "Bò xào cần tây",
+      "recipeMinutes": 18,
+      "stepMinutes": 25
+    },
+    {
+      "id": 9247,
+      "name": "Bò cuốn lá lốt",
+      "recipeMinutes": 30,
+      "stepMinutes": 35
+    },
+    {
+      "id": 9249,
+      "name": "Gà kho gừng",
+      "recipeMinutes": 40,
+      "stepMinutes": 50
+    },
+    {
+      "id": 9252,
+      "name": "Gà nướng sả",
+      "recipeMinutes": 40,
+      "stepMinutes": 70
+    },
+    {
+      "id": 9253,
+      "name": "Gà xào nấm",
+      "recipeMinutes": 25,
+      "stepMinutes": 30
+    },
+    {
+      "id": 9254,
+      "name": "Gà hầm hạt sen",
+      "recipeMinutes": 60,
+      "stepMinutes": 65
+    },
+    {
+      "id": 9256,
+      "name": "Cá basa kho tiêu",
+      "recipeMinutes": 40,
+      "stepMinutes": 55
+    },
+    {
+      "id": 9257,
+      "name": "Cá diêu hồng hấp gừng",
+      "recipeMinutes": 35,
+      "stepMinutes": 37
+    },
+    {
+      "id": 9258,
+      "name": "Cá rô phi chiên giòn",
+      "recipeMinutes": 30,
+      "stepMinutes": 35
+    },
+    {
+      "id": 9259,
+      "name": "Cá nục kho cà",
+      "recipeMinutes": 45,
+      "stepMinutes": 60
+    },
+    {
+      "id": 9261,
+      "name": "Cá hồi nướng rau củ",
+      "recipeMinutes": 30,
+      "stepMinutes": 40
+    },
+    {
+      "id": 9262,
+      "name": "Tôm rang me",
+      "recipeMinutes": 22,
+      "stepMinutes": 25
+    },
+    {
+      "id": 9265,
+      "name": "Tôm xào bông cải",
+      "recipeMinutes": 22,
+      "stepMinutes": 25
+    },
+    {
+      "id": 9266,
+      "name": "Mực xào chua ngọt",
+      "recipeMinutes": 27,
+      "stepMinutes": 30
+    },
+    {
+      "id": 9267,
+      "name": "Mực hấp gừng",
+      "recipeMinutes": 20,
+      "stepMinutes": 22
+    },
+    {
+      "id": 9268,
+      "name": "Mực chiên giòn",
+      "recipeMinutes": 22,
+      "stepMinutes": 25
+    },
+    {
+      "id": 9269,
+      "name": "Nghêu hấp sả",
+      "recipeMinutes": 20,
+      "stepMinutes": 75
+    },
+    {
+      "id": 9274,
+      "name": "Canh mồng tơi nấu cua",
+      "recipeMinutes": 25,
+      "stepMinutes": 35
+    },
+    {
+      "id": 9275,
+      "name": "Canh khổ qua nhồi thịt",
+      "recipeMinutes": 40,
+      "stepMinutes": 55
+    },
+    {
+      "id": 9276,
+      "name": "Canh rong biển đậu hũ",
+      "recipeMinutes": 20,
+      "stepMinutes": 25
+    },
+    {
+      "id": 9277,
+      "name": "Canh nấm thập cẩm",
+      "recipeMinutes": 25,
+      "stepMinutes": 40
+    },
+    {
+      "id": 9285,
+      "name": "Đậu hũ kho nấm",
+      "recipeMinutes": 30,
+      "stepMinutes": 35
+    },
+    {
+      "id": 9288,
+      "name": "Gỏi xoài tôm khô",
+      "recipeMinutes": 23,
+      "stepMinutes": 30
+    },
+    {
+      "id": 9293,
+      "name": "Trứng hấp thịt bằm",
+      "recipeMinutes": 30,
+      "stepMinutes": 35
+    },
+    {
+      "id": 9294,
+      "name": "Trứng kho nước tương",
+      "recipeMinutes": 30,
+      "stepMinutes": 35
+    },
+    {
+      "id": 9297,
+      "name": "Súp gà ngô non",
+      "recipeMinutes": 35,
+      "stepMinutes": 40
+    },
+    {
+      "id": 9299,
+      "name": "Chè đậu xanh",
+      "recipeMinutes": 40,
+      "stepMinutes": 160
+    }
+  ]
+}

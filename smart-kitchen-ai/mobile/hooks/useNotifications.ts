@@ -4,6 +4,11 @@ import {useFocusEffect} from "expo-router";
 import {getNotificationsSnapshot,subscribeNotifications,refreshNotifications} from "../lib/notificationsStore";
 export function useNotifications(enabled = true) {
   const state=useSyncExternalStore(subscribeNotifications,getNotificationsSnapshot,getNotificationsSnapshot);
-  useFocusEffect(useCallback(()=>{if(enabled) void refreshNotifications();},[enabled]));
+  useFocusEffect(useCallback(()=>{
+    if(!enabled)return;
+    void refreshNotifications();
+    const timer=setInterval(()=>{void refreshNotifications();},30000);
+    return()=>clearInterval(timer);
+  },[enabled]));
   return state;
 }

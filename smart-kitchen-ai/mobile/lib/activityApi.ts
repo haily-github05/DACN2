@@ -9,10 +9,19 @@ export type ActivityItem = {
   minutes?: number;
   calories?: number | null;
   cookCount?: number;
-  history?: { id:string; servings:number; rating:number|null; note:string; planItemId:string|null; cookedAt:string }[];
+  history?: {
+    id: string;
+    servings: number;
+    rating: number | null;
+    note: string;
+    planItemId: string | null;
+    cookedAt: string;
+  }[];
   cookedAt?: string | null;
   author?: string;
   visibility?: "PUBLIC" | "PRIVATE";
+  moderationStatus?: "PENDING" | "APPROVED" | "REJECTED" | "HIDDEN";
+  rejectionReason?: string | null;
   createdAt?: string;
 };
 export type ActivityData = {
@@ -25,7 +34,10 @@ export const getActivity = async () => {
   const data = await kitchenRequest<ActivityData>("activity");
   return {
     ...data,
-    cooked: sortRecipesByName(data.cooked, recipe => recipe.title),
-    savedRecipes: sortRecipesByName(data.savedRecipes, recipe => recipe.title),
+    cooked: sortRecipesByName(data.cooked, (recipe) => recipe.title),
+    savedRecipes: sortRecipesByName(
+      data.savedRecipes,
+      (recipe) => recipe.title,
+    ),
   };
 };

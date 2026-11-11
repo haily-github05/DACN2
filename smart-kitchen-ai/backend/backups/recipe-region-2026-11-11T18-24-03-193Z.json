@@ -1,0 +1,605 @@
+{
+  "basis": "Phân loại biên tập: món đặc trưng theo vùng; món phổ biến nhiều miền là Toàn quốc; món nước ngoài là Quốc tế",
+  "changes": [
+    {
+      "id": 9201,
+      "name": "Cơm gà xối mỡ",
+      "before": null,
+      "after": "Miền Nam"
+    },
+    {
+      "id": 9202,
+      "name": "Cơm tấm sườn nướng",
+      "before": null,
+      "after": "Miền Nam"
+    },
+    {
+      "id": 9203,
+      "name": "Cơm gà Hải Nam",
+      "before": null,
+      "after": "Quốc tế"
+    },
+    {
+      "id": 9204,
+      "name": "Cơm chiên hải sản",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9205,
+      "name": "Cơm chiên dương châu",
+      "before": null,
+      "after": "Quốc tế"
+    },
+    {
+      "id": 9206,
+      "name": "Cơm bò lúc lắc",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9207,
+      "name": "Cơm cá kho tộ",
+      "before": null,
+      "after": "Miền Nam"
+    },
+    {
+      "id": 9208,
+      "name": "Cơm thịt kho trứng",
+      "before": null,
+      "after": "Miền Nam"
+    },
+    {
+      "id": 9209,
+      "name": "Cơm gà nướng mật ong",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9210,
+      "name": "Cơm trộn rau củ",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9211,
+      "name": "Phở bò tái",
+      "before": null,
+      "after": "Miền Bắc"
+    },
+    {
+      "id": 9212,
+      "name": "Phở gà",
+      "before": null,
+      "after": "Miền Bắc"
+    },
+    {
+      "id": 9213,
+      "name": "Bún bò Huế",
+      "before": null,
+      "after": "Miền Trung"
+    },
+    {
+      "id": 9214,
+      "name": "Bún riêu cua",
+      "before": null,
+      "after": "Miền Bắc"
+    },
+    {
+      "id": 9215,
+      "name": "Bún chả Hà Nội",
+      "before": null,
+      "after": "Miền Bắc"
+    },
+    {
+      "id": 9216,
+      "name": "Bún thịt nướng",
+      "before": null,
+      "after": "Miền Nam"
+    },
+    {
+      "id": 9217,
+      "name": "Bún cá",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9218,
+      "name": "Bún măng vịt",
+      "before": null,
+      "after": "Miền Nam"
+    },
+    {
+      "id": 9219,
+      "name": "Bún xào chay",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9220,
+      "name": "Miến gà",
+      "before": null,
+      "after": "Miền Bắc"
+    },
+    {
+      "id": 9221,
+      "name": "Hủ tiếu Nam Vang",
+      "before": null,
+      "after": "Miền Nam"
+    },
+    {
+      "id": 9222,
+      "name": "Mì Quảng gà",
+      "before": null,
+      "after": "Miền Trung"
+    },
+    {
+      "id": 9223,
+      "name": "Mì xào bò",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9224,
+      "name": "Mì xào hải sản",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9225,
+      "name": "Cháo gà",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9226,
+      "name": "Cháo thịt bằm",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9227,
+      "name": "Cháo cá hồi",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9228,
+      "name": "Cháo đậu xanh",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9229,
+      "name": "Bánh mì trứng",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9230,
+      "name": "Bánh mì thịt nướng",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9231,
+      "name": "Bánh cuốn nhân thịt",
+      "before": null,
+      "after": "Miền Bắc"
+    },
+    {
+      "id": 9232,
+      "name": "Bánh xèo tôm thịt",
+      "before": null,
+      "after": "Miền Nam"
+    },
+    {
+      "id": 9233,
+      "name": "Bánh khọt tôm",
+      "before": null,
+      "after": "Miền Nam"
+    },
+    {
+      "id": 9234,
+      "name": "Gỏi cuốn tôm thịt",
+      "before": null,
+      "after": "Miền Nam"
+    },
+    {
+      "id": 9235,
+      "name": "Nem rán",
+      "before": null,
+      "after": "Miền Bắc"
+    },
+    {
+      "id": 9236,
+      "name": "Thịt heo rang cháy cạnh",
+      "before": null,
+      "after": "Miền Bắc"
+    },
+    {
+      "id": 9237,
+      "name": "Thịt kho tiêu",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9238,
+      "name": "Thịt kho tàu",
+      "before": null,
+      "after": "Miền Nam"
+    },
+    {
+      "id": 9239,
+      "name": "Sườn xào chua ngọt",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9240,
+      "name": "Sườn nướng mật ong",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9241,
+      "name": "Thịt heo luộc cuốn bánh tráng",
+      "before": null,
+      "after": "Miền Trung"
+    },
+    {
+      "id": 9242,
+      "name": "Thịt heo xào sả ớt",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9243,
+      "name": "Bò kho cà rốt",
+      "before": null,
+      "after": "Miền Nam"
+    },
+    {
+      "id": 9244,
+      "name": "Bò sốt vang",
+      "before": null,
+      "after": "Miền Bắc"
+    },
+    {
+      "id": 9245,
+      "name": "Bò xào hành tây",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9246,
+      "name": "Bò xào cần tây",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9247,
+      "name": "Bò cuốn lá lốt",
+      "before": null,
+      "after": "Miền Nam"
+    },
+    {
+      "id": 9248,
+      "name": "Bò hầm khoai tây",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9249,
+      "name": "Gà kho gừng",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9250,
+      "name": "Gà chiên nước mắm",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9251,
+      "name": "Gà hấp hành",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9252,
+      "name": "Gà nướng sả",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9253,
+      "name": "Gà xào nấm",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9254,
+      "name": "Gà hầm hạt sen",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9255,
+      "name": "Cá thu sốt cà chua",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9256,
+      "name": "Cá basa kho tiêu",
+      "before": null,
+      "after": "Miền Nam"
+    },
+    {
+      "id": 9257,
+      "name": "Cá diêu hồng hấp gừng",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9258,
+      "name": "Cá rô phi chiên giòn",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9259,
+      "name": "Cá nục kho cà",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9260,
+      "name": "Cá hồi sốt chanh dây",
+      "before": null,
+      "after": "Quốc tế"
+    },
+    {
+      "id": 9261,
+      "name": "Cá hồi nướng rau củ",
+      "before": null,
+      "after": "Quốc tế"
+    },
+    {
+      "id": 9262,
+      "name": "Tôm rang me",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9263,
+      "name": "Tôm rim nước mắm",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9264,
+      "name": "Tôm hấp sả",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9265,
+      "name": "Tôm xào bông cải",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9266,
+      "name": "Mực xào chua ngọt",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9267,
+      "name": "Mực hấp gừng",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9268,
+      "name": "Mực chiên giòn",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9269,
+      "name": "Nghêu hấp sả",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9270,
+      "name": "Canh chua cá",
+      "before": null,
+      "after": "Miền Nam"
+    },
+    {
+      "id": 9271,
+      "name": "Canh rau ngót thịt bằm",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9272,
+      "name": "Canh cải xanh thịt bằm",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9273,
+      "name": "Canh bí xanh nấu tôm",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9274,
+      "name": "Canh mồng tơi nấu cua",
+      "before": null,
+      "after": "Miền Bắc"
+    },
+    {
+      "id": 9275,
+      "name": "Canh khổ qua nhồi thịt",
+      "before": null,
+      "after": "Miền Nam"
+    },
+    {
+      "id": 9276,
+      "name": "Canh rong biển đậu hũ",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9277,
+      "name": "Canh nấm thập cẩm",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9278,
+      "name": "Canh khoai mỡ",
+      "before": null,
+      "after": "Miền Nam"
+    },
+    {
+      "id": 9279,
+      "name": "Rau muống xào tỏi",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9280,
+      "name": "Cải thìa xào nấm",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9281,
+      "name": "Bông cải xanh luộc",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9282,
+      "name": "Đậu que xào tỏi",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9283,
+      "name": "Cà tím nướng mỡ hành",
+      "before": null,
+      "after": "Miền Nam"
+    },
+    {
+      "id": 9284,
+      "name": "Đậu hũ chiên sả ớt",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9285,
+      "name": "Đậu hũ kho nấm",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9286,
+      "name": "Nấm đùi gà áp chảo",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9287,
+      "name": "Gỏi gà bắp cải",
+      "before": null,
+      "after": "Miền Nam"
+    },
+    {
+      "id": 9288,
+      "name": "Gỏi xoài tôm khô",
+      "before": null,
+      "after": "Miền Nam"
+    },
+    {
+      "id": 9289,
+      "name": "Salad cá ngừ",
+      "before": null,
+      "after": "Quốc tế"
+    },
+    {
+      "id": 9290,
+      "name": "Salad ức gà",
+      "before": null,
+      "after": "Quốc tế"
+    },
+    {
+      "id": 9291,
+      "name": "Salad khoai tây trứng",
+      "before": null,
+      "after": "Quốc tế"
+    },
+    {
+      "id": 9292,
+      "name": "Trứng chiên cà chua",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9293,
+      "name": "Trứng hấp thịt bằm",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9294,
+      "name": "Trứng kho nước tương",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9295,
+      "name": "Khoai tây nghiền",
+      "before": null,
+      "after": "Quốc tế"
+    },
+    {
+      "id": 9296,
+      "name": "Bí đỏ hấp",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9297,
+      "name": "Súp gà ngô non",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9298,
+      "name": "Súp cua",
+      "before": null,
+      "after": "Miền Nam"
+    },
+    {
+      "id": 9299,
+      "name": "Chè đậu xanh",
+      "before": null,
+      "after": "Toàn quốc"
+    },
+    {
+      "id": 9300,
+      "name": "Sữa chua trái cây",
+      "before": null,
+      "after": "Toàn quốc"
+    }
+  ]
+}

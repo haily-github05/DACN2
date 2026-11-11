@@ -97,3 +97,41 @@ API `GET /api/kitchen/:userId/ingredients` trả toàn bộ danh mục `ingredie
 Trang Thêm nguyên liệu hỗ trợ chọn ảnh từ thư viện hoặc chụp mới, xem trước và bỏ ảnh. Ảnh tùy chọn được tải bằng POST /api/kitchen/:userId/pantry/image (phiên đăng nhập, tối đa 5 MB, JPEG/PNG/WebP), lưu tại uploads/pantry và liên kết qua pantry_items.image_url. Không chọn ảnh thì dùng ảnh danh mục nếu có. Các ngày nhập nhận YYYY-MM-DD hoặc DD/MM/YYYY rồi chuẩn hóa trước khi gửi API. Lỗi lưu được hiển thị theo phản hồi thực tế.
 
 Kiểm tra hồi quy đầy đủ với node scripts/verify-pantry-flow.js trong backend: tạo dữ liệu thử có tên riêng, tải ảnh, lưu, đọc xác nhận rồi dọn đúng dữ liệu/ảnh thử. Script check-pantry-save.js kiểm tra SQL và rollback trước khi commit.
+
+## Vai trò tài khoản
+
+`users.role` có ba giá trị `USER`, `MODERATOR`, `ADMIN`, mặc định `USER`. Chạy `npm run migrate` để thêm cột. Backend luôn tạo tài khoản đăng ký với `USER`; client không được tự chọn vai trò. API `/api/admin/*` chỉ cho `ADMIN`, kiểm tra lại MySQL mỗi yêu cầu; MODERATOR được dành cho các API kiểm duyệt riêng khi bổ sung. Đổi role trong MySQL có hiệu lực ngay với token đã cấp. Không còn dùng ADMIN_USER_IDS để cấp quyền.
+
+## Duyệt bài cộng đồng
+
+Chạy `npm run migrate` để thêm `community_posts.moderation_status`, lý do từ chối, người/thời điểm duyệt và bảng `admin_post_reads`. Bài cũ giữ APPROVED, bài mới luôn PENDING. PUBLIC chỉ xuất hiện với người khác khi APPROVED; chủ bài vẫn xem được bài đang chờ hoặc bị từ chối. PRIVATE chỉ chủ bài xem được. Ảnh nội bộ, bình luận, phản hồi, tương tác, bài đã lưu và bộ đếm đều kiểm tra trạng thái duyệt.
+
+Các API `/api/admin/posts`, `/api/admin/posts/:postId`, PATCH `/api/admin/posts/:postId/moderation` yêu cầu ADMIN. Chỉ xử lý bài PUBLIC/PENDING; yêu cầu trùng sau khi xử lý trả 409, từ chối bắt buộc lý do. API `/api/admin/notifications`, PUT `/api/admin/notifications/:postId/read`, PUT `/api/admin/notifications/read-all` dùng trạng thái đọc riêng theo admin, chỉ đếm bài còn chờ duyệt.
+
+Kiểm thử tích hợp: `node scripts/verify-post-moderation.js`, toàn bộ bài thử và trạng thái đọc được rollback.
+
+Bổ sung trạng thái HIDDEN qua migration `20261111_hidden_posts.sql`. PATCH `/api/admin/posts/:postId/visibility` với `{hidden:true}` chỉ chuyển APPROVED → HIDDEN; `{hidden:false}` chỉ chuyển HIDDEN → APPROVED. Mọi truy cập cộng đồng vẫn yêu cầu APPROVED, ngoại trừ chủ bài. DELETE `/api/admin/posts/:postId` chỉ xoá bài PUBLIC; khoá ngoại xoá bình luận, tương tác và trạng thái đọc liên quan, không dọn file ảnh tải lên. GET `/api/admin/posts` nhận `days=ALL|7|30|90` lọc theo ngày tạo trên lịch MySQL, áp dụng cùng điều kiện cho danh sách và tổng số kết quả.
+
+## Danh mục cộng đồng và kết quả duyệt
+
+`src/config/postCategories.js` là danh sách danh mục dùng chung; GET `/api/kitchen/post-categories` trả các lựa chọn và ánh xạ nhãn cũ. Admin dùng select, mobile dùng danh sách chọn có đánh dấu rõ ràng. Không thay đổi danh mục bài cũ trong database.
+
+Bảng tin cộng đồng chỉ trả PUBLIC/APPROVED, kể cả với chủ bài. Chủ bài vẫn xem riêng qua ID và mục Bài của tôi. Thông báo người dùng lấy kết quả APPROVED/REJECTED/HIDDEN từ bài của chính họ, chỉ khi có reviewed_at; bài bị từ chối hiển thị lý do và không được xuất bản. Đây là thông báo trong ứng dụng, không phải push hệ điều hành. Trạng thái đọc vẫn theo cơ chế lưu trên thiết bị của mobile.
+
+## Quản lý tài khoản
+
+Migration `scripts/migrate-user-management.js` thêm `users.is_active` mặc định 1, `locked_reason` và `last_login_at`. Có trong `npm run migrate`, không đổi vai trò/trạng thái hoạt động của tài khoản đang có.
+
+API ADMIN: GET/POST `/api/admin/users`, GET/PATCH `/api/admin/users/:userId`. Danh sách hỗ trợ tìm có/không dấu, lọc role=ALL/USER/MODERATOR/ADMIN, status=ALL/ACTIVE/LOCKED và page. Không trả password_hash. PATCH nhận role và/hoặc active, reason tùy chọn. Cập nhật có transaction, kiểm tra lại quyền người thực hiện, không tự khóa/hạ quyền và giữ ít nhất một admin hoạt động.
+
+Đăng nhập kiểm tra trạng thái trước khi cấp token và cập nhật last_login_at sau khi xác thực thành công. Middleware checkAccountStatus chặn tài khoản bị khóa trên API cho token đã cấp và các URL userId của API cũ; middleware admin cũng kiểm tra trạng thái. Các API cũ vẫn giữ cơ chế định danh vốn có, đây không phải thay đổi toàn bộ mô hình xác thực của các endpoint đó. Ảnh bài riêng/chờ duyệt kiểm tra trạng thái tài khoản trước khi cho phép owner/admin tải.
+
+Kiểm tra: `npm test`; `node scripts/verify-user-management.js` dùng tài khoản thử trong transaction và rollback, cần một tài khoản ADMIN đang hoạt động. Không có chức năng xác minh email, gói dịch vụ, push thông báo hàng loạt hoặc liên kết thiết bị IoT ở trang này.
+
+## API quản lý nguyên liệu
+
+ADMIN: GET/POST `/api/admin/ingredients`, PUT/DELETE `/api/admin/ingredients/:ingredientId`; POST `/api/admin/ingredients/image` (multipart image, JPEG/PNG/WebP ≤5MB); PATCH `/api/admin/ingredients/bulk` (ids, category/storage); POST `/api/admin/ingredients/bulk-delete` (ids). Tối đa 100 ID mỗi thao tác nhóm.
+
+Danh sách nhận q, category, unit, storage (hoặc __empty), page và pageSize=10/20/50. Các thống kê và nhóm phân loại dùng toàn bộ danh mục, bộ lọc chỉ áp dụng bảng/kết quả. Chỉ dùng các cột hiện có của ingredients; số nơi sử dụng lấy từ recipe_ingredients/pantry_items/shopping_list_items. Xóa có khóa hàng/transaction, từ chối khi còn tham chiếu. Đổi default_unit không sửa đơn vị tại các bảng giao dịch/công thức. Không có AI hoặc quy chuẩn dinh dưỡng/hạn sử dụng giả lập.
+
+`node scripts/verify-ingredient-management.js` kiểm tra HTTP/MySQL trong transaction, rollback dữ liệu và dọn ảnh thử. `tests/adminIngredients.test.js` kiểm tra lọc, validation, ảnh và bảo vệ xóa.

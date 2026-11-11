@@ -33,14 +33,11 @@ export function getApiBaseUrl(): string {
   }
 
   throw new Error(
-    "Không xác định được địa chỉ backend. Hãy cấu hình EXPO_PUBLIC_API_URL."
+    "Không xác định được địa chỉ backend. Hãy cấu hình EXPO_PUBLIC_API_URL.",
   );
 }
 
-async function requestApi<T>(
-  endpoint: string,
-  body: object
-): Promise<T> {
+async function requestApi<T>(endpoint: string, body: object): Promise<T> {
   const baseUrl = getApiBaseUrl();
 
   let response: Response;
@@ -56,7 +53,7 @@ async function requestApi<T>(
   } catch {
     throw new Error(
       `Không kết nối được backend tại ${baseUrl}. ` +
-      "Hãy kiểm tra backend đang chạy và iPhone cùng Wi-Fi với Mac."
+        "Hãy kiểm tra backend đang chạy và iPhone cùng Wi-Fi với Mac.",
     );
   }
 
@@ -64,8 +61,7 @@ async function requestApi<T>(
 
   if (!response.ok) {
     throw new Error(
-      result?.message ||
-      `Yêu cầu thất bại (HTTP ${response.status}).`
+      result?.message || `Yêu cầu thất bại (HTTP ${response.status}).`,
     );
   }
 
@@ -80,9 +76,7 @@ export async function registerWithApi(input: RegisterInput) {
   return requestApi<unknown>("/api/auth/register", input);
 }
 
-export async function loginWithApi(
-  input: AuthInput
-): Promise<AuthUser> {
+export async function loginWithApi(input: AuthInput): Promise<AuthUser> {
   const result = await requestApi<{
     success: boolean;
     data: AuthUser;
@@ -91,7 +85,7 @@ export async function loginWithApi(
 
   if (!result.data) {
     throw new Error(
-      "Backend đăng nhập thành công nhưng không trả về thông tin người dùng."
+      "Backend đăng nhập thành công nhưng không trả về thông tin người dùng.",
     );
   }
 
@@ -112,27 +106,22 @@ export type UserPreferences = {
 
 export async function saveUserPreferences(
   userId: number,
-  preferences: UserPreferences
+  preferences: UserPreferences,
 ) {
   const baseUrl = getApiBaseUrl();
 
-  const response = await fetch(
-    `${baseUrl}/api/users/${userId}/preferences`,
-    {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(preferences),
-    }
-  );
+  const response = await fetch(`${baseUrl}/api/users/${userId}/preferences`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(preferences),
+  });
 
   const result = await response.json().catch(() => null);
 
   if (!response.ok || !result?.success) {
-    throw new Error(
-      result?.message || "Không thể lưu khẩu vị vào MySQL"
-    );
+    throw new Error(result?.message || "Không thể lưu khẩu vị vào MySQL");
   }
 
   return result;
@@ -140,7 +129,7 @@ export async function saveUserPreferences(
 
 export async function uploadUserAvatar(
   userId: number,
-  imageUri: string
+  imageUri: string,
 ): Promise<string> {
   const baseUrl = getApiBaseUrl();
 
@@ -152,30 +141,27 @@ export async function uploadUserAvatar(
     type: "image/jpeg",
   } as any);
 
-  const response = await fetch(
-    `${baseUrl}/api/users/${userId}/avatar`,
-    {
-      method: "POST",
-      body: formData,
-    }
-  );
+  const response = await fetch(`${baseUrl}/api/users/${userId}/avatar`, {
+    method: "POST",
+    body: formData,
+  });
 
   const result = await response.json().catch(() => null);
 
   if (!response.ok || !result?.success || !result?.avatar_url) {
-    throw new Error(
-      result?.message || "Không thể tải ảnh đại diện lên server"
-    );
+    throw new Error(result?.message || "Không thể tải ảnh đại diện lên server");
   }
 
   const avatarUrl: string = result.avatar_url;
 
-  return avatarUrl.startsWith("/")
-    ? `${baseUrl}${avatarUrl}`
-    : avatarUrl;
+  return avatarUrl.startsWith("/") ? `${baseUrl}${avatarUrl}` : avatarUrl;
 }
 
-export async function apiRequest<T>(endpoint: string, method = "GET", body?: unknown): Promise<T> {
+export async function apiRequest<T>(
+  endpoint: string,
+  method = "GET",
+  body?: unknown,
+): Promise<T> {
   const base = getApiBaseUrl();
   const { getAuthUser } = await import("./auth");
   const user = await getAuthUser();
@@ -183,7 +169,10 @@ export async function apiRequest<T>(endpoint: string, method = "GET", body?: unk
   try {
     response = await fetch(`${base}${endpoint}`, {
       method,
-      headers: { "Content-Type": "application/json", ...(user?.token ? { Authorization: `Bearer ${user.token}` } : {}) },
+      headers: {
+        "Content-Type": "application/json",
+        ...(user?.token ? { Authorization: `Bearer ${user.token}` } : {}),
+      },
       ...(body === undefined ? {} : { body: JSON.stringify(body) }),
     });
   } catch {
@@ -191,7 +180,9 @@ export async function apiRequest<T>(endpoint: string, method = "GET", body?: unk
   }
   const result = await response.json().catch(() => null);
   if (!response.ok || result?.success !== true) {
-    throw new Error(result?.message || `Yêu cầu thất bại (HTTP ${response.status})`);
+    throw new Error(
+      result?.message || `Yêu cầu thất bại (HTTP ${response.status})`,
+    );
   }
   return result.data as T;
 }

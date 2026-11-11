@@ -14,13 +14,17 @@ require.cache[dbPath]={id:dbPath,filename:dbPath,loaded:true,exports:{query:asyn
   {comment_id:10,post_id:3,title:"Salad nhà làm",content:"Món ngon quá",actor:"An",post_author:7,parent_author:null,created_at:"2026-11-05T10:00:00"},
   {comment_id:11,post_id:9,title:"Canh rau",content:"Cảm ơn bạn",actor:"Bình",post_author:8,parent_author:7,created_at:"2026-11-05T11:00:00"},
  ]];
+ if(sql.includes("reviewed_at IS NOT NULL")) return [[
+  {post_id:8,title:"Bài bị từ chối",moderation_status:"REJECTED",rejection_reason:"Nội dung không phù hợp",reviewed_at:"2026-11-11T08:00:00Z"},
+  {post_id:9,title:"Bài đã duyệt",moderation_status:"APPROVED",reviewed_at:"2026-11-11T09:00:00Z"}
+ ]];
  if(sql.includes("FROM community_posts")) return [[{post_id:3,title:"Salad nhà làm",likes:2,image_url:"/uploads/posts/image.jpg"}]];
  return [[{shopping_list_id:4,shopping_item_id:8,name:"Trứng"},{shopping_list_id:4,shopping_item_id:9,name:"Tỏi"}]];
 }}};
 const {getNotifications}=require("../src/services/notificationService");
 test("notification sources always use the requested owner and actionable records",async()=>{
  const result=await getNotifications(7);
- assert.deepEqual(calls.map(call=>call.params),[[7],[7],[7],[7],[7,7,7,7]]);
+ assert.deepEqual(calls.map(call=>call.params),[[7],[7],[7],[7],[7,7,7,7],[7]]);
  assert.match(calls[0].sql,/p.quantity>0/);
  assert.match(calls[2].sql,/r.user_id<>p.user_id/);
  assert.match(calls[3].sql,/s.is_purchased=1/);
@@ -48,5 +52,14 @@ test("social notifications link to owned posts and replies without duplicate eve
  const sql=calls.find(c=>c.sql.includes('FROM community_comments c')).sql;
  assert.match(sql,/c.user_id<>\?/);
  assert.match(sql,/p.user_id=\? OR parent.user_id=\?/);
- assert.match(sql,/p.visibility='PUBLIC' OR p.user_id=\?/);
+ assert.match(sql,/p.visibility='PUBLIC' AND p.moderation_status='APPROVED'\) OR p.user_id=\?/);
+});
+
+test('moderation results notify only the owner with the rejection reason and stable identifiers',async()=>{
+ const rows=await getNotifications(7);
+ const rejected=rows.find(row=>row.id.startsWith('moderation:8:REJECTED:'));
+ assert(rejected);assert.match(rejected.body,/không được đăng lên cộng đồng/);assert.match(rejected.body,/Nội dung không phù hợp/);assert.equal(rejected.action,'Xem lý do từ chối');assert.deepEqual(rejected.params,{id:'8'});
+ assert(rows.some(row=>row.id.startsWith('moderation:9:APPROVED:')));
+ const again=await getNotifications(7);assert.equal(again.find(row=>row.id.startsWith('moderation:8:')).id,rejected.id);
+ const sql=calls.find(call=>call.sql.includes('reviewed_at IS NOT NULL'));assert.deepEqual(sql.params,[7]);assert.match(sql.sql,/WHERE user_id=\?/);
 });

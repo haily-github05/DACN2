@@ -91,50 +91,49 @@ type IconComponent = React.ComponentType<{
   strokeWidth?: number;
 }>;
 
-  const MenuItem = ({
-    icon: Icon,
+const MenuItem = ({
+  icon: Icon,
 
-    title,
+  title,
 
-    subtitle,
+  subtitle,
 
-    onPress,
+  onPress,
 
-    color = C.orange,
+  color = C.orange,
 
-    background = C.peach,
+  background = C.peach,
 
-    right,
-  }: {
-    icon: IconComponent;
+  right,
+}: {
+  icon: IconComponent;
 
-    title: string;
+  title: string;
 
-    subtitle?: string;
+  subtitle?: string;
 
-    onPress: () => void;
+  onPress: () => void;
 
-    color?: string;
+  color?: string;
 
-    background?: string;
+  background?: string;
 
-    right?: React.ReactNode;
-  }) => (
-    <Pressable style={styles.menuItem} onPress={onPress}>
-      <View style={[styles.menuIcon, { backgroundColor: background }]}>
-        <Icon size={19} color={color} />
-      </View>
+  right?: React.ReactNode;
+}) => (
+  <Pressable style={styles.menuItem} onPress={onPress}>
+    <View style={[styles.menuIcon, { backgroundColor: background }]}>
+      <Icon size={19} color={color} />
+    </View>
 
-      <View style={styles.menuText}>
-        <Text style={styles.menuTitle}>{title}</Text>
+    <View style={styles.menuText}>
+      <Text style={styles.menuTitle}>{title}</Text>
 
-        {subtitle ? <Text style={styles.menuSubtitle}>{subtitle}</Text> : null}
-      </View>
+      {subtitle ? <Text style={styles.menuSubtitle}>{subtitle}</Text> : null}
+    </View>
 
-      {right ?? <ChevronRight size={18} color="#A38D82" />}
-    </Pressable>
-  );
-
+    {right ?? <ChevronRight size={18} color="#A38D82" />}
+  </Pressable>
+);
 
 function ProfileScreen() {
   const router = useRouter();
@@ -246,7 +245,6 @@ function ProfileScreen() {
 
     .join("");
 
-
   return (
     <SafeAreaView style={styles.screen} edges={[]}>
       <AppHeader showNotification />
@@ -317,7 +315,16 @@ function ProfileScreen() {
           </View>
 
           <View style={styles.statsRow}>
-            <Pressable accessibilityRole="button" style={styles.statItem} onPress={() => router.push({ pathname: "/my-activity", params: { tab: "cooked" } })}>
+            <Pressable
+              accessibilityRole="button"
+              style={styles.statItem}
+              onPress={() =>
+                router.push({
+                  pathname: "/my-activity",
+                  params: { tab: "cooked" },
+                })
+              }
+            >
               <ChefHat size={19} color={C.orange} />
 
               <Text style={styles.statNumber}>{stats?.cooked ?? "—"}</Text>
@@ -327,7 +334,16 @@ function ProfileScreen() {
 
             <View style={styles.statDivider} />
 
-            <Pressable accessibilityRole="button" style={styles.statItem} onPress={() => router.push({ pathname: "/my-activity", params: { tab: "saved" } })}>
+            <Pressable
+              accessibilityRole="button"
+              style={styles.statItem}
+              onPress={() =>
+                router.push({
+                  pathname: "/my-activity",
+                  params: { tab: "saved" },
+                })
+              }
+            >
               <Bookmark size={19} color={C.orange} />
 
               <Text style={styles.statNumber}>{stats?.saved ?? "—"}</Text>
@@ -337,7 +353,16 @@ function ProfileScreen() {
 
             <View style={styles.statDivider} />
 
-            <Pressable accessibilityRole="button" style={styles.statItem} onPress={() => router.push({ pathname: "/my-activity", params: { tab: "shared" } })}>
+            <Pressable
+              accessibilityRole="button"
+              style={styles.statItem}
+              onPress={() =>
+                router.push({
+                  pathname: "/my-activity",
+                  params: { tab: "shared" },
+                })
+              }
+            >
               <UsersRound size={19} color={C.orange} />
 
               <Text style={styles.statNumber}>{stats?.shared ?? "—"}</Text>
@@ -373,7 +398,9 @@ function ProfileScreen() {
               <Flame size={21} color={C.orange} />
             </View>
 
-            <Text style={styles.achievementNumber}>{stats?.streak ?? "—"} ngày</Text>
+            <Text style={styles.achievementNumber}>
+              {stats?.streak ?? "—"} ngày
+            </Text>
 
             <Text style={styles.achievementName}>Chuỗi vào bếp</Text>
 
@@ -385,7 +412,9 @@ function ProfileScreen() {
               <ChefHat size={21} color={C.orange} />
             </View>
 
-            <Text style={styles.achievementNumber}>{stats?.cooked ?? "—"} món</Text>
+            <Text style={styles.achievementNumber}>
+              {stats?.cooked ?? "—"} món
+            </Text>
 
             <Text style={styles.achievementName}>Đầu bếp tại gia</Text>
 
@@ -556,7 +585,12 @@ function ProfileScreen() {
             icon={Bookmark}
             title="Bộ sưu tập đã lưu"
             subtitle="Công thức và bài viết bạn đã lưu"
-            onPress={() => router.push({ pathname: "/my-activity", params: { tab: "saved" } })}
+            onPress={() =>
+              router.push({
+                pathname: "/my-activity",
+                params: { tab: "saved" },
+              })
+            }
           />
 
           <View style={styles.menuDivider} />
@@ -565,7 +599,12 @@ function ProfileScreen() {
             icon={Clock3}
             title="Lịch sử nấu ăn"
             subtitle="Những món bạn đã thực hiện"
-            onPress={() => router.push({ pathname: "/my-activity", params: { tab: "cooked" } })}
+            onPress={() =>
+              router.push({
+                pathname: "/my-activity",
+                params: { tab: "cooked" },
+              })
+            }
           />
 
           <View style={styles.menuDivider} />
@@ -596,8 +635,6 @@ function ProfileScreen() {
           />
         </View>
 
-        
-
         {/* SETTINGS */}
 
         <View style={styles.sectionHeading}>
@@ -613,8 +650,6 @@ function ProfileScreen() {
         </View>
 
         <View style={styles.menuCard}>
-          
-
           <View style={styles.menuDivider} />
 
           <MenuItem
@@ -1329,4 +1364,10 @@ const styles = StyleSheet.create({
 });
 
 // Người dùng khách cần đăng nhập trước khi truy cập chức năng cá nhân.
-export default function ProtectedPage() { return <RequireLogin><ProfileScreen/></RequireLogin>; }
+export default function ProtectedPage() {
+  return (
+    <RequireLogin>
+      <ProfileScreen />
+    </RequireLogin>
+  );
+}

@@ -2,8 +2,6 @@
 
 Ứng dụng hỗ trợ quản lý nguyên liệu trong bếp, theo dõi hạn sử dụng, tìm kiếm công thức, lên thực đơn và lập danh sách mua sắm. Dự án gồm ứng dụng **Mobile (React Native + Expo)** và (nếu có trong nhánh đã tải) **Admin Web (React + Vite)**.
 
-> **Lưu ý:** Một số tính năng hiện là giao diện/prototype với dữ liệu mẫu, chưa kết nối AI hoặc backend thật. Các màn hình dùng AsyncStorage có thể lưu dữ liệu cục bộ trên thiết bị.
-
 ## 1. Yêu cầu trước khi chạy
 
 - Máy tính macOS hoặc Windows, đã cài **Node.js LTS** và npm.
@@ -47,7 +45,7 @@ npx expo start -c
 Terminal 2: 
 ```bash
 cd backend
-node server.js
+npm start 
 ```
 
 > Nếu thư mục vừa tải không có đường dẫn `smart-kitchen-ai/mobile`, hãy tìm thư mục chứa `package.json` của ứng dụng Expo và chạy lệnh trong thư mục đó.
@@ -67,7 +65,7 @@ Nếu không kết nối được qua Wi-Fi, thử:
 npx expo start --tunnel
 ```
 
-### Chạy trên trình duyệt web (Mac)
+### Chạy trên trình duyệt web
 
 Trong Terminal đang chạy Expo, nhấn **w** để mở trình duyệt. Hoặc chạy:
 
@@ -84,9 +82,7 @@ npx expo start -c --web
 
 **Lưu ý:** Một số chức năng thiết bị như camera, thông báo hoặc thư viện native có thể hoạt động khác trên web so với iPhone.
 
-## 4. Chạy Admin Web (nếu có)
-
-Nếu mã nguồn có thư mục `smart-kitchen-ai/admin-web` (hoặc `admin-web`), mở Terminal mới và chuyển đến đúng thư mục chứa `package.json` của Admin Web:
+## 4. Chạy Admin Web 
 
 ```bash
 cd smart-kitchen-ai/admin-web
@@ -164,11 +160,6 @@ npx expo start -c
 
 > Nếu repository sử dụng nhánh khác `main`, thay bằng tên nhánh thực tế. Trước khi `git pull`, lưu hoặc commit thay đổi cục bộ để tránh xung đột.
 
-## 9. Ghi chú
-
-- Chạy lệnh `npm install` và `npx expo start` **trong thư mục Mobile có `package.json`**, không chạy tùy ý ở thư mục gốc.
-- Không đưa file `.env`, mật khẩu, khóa API hoặc `node_modules` lên GitHub.
-- Các tính năng phụ thuộc API/backend chỉ hoạt động khi dịch vụ tương ứng đã được cấu hình và khởi động.
 
 ---
 
