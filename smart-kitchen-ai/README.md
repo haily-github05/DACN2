@@ -92,29 +92,8 @@ npm run dev
 
 Mở địa chỉ `Local` do Vite hiển thị, thường là `http://localhost:5173/`. Không cần chạy Admin Web để sử dụng ứng dụng Mobile.
 
-## 5. Cấu trúc thư mục tham khảo
 
-```text
-DACN2/
-└── smart-kitchen-ai/
-    ├── mobile/
-    │   ├── app/              # Các màn hình và định tuyến Expo Router
-    │   ├── components/       # Header, BottomNav, trợ lý AI...
-    │   ├── lib/              # Tiện ích / xử lý dữ liệu (nếu có)
-    │   └── package.json
-    └── admin-web/            # Trang quản trị React + Vite (nếu có)
-```
-
-## 6. Một số chức năng của ứng dụng
-
-- **Trang chủ:** tổng quan nguyên liệu, truy cập nhanh các tính năng.
-- **Kho thực phẩm:** danh sách, thêm, xem chi tiết và chỉnh sửa nguyên liệu.
-- **Khám phá:** tìm công thức và xem chi tiết món ăn.
-- **Thực đơn:** lên kế hoạch bữa ăn.
-- **Danh sách mua sắm:** thêm và đánh dấu nguyên liệu cần mua.
-- **Trợ lý AI:** giao diện hội thoại hỗ trợ gợi ý món ăn và lên thực đơn; phản hồi có thể đang dùng logic mẫu.
-
-## 7. Xử lý lỗi thường gặp
+## 5. Xử lý lỗi thường gặp
 
 **Lỗi `Unable to resolve react-native-web/dist/index`:**
 
@@ -147,7 +126,7 @@ npx expo start -c
 - Kiểm tra màn hình Chi tiết có truyền đúng `id` sang màn hình Chỉnh sửa.
 - Đảm bảo Kho thực phẩm, Chi tiết và Chỉnh sửa cùng sử dụng một nguồn dữ liệu/khóa AsyncStorage.
 
-## 8. Cập nhật code mới từ GitHub
+## 6. Cập nhật code mới từ GitHub
 
 Nếu đã clone bằng Git:
 
