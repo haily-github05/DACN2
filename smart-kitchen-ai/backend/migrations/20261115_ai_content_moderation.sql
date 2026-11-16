@@ -1,0 +1,27 @@
+CREATE TABLE IF NOT EXISTS ai_content_reviews (
+  review_id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  content_type ENUM('POST','COMMENT','RECIPE') NOT NULL,
+  content_id BIGINT NOT NULL,
+  post_id BIGINT NOT NULL,
+  author_user_id BIGINT NOT NULL,
+  content_title VARCHAR(180) NOT NULL DEFAULT '',
+  content_text MEDIUMTEXT NOT NULL,
+  image_url VARCHAR(500) NULL,
+  ai_flags JSON NOT NULL,
+  highlights JSON NOT NULL,
+  risk_score TINYINT UNSIGNED NULL,
+  confidence TINYINT UNSIGNED NULL,
+  recommendation ENUM('APPROVE','REVIEW','WARN') NULL,
+  ai_reason TEXT NULL,
+  analysis_status ENUM('PENDING_ANALYSIS','ANALYZED','FAILED') NOT NULL DEFAULT 'PENDING_ANALYSIS',
+  decision_status ENUM('PENDING','SAFE','APPROVED','HIDDEN','DISMISSED','REMOVED') NOT NULL DEFAULT 'PENDING',
+  decision_note VARCHAR(1000) NULL,
+  analyzed_at DATETIME NULL,
+  reviewed_by BIGINT NULL,
+  reviewed_at DATETIME NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_ai_review_content (content_type,content_id),
+  INDEX idx_ai_review_queue (decision_status,analysis_status,risk_score,created_at),
+  INDEX idx_ai_review_author (author_user_id,reviewed_at)
+);
+

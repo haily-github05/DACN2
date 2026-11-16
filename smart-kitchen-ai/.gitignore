@@ -42,3 +42,4 @@ yarn-error.*
 
 # Local signing key for community sessions
 backend/.session-secret
+backend/.ai-telemetry-secret

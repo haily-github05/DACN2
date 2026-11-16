@@ -1,145 +1,114 @@
 # Smart Kitchen AI – Bếp thông minh
 
-Ứng dụng hỗ trợ quản lý nguyên liệu trong bếp, theo dõi hạn sử dụng, tìm kiếm công thức, lên thực đơn và lập danh sách mua sắm. Dự án gồm ứng dụng **Mobile (React Native + Expo)** và (nếu có trong nhánh đã tải) **Admin Web (React + Vite)**.
+Ứng dụng quản lý nguyên liệu, hạn sử dụng, công thức, thực đơn và danh sách mua sắm. Dự án gồm Mobile (Expo), API (Node.js + Express), database MySQL và dịch vụ AI nhận diện ảnh (Python, tùy chọn). Admin Web là phần tùy chọn.
 
-## 1. Yêu cầu trước khi chạy
+## Chạy ứng dụng mỗi lần làm việc
 
-- Máy tính macOS hoặc Windows, đã cài **Node.js LTS** và npm.
-- Git (hoặc tải ZIP trực tiếp từ GitHub).
-- VS Code (khuyến nghị).
-- **iPhone:** cài ứng dụng Expo Go từ App Store; điện thoại và máy tính nên kết nối cùng mạng Wi-Fi.
-- **Chạy web:** dùng trình duyệt Chrome hoặc Safari. Nếu thiếu gói web, xem bước cài đặt bên dưới.
+### Chuẩn bị một lần
 
-Kiểm tra công cụ bằng Terminal:
+- Cài Node.js LTS, npm, Python 3 và MySQL.
+- Cài dependencies trong từng thư mục (chỉ cần chạy lại sau khi cập nhật dependencies):
 
 ```bash
-node -v
-npm -v
-git --version
+cd backend && npm install
+cd ../mobile && npm install
+cd ../admin-web && npm install
 ```
 
-## 2. Tải mã nguồn từ GitHub
+- Cấu hình `backend/.env` với thông tin MySQL (`DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`) và các API key cần dùng. Không chia sẻ file `.env`.
+- Cấu hình `mobile/.env` để app truy cập backend. Trên điện thoại, thay IP máy tính cho `localhost`:
 
-**Cách 1 – Dùng Git (khuyến nghị):**
-
-```bash
-git clone https://github.com/haily-github05/DACN2.git
-cd DACN2
+```env
+EXPO_PUBLIC_API_URL=http://IP_MAY_TINH:3000
+EXPO_PUBLIC_AI_URL=http://IP_MAY_TINH:8000
 ```
 
-**Cách 2 – Tải ZIP:**
+Lấy IP Wi-Fi trên Mac bằng `ipconfig getifaddr en0`. Chỉ cần `EXPO_PUBLIC_AI_URL` nếu dùng chức năng nhận diện ảnh.
 
-1. Mở https://github.com/haily-github05/DACN2
-2. Chọn **Code → Download ZIP**.
-3. Giải nén tệp ZIP và mở thư mục dự án trong VS Code.
+### Mỗi lần chạy Mobile
 
-## 3. Chạy ứng dụng Mobile (Expo)
+Đảm bảo MySQL đang chạy, sau đó mở hai terminal tại thư mục dự án:
 
-Từ thư mục gốc repository, mở Terminal:
-Terminal 1: 
-```bash
-cd mobile
-npm install
-npx expo start -c
-```
-Terminal 2: 
+**Terminal 1 – API backend:**
+
 ```bash
 cd backend
-npm start 
+npm start
 ```
 
-> Nếu thư mục vừa tải không có đường dẫn `smart-kitchen-ai/mobile`, hãy tìm thư mục chứa `package.json` của ứng dụng Expo và chạy lệnh trong thư mục đó.
+API mặc định chạy ở `http://localhost:3000`. Kiểm tra tại `http://localhost:3000/api/health`.
 
-Sau khi Expo khởi động, Terminal hiển thị mã QR và các phím tắt.
-
-### Chạy trên iPhone
-
-1. Cài và mở **Expo Go** trên iPhone.
-2. Kết nối iPhone và Mac cùng Wi-Fi.
-3. Quét mã QR trong Terminal bằng Camera của iPhone hoặc từ Expo Go.
-4. Chờ ứng dụng tải xong.
-
-Nếu không kết nối được qua Wi-Fi, thử:
+**Terminal 2 – ứng dụng Expo:**
 
 ```bash
-npx expo start --tunnel
+cd mobile
+npx expo start
 ```
 
-### Chạy trên trình duyệt web
+Quét QR bằng Expo Go trên iPhone (cùng Wi-Fi với máy tính) hoặc nhấn `w` trong terminal để mở web. Nếu mạng nội bộ không kết nối được, thử `npx expo start --tunnel`.
 
-Trong Terminal đang chạy Expo, nhấn **w** để mở trình duyệt. Hoặc chạy:
+Để dùng quét/nhận diện nguyên liệu, hãy khởi động thêm dịch vụ AI như phần bên dưới. Các chức năng khác không cần dịch vụ này.
+
+### Mỗi lần chạy dịch vụ AI nhận diện (tùy chọn)
+
+Model đã train phải có tại `backend/model/best.pt`. Cài thư viện Python một lần:
 
 ```bash
-npx expo start --web
+cd backend
+python3 -m pip install fastapi uvicorn ultralytics python-multipart pillow
 ```
 
-Nếu báo thiếu `react-native-web` / `react-dom`, chạy trong thư mục `mobile`:
+Mở terminal riêng và chạy:
 
 ```bash
-npx expo install react-native-web react-dom @expo/metro-runtime
-npx expo start -c --web
+cd backend
+python3 -m uvicorn src.ai_service.app:app --host 0.0.0.0 --port 8000
 ```
 
-**Lưu ý:** Một số chức năng thiết bị như camera, thông báo hoặc thư viện native có thể hoạt động khác trên web so với iPhone.
+Giữ terminal này mở trong khi dùng chức năng quét. Kiểm tra dịch vụ tại `http://localhost:8000/health`; tài liệu thử API ở `http://localhost:8000/docs`. Khi đổi `mobile/.env`, khởi động lại Expo để nạp cấu hình mới.
 
-## 4. Chạy Admin Web 
+### Chạy Admin Web (tùy chọn)
+
+Backend phải đang chạy. Mở terminal khác:
 
 ```bash
-cd smart-kitchen-ai/admin-web
-npm install
+cd admin-web
 npm run dev
 ```
 
-Mở địa chỉ `Local` do Vite hiển thị, thường là `http://localhost:5173/`. Không cần chạy Admin Web để sử dụng ứng dụng Mobile.
+Mở địa chỉ `Local` mà Vite in ra (thường là `http://localhost:5173`).
 
+## Cài đặt database lần đầu
 
-## 5. Xử lý lỗi thường gặp
-
-**Lỗi `Unable to resolve react-native-web/dist/index`:**
+Tạo database MySQL và điền thông tin kết nối vào `backend/.env`. Với database đã có, chạy migration một lần sau khi cập nhật code/schema:
 
 ```bash
-cd smart-kitchen-ai/mobile
+cd backend
+npm run migrate
+node scripts/migrate-admin-preferences.js
+```
+
+Migration cập nhật cấu trúc database hiện có, không tạo toàn bộ database từ đầu. Sao lưu database trước khi chạy migration.
+
+## Web trên trình duyệt
+
+Expo hỗ trợ chạy web bằng `npx expo start --web` trong thư mục `mobile`. Nếu báo thiếu gói web:
+
+```bash
+cd mobile
 npx expo install react-native-web react-dom @expo/metro-runtime
-npx expo start -c --web
+npx expo start --web
 ```
 
-**Lỗi `Cannot find module` / thiếu thư viện:**
+Một số tính năng dựa vào camera, thông báo hoặc module native có thể khác trên web so với iPhone.
 
-```bash
-npm install
-npx expo start -c
-```
+## Gỡ lỗi nhanh
 
-**Expo Go không mở được hoặc lỗi kết nối:**
+- **App không gọi được backend:** xác nhận API và MySQL đang chạy; kiểm tra `EXPO_PUBLIC_API_URL`, IP máy tính và cùng mạng Wi-Fi. Không dùng `localhost` trên điện thoại.
+- **Không gọi được AI:** chạy dịch vụ Python riêng, kiểm tra `EXPO_PUBLIC_AI_URL` và mở `http://IP_MAY_TINH:8000/health` trên điện thoại.
+- **Thiếu thư viện sau khi cập nhật code:** chạy lại `npm install` trong đúng thư mục (`backend`, `mobile` hoặc `admin-web`).
+- **Cổng đang được dùng:** dừng tiến trình cũ bằng `Ctrl + C` hoặc chọn cổng khác nếu công cụ đề nghị.
 
-- Kiểm tra Mac và iPhone cùng Wi-Fi.
-- Tắt VPN nếu đang dùng.
-- Thử `npx expo start --tunnel`.
-- Kiểm tra phiên bản Expo Go tương thích với Expo SDK trong `package.json`.
-
-**Cổng đang bị chiếm:**
-
-- Đồng ý khi Expo/Vite đề nghị dùng cổng khác; hoặc dừng tiến trình cũ bằng `Ctrl + C`.
-
-**Không tìm thấy nguyên liệu khi chỉnh sửa:**
-
-- Kiểm tra màn hình Chi tiết có truyền đúng `id` sang màn hình Chỉnh sửa.
-- Đảm bảo Kho thực phẩm, Chi tiết và Chỉnh sửa cùng sử dụng một nguồn dữ liệu/khóa AsyncStorage.
-
-## 6. Cập nhật code mới từ GitHub
-
-Nếu đã clone bằng Git:
-
-```bash
-git pull origin main
-cd smart-kitchen-ai/mobile
-npm install
-npx expo start -c
-```
-
-> Nếu repository sử dụng nhánh khác `main`, thay bằng tên nhánh thực tế. Trước khi `git pull`, lưu hoặc commit thay đổi cục bộ để tránh xung đột.
-
-
----
+Để dừng một dịch vụ, quay lại terminal tương ứng và nhấn `Ctrl + C`.
 
 **Repository:** https://github.com/haily-github05/DACN2

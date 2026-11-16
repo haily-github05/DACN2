@@ -1,4 +1,3 @@
-// Thành phần: Cửa sổ chat trợ lý AI nổi dùng chung; hiện trả lời bằng logic mẫu.
 
 import React, { useState, useRef, useEffect } from 'react';
 import {
@@ -15,6 +14,8 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { useRouter } from 'expo-router';
+import Constants from 'expo-constants';
+import { getAuthUser, getCurrentUserId } from '../lib/auth';
 import {
   Bot,
   X,
@@ -28,6 +29,12 @@ import {
   ArrowRight,
   RotateCcw,
 } from 'lucide-react-native';
+
+// GHI CHÚ: Mobile chỉ gọi backend của ứng dụng; Gemini API key được giữ ở backend/.env.
+const API_URL = (
+  process.env.EXPO_PUBLIC_API_URL?.trim() ||
+  `http://${Constants.expoConfig?.hostUri?.split(':')[0] || 'localhost'}:3000`
+).replace(/\/+$/, '');
 
 const C = {
   orange: '#A23A00',
@@ -51,6 +58,50 @@ type ChatMessage = {
   action?: ActionType;
   actionLabel?: string;
 };
+
+type IngredientInventoryParts = {
+  before: string;
+  ingredients: string[];
+  after: string;
+};
+
+function parseIngredientInventory(content: string): IngredientInventoryParts | null {
+  const match = content.match(
+    /(hiện tại bạn đang có:\s*)(?:\*\*)?([^*\n]+?)(?:\*\*)?(?=[.!?\n]|$)/i
+  );
+
+  if (!match || match.index === undefined) return null;
+
+  const ingredients = match[2]
+    .split(/\s*(?:,|;|\bvà\b)\s*/i)
+    .map((ingredient) => ingredient.trim().replace(/[.!?]+$/, ""))
+    .filter(Boolean);
+
+  if (ingredients.length < 2) return null;
+
+  const matchEnd = match.index + match[0].length;
+  return {
+    before: content.slice(0, match.index) + match[1],
+    ingredients,
+    after: content.slice(matchEnd),
+  };
+}
+
+function ingredientEmoji(ingredient: string): string {
+  const normalized = ingredient
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
+
+  if (normalized.includes('trung')) return '🥚';
+  if (normalized.includes('ca chua')) return '🍅';
+  if (normalized.includes('khoai tay')) return '🥔';
+  if (normalized.includes('hanh tay')) return '🧅';
+  if (normalized.includes('toi')) return '🧄';
+  if (normalized.includes('dua leo') || normalized.includes('dua chuot')) return '🥒';
+  if (normalized.includes('nho')) return '🍇';
+  return '🧺';
+}
 
 const WELCOME: ChatMessage = {
   id: 'welcome',
@@ -241,7 +292,6 @@ export default function FloatingAIAssistant() {
   ]);
   const [loading, setLoading] = useState(false);
 
-  const messageId = useRef(0);
   const scrollRef = useRef<React.ComponentRef<typeof ScrollView>>(null);
 
   useEffect(() => {
@@ -254,35 +304,80 @@ export default function FloatingAIAssistant() {
     }
   }, [messages, visible]);
 
-  const sendMessage = (value?: string) => {
+  const sendLock=useRef(false);
+  const messageCounter=useRef(0);
+  const sendMessage = async (value?: string) => {
     const question = (value ?? input).trim();
 
-    if (!question || loading) return;
+    if (!question || sendLock.current) return;
+    sendLock.current=true;
 
     Keyboard.dismiss();
     setInput('');
 
     const userMessage: ChatMessage = {
-      id: `user-${++messageId.current}`,
+      id: `user-${++messageCounter.current}`,
       role: 'user',
       content: question,
     };
 
-    const response = getLocalResponse(question);
+    const history = messages
+      .filter((item) => item.id !== 'welcome'&&!item.id.startsWith('assistant-error-'))
+      .slice(-12)
+      .map(({ role, content }) => ({ role, content }));
 
-    const assistantMessage: ChatMessage = {
-      id: `assistant-${++messageId.current}`,
-      role: 'assistant',
-      content: response.content,
-      action: response.action,
-      actionLabel: response.actionLabel,
-    };
+    setMessages((previous) => [...previous, userMessage]);
+    setLoading(true);
+    const chatController=new AbortController();
+    const chatTimeout=setTimeout(()=>chatController.abort(),60000);
+    try {
+      const userId = await getCurrentUserId();
+      const user=await getAuthUser();
+      if(!user?.token)throw new Error('Bạn cần đăng nhập trước khi trò chuyện với AI.');
+      const response = await fetch(`${API_URL}/api/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json',Authorization:`Bearer ${user.token}` },
+        signal:chatController.signal,
+        body: JSON.stringify({ message: question, history, userId }),
+      });
+      const result = await response.json().catch(() => null);
 
-    setMessages((previous) => [
-      ...previous,
-      userMessage,
-      assistantMessage,
-    ]);
+      if (!response.ok || !result?.success || typeof result.reply !== 'string') {
+        // GHI CHÚ: Hiển thị detail của backend ở chế độ phát triển để phân biệt lỗi DB, API key và model.
+        const detail = typeof result?.detail === 'string' ? ` Chi tiết: ${result.detail}` : '';
+        const errorText = `${result?.message || ''} ${detail}`;
+        if (/503|UNAVAILABLE|currently experiencing high demand/i.test(errorText)) {
+          throw new Error('Gemini đang quá tải tạm thời. Backend đã thử model dự phòng nhưng chưa nhận được phản hồi; bạn hãy thử gửi lại sau ít phút.');
+        }
+        if (/403|PERMISSION_DENIED|free tier is not available|billing/i.test(errorText)) {
+          throw new Error('Gemini từ chối API key (403). Project đang dùng key chưa bật billing hoặc chưa được cấp quyền dùng Gemini API. Hãy bật billing cho đúng project trong Google AI Studio/Google Cloud, rồi khởi động lại backend.');
+        }
+        throw new Error(`${result?.message || `Backend trả về lỗi HTTP ${response.status}.`}${detail}`);
+      }
+
+      setMessages((previous) => [
+        ...previous,
+        {
+          id: `assistant-${++messageCounter.current}`,
+          role: 'assistant',
+          content: result.reply,
+        },
+      ]);
+    } catch (error) {
+      const detail = error instanceof Error ? error.message : 'Lỗi không xác định.';
+      setMessages((previous) => [
+        ...previous,
+        {
+          id: `assistant-error-${++messageCounter.current}`,
+          role: 'assistant',
+          content: `Mình chưa nhận được phản hồi từ Gemini. ${detail}`,
+        },
+      ]);
+    } finally {
+      clearTimeout(chatTimeout);
+      sendLock.current=false;
+      setLoading(false);
+    }
   };
 
   const navigateTo = (action: ActionType) => {
@@ -386,6 +481,9 @@ export default function FloatingAIAssistant() {
             >
               {messages.map((message) => {
                 const isUser = message.role === 'user';
+                const inventory = isUser
+                  ? null
+                  : parseIngredientInventory(message.content);
 
                 return (
                   <View
@@ -411,14 +509,40 @@ export default function FloatingAIAssistant() {
                           : styles.assistantBubble,
                       ]}
                     >
-                      <Text
-                        style={[
-                          styles.messageText,
-                          isUser && styles.userText,
-                        ]}
-                      >
-                        {message.content}
-                      </Text>
+                      {inventory ? (
+                        <>
+                          <Text style={styles.messageText}>{inventory.before}</Text>
+                          <View style={styles.ingredientList}>
+                            {inventory.ingredients.map((ingredient, index) => (
+                              <View
+                                key={`${ingredient}-${index}`}
+                                style={styles.ingredientRow}
+                              >
+                                <Text style={styles.ingredientIcon}>
+                                  {ingredientEmoji(ingredient)}
+                                </Text>
+                                <Text style={styles.ingredientName}>
+                                  {ingredient}
+                                </Text>
+                              </View>
+                            ))}
+                          </View>
+                          {!!inventory.after.trim() && (
+                            <Text style={styles.messageText}>
+                              {inventory.after.trim()}
+                            </Text>
+                          )}
+                        </>
+                      ) : (
+                        <Text
+                          style={[
+                            styles.messageText,
+                            isUser && styles.userText,
+                          ]}
+                        >
+                          {message.content}
+                        </Text>
+                      )}
 
                       {message.action && (
                         <Pressable
@@ -520,7 +644,7 @@ export default function FloatingAIAssistant() {
             </View>
 
             <Text style={styles.disclaimer}>
-              Gợi ý hiện là dữ liệu mẫu, chưa kết nối AI trực tuyến.
+              Câu trả lời do AI tạo; vui lòng kiểm tra dị ứng và thông tin trước khi nấu.
             </Text>
           </View>
         </KeyboardAvoidingView>
@@ -658,6 +782,26 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 4,
   },
   messageText: {
+    fontSize: 12,
+    lineHeight: 19,
+    color: C.dark,
+  },
+  ingredientList: {
+    marginTop: 7,
+    marginBottom: 4,
+    gap: 7,
+  },
+  ingredientRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 9,
+  },
+  ingredientIcon: {
+    width: 22,
+    fontSize: 16,
+    textAlign: 'center',
+  },
+  ingredientName: {
     fontSize: 12,
     lineHeight: 19,
     color: C.dark,

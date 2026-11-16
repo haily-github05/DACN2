@@ -1,12 +1,16 @@
+import DateField from "../components/DateField";
+import {isoDay,parseCalendarDate} from "../lib/calendar";
 import RequireLogin from "../components/RequireLogin";
-// Trang: Kết quả quét mẫu — chỉnh sửa, xác nhận và lưu nguyên liệu vào kho.
+// Trang: Kết quả nhận diện — chỉnh sửa, xác nhận và lưu nguyên liệu vào kho.
+import {normalizeDetections} from "../lib/scanApi";
 import { kitchenRequest } from "../lib/kitchenApi";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import AppHeader from "../components/AppHeader";
 import BottomNav from "../components/BottomNav";
 import {
   View,
   Text,
+  Image,
   TextInput,
   ScrollView,
   Pressable,
@@ -14,7 +18,7 @@ import {
   Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 
 import {
   ArrowLeft,
@@ -23,11 +27,6 @@ import {
   Plus,
   Check,
   Trash2,
-  House,
-  Package,
-  Compass,
-  CalendarDays,
-  UserRound,
 } from "lucide-react-native";
 
 const C = {
@@ -48,47 +47,39 @@ type Ingredient = {
   quantity: string;
   unit: string;
   confidence: number | null;
+  category:string;
+  location:string;
+  purchaseDate:string;
+  expiryDate:string;
+  note:string;
 };
 
-const initialIngredients: Ingredient[] = [
-  {
-    id: "1",
-    emoji: "🍅",
-    name: "Cà chua",
-    quantity: "500",
-    unit: "g",
-    confidence: 96,
-  },
-  {
-    id: "2",
-    emoji: "🥚",
-    name: "Trứng gà",
-    quantity: "6",
-    unit: "quả",
-    confidence: 94,
-  },
-  {
-    id: "3",
-    emoji: "🥬",
-    name: "Cải xanh",
-    quantity: "300",
-    unit: "g",
-    confidence: 91,
-  },
-];
+const categories=['Rau củ','Thịt cá','Sữa & trứng','Ngũ cốc','Khác'];
+const locations=['Ngăn mát','Ngăn đông','Bên ngoài'];
+function storageDefaults(){const now=new Date();return {category:'Khác',location:'Ngăn mát',purchaseDate:isoDay(now.getFullYear(),now.getMonth(),now.getDate()),expiryDate:'',note:''};}
+// Chuyển JSON model thành danh sách có thể chỉnh sửa; confidence model là 0..1.
+function parseDetections(raw:string|string[]|undefined):Ingredient[]{
+ try{const parsed=JSON.parse((Array.isArray(raw)?raw[0]:raw)||'[]');return normalizeDetections(parsed).map((item,index)=>({...storageDefaults(),id:`${index}-${item.name}`,emoji:'🥗',name:item.name,quantity:String(item.count),unit:'cái',confidence:item.confidence===null?null:Math.round(item.confidence*100)}));}catch{return [];}
+}
 
 function ScanResultScreen() {
   const router = useRouter();
+  const params=useLocalSearchParams<{detections?:string|string[];photo?:string|string[]}>();
+  const photoUri=Array.isArray(params.photo)?params.photo[0]:params.photo;
 
   const [ingredients, setIngredients] =
-    useState<Ingredient[]>(initialIngredients);
+    useState<Ingredient[]>(()=>parseDetections(params.detections));
 
   const [saving, setSaving] = useState(false);
-  const [editing, setEditing] = useState(false);
+  const [editing, setEditing] = useState(true);
+  const saveLock=useRef(false);
+  const savedOnce=useRef(false);
+  const requestId=useRef("");
+  const [saved,setSaved]=useState(false);
 
   const updateIngredient = (
     id: string,
-    field: "name" | "quantity" | "unit",
+    field: "name" | "quantity" | "unit" | "category" | "location" | "purchaseDate" | "expiryDate" | "note",
     value: string,
   ) => {
     setIngredients((current) =>
@@ -102,6 +93,7 @@ function ScanResultScreen() {
     setIngredients((current) => [
       ...current,
       {
+        ...storageDefaults(),
         id: Date.now().toString(),
         emoji: "🥗",
         name: "",
@@ -118,7 +110,7 @@ function ScanResultScreen() {
   };
 
   const confirmSave = async () => {
-    if (saving) return;
+    if (saveLock.current||savedOnce.current) return;
     if (ingredients.length === 0) {
       Alert.alert(
         "Chưa có nguyên liệu",
@@ -132,8 +124,8 @@ function ScanResultScreen() {
         !item.name.trim() ||
         !item.unit.trim() ||
         !item.quantity.trim() ||
-        !Number.isFinite(Number(item.quantity)) ||
-        Number(item.quantity) <= 0,
+        !Number.isFinite(Number(item.quantity.replace(',','.'))) ||
+        Number(item.quantity.replace(',','.')) <= 0,
     );
 
     if (invalid) {
@@ -144,18 +136,26 @@ function ScanResultScreen() {
       return;
     }
 
+    const invalidStorage=ingredients.find(item=>{
+      const purchased=parseCalendarDate(item.purchaseDate),expiry=parseCalendarDate(item.expiryDate);
+      return !purchased||!expiry||expiry.iso<purchased.iso||!locations.includes(item.location)||!item.category.trim();
+    });
+    if(invalidStorage){Alert.alert('Thông tin bảo quản chưa đủ',`Hãy chọn ngày mua, hạn sử dụng hợp lệ và nơi bảo quản cho ${invalidStorage.name}. Hạn sử dụng không được trước ngày mua.`);return;}
+    if(!requestId.current)requestId.current=`scan-${Date.now()}-${Math.random().toString(36).slice(2,14)}`;
+    saveLock.current=true;
     setSaving(true);
     try {
-      await kitchenRequest("pantry/batch", "POST", { items: ingredients });
-      Alert.alert("Đã lưu vào kho", "Hãy cập nhật hạn sử dụng và vị trí bảo quản trong kho.", [{ text: "Về kho", onPress: () => router.replace("/pantry") }]);
+      const items=ingredients.map(({name,quantity,unit,category,location,purchaseDate,expiryDate,note})=>({name:name.trim(),quantity:Number(quantity.replace(',','.')),unit:unit.trim(),category,location,purchaseDate:parseCalendarDate(purchaseDate)!.iso,expiryDate:parseCalendarDate(expiryDate)!.iso,note}));
+      const result=await kitchenRequest<{count:number;items:{id:string;purchaseDate:string;expiryDate:string;location:string}[]}>("pantry/batch", "POST", {requestId:requestId.current,items});
+      if(!result.items||result.count!==items.length||result.items.some((row,index)=>row.purchaseDate!==items[index].purchaseDate||row.expiryDate!==items[index].expiryDate||row.location!==items[index].location))throw new Error('Chưa xác nhận được ngày đã lưu. Hãy kiểm tra kho và khởi động lại backend nếu đang chạy bản cũ.');
+      savedOnce.current=true;setSaved(true);
+      Alert.alert("Đã lưu vào kho", "Đã lưu nguyên liệu cùng ngày mua, hạn sử dụng và nơi bảo quản.", [{ text: "Về kho", onPress: () => router.replace("/pantry") }]);
       setIngredients([]);
     } catch (error) { Alert.alert("Không thể lưu", error instanceof Error ? error.message : "Vui lòng thử lại"); }
-    finally { setSaving(false); }
+    finally { saveLock.current=false;setSaving(false); }
   };
 
-  const notReady = (name: string) => {
-    Alert.alert(name, "Màn hình này sẽ được xây dựng tiếp theo.");
-  };
+
 
   return (
     <SafeAreaView style={styles.safe} edges={[]}>
@@ -196,10 +196,12 @@ function ScanResultScreen() {
           </Text>
         </View>
 
+        {photoUri&&<Image source={{uri:photoUri}} style={{width:'100%',height:180,borderRadius:12,marginTop:14}} resizeMode="contain" accessibilityLabel="Ảnh thực phẩm đã quét"/>}
+        {!ingredients.length&&<Text style={styles.subtitle}>Chưa có nguyên liệu nhận diện được. Bạn có thể thêm thủ công hoặc quét lại ảnh.</Text>}
         {/* DANH SÁCH NGUYÊN LIỆU */}
         <View style={styles.ingredientList}>
           {ingredients.map((item) => (
-            <View key={item.id} style={styles.ingredientCard}>
+            <View key={item.id} pointerEvents={saving||saved?"none":"auto"}><View style={styles.ingredientCard}>
               <View style={styles.emojiBox}>
                 <Text style={styles.emoji}>{item.emoji}</Text>
               </View>
@@ -266,6 +268,17 @@ function ScanResultScreen() {
                 </Pressable>
               )}
             </View>
+            <View style={styles.storageForm}>
+              <Text style={styles.fieldLabel}>Danh mục</Text>
+              <View style={styles.optionRow}>{categories.map(value=><Pressable key={value} accessibilityRole="radio" accessibilityState={{checked:item.category===value}} style={[styles.option,item.category===value&&styles.optionSelected]} onPress={()=>updateIngredient(item.id,'category',value)}><Text style={styles.optionText}>{value}</Text></Pressable>)}</View>
+              <Text style={styles.fieldLabel}>Nơi bảo quản</Text>
+              <View style={styles.optionRow}>{locations.map(value=><Pressable key={value} accessibilityRole="radio" accessibilityState={{checked:item.location===value}} style={[styles.option,item.location===value&&styles.optionSelected]} onPress={()=>updateIngredient(item.id,'location',value)}><Text style={styles.optionText}>{value}</Text></Pressable>)}</View>
+              <DateField label="Ngày mua" title={`Ngày mua · ${item.name}`} value={item.purchaseDate} disabled={saving} onChangeText={value=>updateIngredient(item.id,'purchaseDate',value)}/>
+              <DateField label="Hạn sử dụng" title={`Hạn sử dụng · ${item.name}`} value={item.expiryDate} minDate={parseCalendarDate(item.purchaseDate)?.iso} disabled={saving} onChangeText={value=>updateIngredient(item.id,'expiryDate',value)}/>
+              <Text style={styles.fieldLabel}>Ghi chú (không bắt buộc)</Text>
+              <TextInput accessibilityLabel={`Ghi chú cho ${item.name}`} style={styles.noteInput} multiline maxLength={2000} value={item.note} placeholder="Ví dụ: đã mở bao bì…" onChangeText={value=>updateIngredient(item.id,'note',value)}/>
+              <Text style={styles.storageHint}>Chọn hạn dùng theo nhãn hoặc tình trạng thực phẩm. Ngày hết hạn không được suy ra từ ảnh.</Text>
+            </View></View>
           ))}
         </View>
 
@@ -293,9 +306,9 @@ function ScanResultScreen() {
         </View>
 
         {/* XÁC NHẬN */}
-        <Pressable style={styles.confirmButton} onPress={confirmSave}>
+        <Pressable style={[styles.confirmButton,saving&&{opacity:.6}]} disabled={saving||saved} onPress={confirmSave}>
           <Check size={21} color={C.white} />
-          <Text style={styles.confirmText}>Xác nhận và lưu vào kho</Text>
+          <Text style={styles.confirmText}>{saved?"Đã lưu vào kho":saving?"Đang lưu…":"Xác nhận và lưu vào kho"}</Text>
         </Pressable>
       </ScrollView>
 
@@ -306,6 +319,14 @@ function ScanResultScreen() {
 }
 
 const styles = StyleSheet.create({
+  storageForm:{padding:15,borderWidth:1,borderColor:C.border,borderRadius:13,backgroundColor:C.white,gap:12,marginTop:6},
+  fieldLabel:{fontSize:12,fontWeight:'700',color:C.dark},
+  optionRow:{flexDirection:'row',flexWrap:'wrap',gap:8},
+  option:{minHeight:40,paddingHorizontal:11,paddingVertical:10,borderWidth:1,borderColor:C.border,borderRadius:9},
+  optionSelected:{backgroundColor:C.peach,borderColor:C.orange},
+  optionText:{fontSize:11,color:C.orange},
+  noteInput:{minHeight:65,borderWidth:1,borderColor:C.border,borderRadius:10,padding:12,color:C.dark,textAlignVertical:'top'},
+  storageHint:{fontSize:10,lineHeight:17,color:C.muted},
   safe: {
     flex: 1,
     backgroundColor: C.cream,

@@ -2,7 +2,7 @@ import RequireLogin from "../components/RequireLogin";
 // Trang: Danh sách mua sắm — thêm, đánh dấu đã mua và chuyển vào kho.
 import { matchesSearch } from "../lib/search";
 import SearchField from "../components/SearchField";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import {
   View,
   Text,
@@ -16,7 +16,7 @@ import {
   Platform,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import { kitchenRequest } from "../lib/kitchenApi";
 import {
   ArrowLeft,
@@ -27,12 +27,16 @@ import {
   X,
   PackageCheck,
   ChevronRight,
-  Sparkles,
   Leaf,
+  BadgeCheck,
+  CircleCheck,
+  CalendarDays,
+  Clock3,
 } from "lucide-react-native";
 
 import AppHeader from "../components/AppHeader";
 import BottomNav from "../components/BottomNav";
+import FoodImage from "../components/FoodImage";
 
 const C = {
   orange: "#A23A00",
@@ -60,6 +64,7 @@ type ShoppingItem = {
   category: Category;
   reason: string;
   checked: boolean;
+  image?: string;
 };
 
 type Filter = "all" | "pending" | "done";
@@ -70,6 +75,26 @@ const CATEGORIES: Category[] = [
   "Sữa & Chế phẩm",
   "Khác",
 ];
+
+function normalizeShoppingCategory(value: unknown): Category {
+  const normalized = String(value ?? "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+  if (/rau|vegetable|herb|spice|gia vi|trai cay|fruit/.test(normalized)) return "Rau củ & Gia vị";
+  if (/thit|meat|poultry|hai san|seafood|fish/.test(normalized)) return "Thịt & Hải sản";
+  if (/sua|dairy|milk|cheese/.test(normalized)) return "Sữa & Chế phẩm";
+  return "Khác";
+}
+
+function parseMealPlanContexts(reason: string) {
+  const prefix = "Thiếu cho thực đơn đã lưu: ";
+  if (!reason.startsWith(prefix)) return [];
+  return reason.slice(prefix.length).split("; ").map((entry) => {
+    const [recipe, date, meal] = entry.split(" · ");
+    return { recipe, date, meal };
+  }).filter((context) => Boolean(context.recipe && context.date && context.meal));
+}
 
 const EMOJI: Record<Category, string> = {
   "Rau củ & Gia vị": "🥬",
@@ -86,19 +111,24 @@ function ShoppingListScreen() {
 
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<Filter>("all");
+  const [categoryFilter, setCategoryFilter] = useState<Category | "all">("all");
 
   const [modalVisible, setModalVisible] = useState(false);
+  const [detailItem, setDetailItem] = useState<ShoppingItem | null>(null);
   const [newName, setNewName] = useState("");
   const [newQuantity, setNewQuantity] = useState("");
   const [newCategory, setNewCategory] = useState<Category>("Rau củ & Gia vị");
 
-  useEffect(() => {
+  useFocusEffect(useCallback(() => {
     let active = true;
     kitchenRequest<ShoppingItem[]>("shopping").then(data => {
-      if (active) { setItems(data); setLoaded(true); }
+      if (active) {
+        setItems(data.map(item => ({ ...item, category: normalizeShoppingCategory(item.category) })));
+        setLoaded(true);
+      }
     }).catch(error => Alert.alert("Không thể tải danh sách", error.message));
     return () => { active = false; };
-  }, []);
+  }, []));
   const [saving, setSaving] = useState(false);
   const mutate = async (task: () => Promise<void>) => {
     if (!loaded || saving) return;
@@ -113,6 +143,7 @@ function ShoppingListScreen() {
   const pending = total - completed;
 
   const progress = total > 0 ? (completed / total) * 100 : 0;
+  const detailContexts = detailItem ? parseMealPlanContexts(detailItem.reason) : [];
 
   const filteredItems = useMemo(() => {
     return items.filter((item) => {
@@ -121,10 +152,11 @@ function ShoppingListScreen() {
         filter === "all" ||
         (filter === "pending" && !item.checked) ||
         (filter === "done" && item.checked);
+      const matchesCategory = categoryFilter === "all" || item.category === categoryFilter;
 
-      return matchesQuery && matchesFilter;
+      return matchesQuery && matchesFilter && matchesCategory;
     });
-  }, [items, search, filter]);
+  }, [items, search, filter, categoryFilter]);
 
   const goBack = () => {
     if (router.canGoBack()) {
@@ -140,6 +172,30 @@ function ShoppingListScreen() {
     await kitchenRequest(`shopping/${id}`, "PATCH", { checked: !item.checked });
     setItems(prev => prev.map(i => i.id === id ? { ...i, checked: !i.checked } : i));
   });
+
+  const removePurchased = () => {
+    const purchased = items.filter((item) => item.checked);
+    if (!purchased.length) return;
+    Alert.alert("Xóa món đã mua", `Xóa ${purchased.length} nguyên liệu đã mua khỏi danh sách?`, [
+      { text: "Hủy", style: "cancel" },
+      { text: "Xóa", style: "destructive", onPress: () => void mutate(async () => {
+        await Promise.all(purchased.map((item) => kitchenRequest(`shopping/${item.id}`, "DELETE")));
+        setItems((current) => current.filter((item) => !item.checked));
+      }) },
+    ]);
+  };
+
+  const completeList = () => {
+    const pendingItems = items.filter((item) => !item.checked);
+    if (!pendingItems.length) return;
+    Alert.alert("Hoàn tất danh sách", `Đánh dấu đã mua tất cả ${pendingItems.length} nguyên liệu còn lại?`, [
+      { text: "Để sau", style: "cancel" },
+      { text: "Hoàn tất", onPress: () => void mutate(async () => {
+        await Promise.all(pendingItems.map((item) => kitchenRequest(`shopping/${item.id}`, "PATCH", { checked: true })));
+        setItems((current) => current.map((item) => ({ ...item, checked: true })));
+      }) },
+    ]);
+  };
 
   const removeItem = (item: ShoppingItem) => {
     Alert.alert(
@@ -220,11 +276,15 @@ function ShoppingListScreen() {
         {item.checked && <Check size={16} color={C.white} />}
       </Pressable>
 
-      <View style={styles.itemEmojiBox}>
-        <Text style={styles.itemEmoji}>{EMOJI[item.category] || "🛍️"}</Text>
-      </View>
+      {item.image ? (
+        <FoodImage uri={item.image} resizeMode="cover" style={styles.itemImage} accessibilityLabel={`Ảnh ${item.name}`} />
+      ) : (
+        <View style={styles.itemEmojiBox}>
+          <Text style={styles.itemEmoji}>{EMOJI[item.category] || "🛍️"}</Text>
+        </View>
+      )}
 
-      <Pressable style={styles.itemInfo} onPress={() => toggleItem(item.id)}>
+      <Pressable style={styles.itemInfo} onPress={() => setDetailItem(item)} accessibilityRole="button" accessibilityLabel={`Xem chi tiết ${item.name}`}>
         <Text
           style={[styles.itemName, item.checked && styles.completedText]}
           numberOfLines={1}
@@ -295,13 +355,11 @@ function ShoppingListScreen() {
         <View style={styles.progressCard}>
           <View style={styles.progressHeader}>
             <View style={styles.inline}>
-              <ShoppingCart size={19} color={C.orange} />
+              <BadgeCheck size={20} color={C.green} fill={C.greenLight} />
               <Text style={styles.progressTitle}>Tiến độ mua sắm</Text>
             </View>
 
-            <Text style={styles.progressCount}>
-              {completed}/{total} món
-            </Text>
+            <Text style={styles.progressPercent}>{progress.toFixed(1)}%</Text>
           </View>
 
           <View style={styles.progressTrack}>
@@ -309,16 +367,37 @@ function ShoppingListScreen() {
           </View>
 
           <Text style={styles.progressDescription}>
-            Đã mua {completed} món · Còn {pending} món cần mua
+            Đã hoàn thành <Text style={styles.progressEmphasis}>{completed}/{total} món</Text> ({progress.toFixed(1)}%)
           </Text>
 
-          <View style={styles.progressTip}>
-            <Sparkles size={14} color={C.green} />
-            <Text style={styles.progressTipText}>
-              {pending === 0
-                ? "Tuyệt vời! Bạn đã hoàn thành danh sách."
-                : "Chuẩn bị đủ nguyên liệu để nấu món ngon!"}
-            </Text>
+          <View style={styles.progressDivider} />
+
+          <View style={styles.progressStats}>
+            <View style={styles.progressStat}>
+              <Text style={styles.progressStatLabel}>Tổng số</Text>
+              <Text style={styles.progressStatValue}>{total}</Text>
+            </View>
+            <View style={[styles.progressStat, styles.progressStatDone]}>
+              <Text style={[styles.progressStatLabel, { color: C.green }]}>Đã mua</Text>
+              <Text style={[styles.progressStatValue, { color: C.green }]}>{completed}</Text>
+            </View>
+            <View style={[styles.progressStat, styles.progressStatPending]}>
+              <Text style={[styles.progressStatLabel, { color: C.orange }]}>Chưa mua</Text>
+              <Text style={[styles.progressStatValue, { color: C.orange }]}>{pending}</Text>
+            </View>
+            <View style={styles.progressStat}>
+              <Text style={styles.progressStatLabel}>Tiến độ</Text>
+              <Text style={[styles.progressStatValue, { color: C.green }]}>{Math.round(progress)}%</Text>
+            </View>
+          </View>
+
+          <View style={styles.progressActions}>
+            <Pressable disabled={!completed || saving} onPress={removePurchased} style={[styles.progressAction, styles.removePurchasedButton, (!completed || saving) && styles.progressActionDisabled]}>
+              <Trash2 size={14} color={C.muted} /><Text style={styles.removePurchasedText}>Xóa món đã mua</Text>
+            </Pressable>
+            <Pressable disabled={!pending || saving} onPress={completeList} style={[styles.progressAction, styles.completeListButton, (!pending || saving) && styles.progressActionDisabled]}>
+              <CircleCheck size={15} color={C.green} /><Text style={styles.completeListText}>Hoàn tất danh sách</Text>
+            </Pressable>
           </View>
         </View>
 
@@ -356,6 +435,15 @@ function ShoppingListScreen() {
             );
           })}
         </View>
+
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.categoryFilterRow}>
+          {[{ key: "all" as const, label: "Mọi danh mục", count: items.length }, ...CATEGORIES.map((category) => ({ key: category, label: category, count: items.filter((item) => item.category === category).length }))].map((option) => {
+            const active = categoryFilter === option.key;
+            return <Pressable key={option.key} onPress={() => setCategoryFilter(option.key)} style={[styles.categoryFilterChip, active && styles.categoryFilterChipActive]}>
+              <Text numberOfLines={1} style={[styles.categoryFilterText, active && styles.categoryFilterTextActive]}>{option.label} ({option.count})</Text>
+            </Pressable>;
+          })}
+        </ScrollView>
 
         {/* DANH SÁCH THEO NHÓM */}
         {CATEGORIES.map((category) => {
@@ -500,6 +588,56 @@ function ShoppingListScreen() {
           </View>
         </KeyboardAvoidingView>
       </Modal>
+
+      <Modal
+        visible={detailItem !== null}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setDetailItem(null)}
+      >
+        {detailItem && <View style={styles.modalOverlay}>
+          <View style={styles.detailCard}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Chi tiết nguyên liệu</Text>
+              <Pressable accessibilityLabel="Đóng chi tiết" onPress={() => setDetailItem(null)}><X size={21} color={C.muted} /></Pressable>
+            </View>
+            <ScrollView style={styles.detailScroll} contentContainerStyle={styles.detailScrollContent} showsVerticalScrollIndicator={false}>
+              <View style={styles.detailItemHeader}>
+                {detailItem.image ? <FoodImage uri={detailItem.image} resizeMode="cover" style={styles.detailImage} accessibilityLabel={`Ảnh ${detailItem.name}`} /> : <View style={[styles.detailImage, styles.itemEmojiBox]}><Text style={styles.detailEmoji}>{EMOJI[detailItem.category]}</Text></View>}
+                <View style={styles.detailTitleWrap}>
+                  <Text style={styles.detailName}>{detailItem.name}</Text>
+                  <Text style={styles.detailCategory}>{detailItem.category}</Text>
+                  <View style={styles.detailQuantityPill}><Text style={styles.detailQuantity}>{detailItem.quantity}</Text></View>
+                </View>
+              </View>
+              <View style={styles.detailSection}>
+                <View style={styles.detailSectionHeading}>
+                  <View style={styles.detailSectionIcon}><CalendarDays size={16} color={C.orange} /></View>
+                  <Text style={styles.detailLabel}>{detailContexts.length ? "Dùng trong thực đơn" : "Thông tin"}</Text>
+                  {detailContexts.length > 0 && <Text style={styles.detailCount}>{detailContexts.length} bữa</Text>}
+                </View>
+                {detailContexts.length ? detailContexts.map((context, index) => (
+                  <View key={`${context.date}-${context.meal}-${context.recipe}-${index}`} style={styles.detailContextCard}>
+                    <Text style={styles.detailRecipeName}>{context.recipe}</Text>
+                    <View style={styles.detailContextMeta}>
+                      <View style={styles.detailMetaPill}><CalendarDays size={12} color={C.muted} /><Text style={styles.detailMetaText}>{context.date}</Text></View>
+                      <View style={[styles.detailMetaPill, styles.detailMealPill]}><Clock3 size={12} color={C.green} /><Text style={[styles.detailMetaText, { color: C.green }]}>{context.meal}</Text></View>
+                    </View>
+                  </View>
+                )) : <Text style={styles.detailReason}>{detailItem.reason || "Nguyên liệu được thêm thủ công vào danh sách."}</Text>}
+              </View>
+              <View style={styles.detailStatusCard}>
+                <View style={[styles.detailStatusDot, { backgroundColor: detailItem.checked ? C.green : C.orange }]} />
+                <Text style={[styles.detailStatusText, { color: detailItem.checked ? C.green : C.orange }]}>{detailItem.checked ? "Đã mua" : "Chưa mua"}</Text>
+              </View>
+            </ScrollView>
+            <Pressable disabled={saving} onPress={() => { toggleItem(detailItem.id); setDetailItem(null); }} style={[styles.detailToggleButton, detailItem.checked && styles.detailToggleButtonUndo]}>
+              {detailItem.checked ? <X size={16} color={C.orange} /> : <Check size={16} color={C.white} />}
+              <Text style={[styles.detailToggleText, detailItem.checked && { color: C.orange }]}>{detailItem.checked ? "Đánh dấu chưa mua" : "Đánh dấu đã mua"}</Text>
+            </Pressable>
+          </View>
+        </View>}
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -603,21 +741,21 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     color: C.dark,
   },
-  progressCount: {
+  progressPercent: {
     fontSize: 13,
     fontWeight: "800",
-    color: C.orange,
+    color: C.green,
   },
   progressTrack: {
     height: 9,
     borderRadius: 5,
-    backgroundColor: C.peach,
+    backgroundColor: "#E1E7EE",
     marginTop: 18,
     overflow: "hidden",
   },
   progressFill: {
     height: "100%",
-    backgroundColor: C.orange,
+    backgroundColor: C.green,
     borderRadius: 5,
   },
   progressDescription: {
@@ -625,17 +763,112 @@ const styles = StyleSheet.create({
     color: C.muted,
     marginTop: 11,
   },
-  progressTip: {
+  progressEmphasis: {
+    color: C.orange,
+    fontWeight: "800",
+  },
+  progressDivider: {
+    height: 1,
+    backgroundColor: C.border,
+    marginTop: 13,
+  },
+  progressStats: {
     flexDirection: "row",
-    alignItems: "center",
     gap: 7,
     marginTop: 13,
   },
-  progressTipText: {
+  progressStat: {
     flex: 1,
-    fontSize: 10,
-    color: C.green,
+    minWidth: 0,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 9,
+    borderWidth: 1,
+    borderColor: "#F4DDD6",
+    borderRadius: 12,
+    backgroundColor: "#FFF9F7",
+  },
+  progressStatDone: {
+    borderColor: "#D2E8D9",
+    backgroundColor: "#F0F7F2",
+  },
+  progressStatPending: {
+    borderColor: "#FFD2C3",
+    backgroundColor: "#FFF4EF",
+  },
+  progressStatLabel: {
+    color: C.muted,
+    fontSize: 9,
     fontWeight: "700",
+    textAlign: "center",
+  },
+  progressStatValue: {
+    color: C.orange,
+    fontSize: 16,
+    fontWeight: "800",
+    marginTop: 3,
+  },
+  progressActions: {
+    flexDirection: "row",
+    gap: 8,
+    marginTop: 13,
+  },
+  progressAction: {
+    flex: 1,
+    minHeight: 39,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 5,
+    paddingHorizontal: 6,
+    borderRadius: 12,
+  },
+  removePurchasedButton: {
+    backgroundColor: "#FFF9F7",
+    borderWidth: 1,
+    borderColor: "#F4DDD6",
+  },
+  completeListButton: {
+    backgroundColor: C.greenLight,
+  },
+  progressActionDisabled: {
+    opacity: 0.48,
+  },
+  removePurchasedText: {
+    color: C.muted,
+    fontSize: 9,
+    fontWeight: "700",
+  },
+  completeListText: {
+    color: C.green,
+    fontSize: 9,
+    fontWeight: "700",
+  },
+  categoryFilterRow: {
+    gap: 7,
+    paddingBottom: 3,
+    marginBottom: 17,
+  },
+  categoryFilterChip: {
+    maxWidth: 190,
+    paddingHorizontal: 11,
+    paddingVertical: 8,
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: C.border,
+    backgroundColor: C.white,
+  },
+  categoryFilterChipActive: {
+    borderColor: C.green,
+    backgroundColor: C.greenLight,
+  },
+  categoryFilterText: {
+    color: C.muted,
+    fontSize: 9,
+    fontWeight: "700",
+  },
+  categoryFilterTextActive: {
+    color: C.green,
   },
   searchBox: {
     height: 45,
@@ -733,6 +966,12 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
+  },
+  itemImage: {
+    width: 44,
+    height: 44,
+    borderRadius: 10,
+    backgroundColor: C.peach,
   },
   itemEmoji: {
     fontSize: 22,
@@ -854,6 +1093,175 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 24,
     padding: 20,
     paddingBottom: 35,
+  },
+  detailCard: {
+    maxHeight: "86%",
+    backgroundColor: C.white,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    paddingTop: 18,
+    paddingHorizontal: 18,
+    paddingBottom: 12,
+  },
+  detailScroll: {
+    flexShrink: 1,
+  },
+  detailScrollContent: {
+    paddingBottom: 12,
+  },
+  detailItemHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    marginBottom: 16,
+    padding: 11,
+    borderRadius: 15,
+    backgroundColor: C.cream,
+  },
+  detailImage: {
+    width: 68,
+    height: 68,
+    borderRadius: 12,
+    backgroundColor: C.peach,
+  },
+  detailEmoji: {
+    fontSize: 32,
+  },
+  detailTitleWrap: {
+    flex: 1,
+    gap: 4,
+  },
+  detailName: {
+    color: C.dark,
+    fontSize: 16,
+    fontWeight: "800",
+  },
+  detailCategory: {
+    color: C.muted,
+    fontSize: 10,
+  },
+  detailQuantityPill: {
+    alignSelf: "flex-start",
+    marginTop: 2,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 8,
+    backgroundColor: C.peach,
+  },
+  detailQuantity: {
+    color: C.orange,
+    fontSize: 11,
+    fontWeight: "800",
+  },
+  detailSection: {
+    padding: 12,
+    borderWidth: 1,
+    borderColor: C.border,
+    borderRadius: 14,
+    backgroundColor: C.white,
+  },
+  detailSectionHeading: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 7,
+    marginBottom: 9,
+  },
+  detailSectionIcon: {
+    width: 27,
+    height: 27,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 8,
+    backgroundColor: C.peach,
+  },
+  detailLabel: {
+    color: C.dark,
+    flex: 1,
+    fontSize: 11,
+    fontWeight: "800",
+  },
+  detailCount: {
+    color: C.muted,
+    fontSize: 9,
+  },
+  detailContextCard: {
+    paddingVertical: 9,
+    borderTopWidth: 1,
+    borderTopColor: "#F3E9E3",
+  },
+  detailRecipeName: {
+    color: C.dark,
+    fontSize: 11,
+    fontWeight: "700",
+    lineHeight: 16,
+  },
+  detailContextMeta: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 6,
+    marginTop: 6,
+  },
+  detailMetaPill: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    paddingHorizontal: 7,
+    paddingVertical: 4,
+    borderRadius: 8,
+    backgroundColor: C.cream,
+  },
+  detailMealPill: {
+    backgroundColor: C.greenLight,
+  },
+  detailMetaText: {
+    color: C.muted,
+    fontSize: 9,
+    fontWeight: "600",
+  },
+  detailReason: {
+    color: C.muted,
+    fontSize: 11,
+    lineHeight: 17,
+  },
+  detailStatusCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 7,
+    alignSelf: "flex-start",
+    marginTop: 11,
+    paddingHorizontal: 10,
+    paddingVertical: 7,
+    borderRadius: 9,
+    backgroundColor: C.cream,
+  },
+  detailStatusDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+  },
+  detailStatusText: {
+    fontSize: 11,
+    fontWeight: "800",
+  },
+  detailToggleButton: {
+    minHeight: 46,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    marginTop: 9,
+    borderRadius: 12,
+    backgroundColor: C.green,
+  },
+  detailToggleButtonUndo: {
+    borderWidth: 1,
+    borderColor: C.border,
+    backgroundColor: C.cream,
+  },
+  detailToggleText: {
+    color: C.white,
+    fontSize: 12,
+    fontWeight: "800",
   },
   modalHeader: {
     flexDirection: "row",

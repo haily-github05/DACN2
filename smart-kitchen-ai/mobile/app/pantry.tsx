@@ -1,10 +1,11 @@
+import {deleteIngredient} from "../lib/ingredients";
 import RequireLogin from "../components/RequireLogin";
 // Trang: Kho thực phẩm — xem, tìm kiếm và lọc nguyên liệu đang có.
 import IngredientCatalogResults from "../components/IngredientCatalogResults";
 import { matchesSearch } from "../lib/search";
 import SearchField from "../components/SearchField";
 import FoodImage from "../components/FoodImage";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -72,7 +73,7 @@ type Ingredient = {
 
 type LocationFilter = Location | "Tất cả";
 
-type StatusFilter = "all" | "expiring" | "expired";
+type StatusFilter = "all" | "fresh" | "expiring" | "expired";
 
 const LOCATIONS: {
   key: LocationFilter;
@@ -203,13 +204,14 @@ function PantryContent({initialSearch}:{initialSearch:string}) {
       const matchesLocation = selectedLocation === "Tất cả" || item.location === selectedLocation;
       const matchesStatus =
         statusFilter === "all" ||
+        (statusFilter === "fresh" && item.daysLeft > 3) ||
         (statusFilter === "expiring" &&
           item.daysLeft > 0 &&
           item.daysLeft <= 3) ||
         (statusFilter === "expired" && item.daysLeft <= 0);
 
       return matchesQuery && matchesLocation && matchesStatus;
-    });
+    }).sort((a,b)=>a.name.trim().localeCompare(b.name.trim(),'vi',{numeric:true}));
   }, [ingredients, search, selectedLocation, statusFilter]);
 
   const goTo = (path: string, params?: Record<string, string>) => {
@@ -253,6 +255,19 @@ function PantryContent({initialSearch}:{initialSearch:string}) {
     goTo("/recipes", { search: item.name });
   };
 
+  const deletingIds=useRef(new Set<string>());
+  const removeFromPantry=async(item:Ingredient)=>{
+    const key=String(item.id);
+    if(deletingIds.current.has(key))return;
+    deletingIds.current.add(key);
+    try{
+      await deleteIngredient(key);
+      setIngredients(prev=>prev.filter(i=>String(i.id)!==key));
+    }catch(error){
+      Alert.alert('Không thể xóa',error instanceof Error?error.message:'Vui lòng thử lại.');
+    }finally{deletingIds.current.delete(key);}
+  };
+
   const handleMenu = (item: Ingredient) => {
     Alert.alert(item.name, "Bạn muốn thực hiện thao tác nào?", [
       {
@@ -268,8 +283,7 @@ function PantryContent({initialSearch}:{initialSearch:string}) {
             {
               text: "Xóa",
               style: "destructive",
-              onPress: () =>
-                setIngredients((prev) => prev.filter((i) => i.id !== item.id)),
+              onPress: () => void removeFromPantry(item),
             },
           ]),
       },
@@ -357,6 +371,7 @@ function PantryContent({initialSearch}:{initialSearch:string}) {
           <View style={styles.statGrid}>
             {[
               {
+                key: "all",
                 title: "Tổng kho",
                 value: total,
                 sub: "nguyên liệu",
@@ -364,6 +379,7 @@ function PantryContent({initialSearch}:{initialSearch:string}) {
                 color: C.orange,
               },
               {
+                key: "fresh",
                 title: "Tươi ngon",
                 value: freshCount,
                 sub: "an toàn",
@@ -371,6 +387,7 @@ function PantryContent({initialSearch}:{initialSearch:string}) {
                 color: C.green,
               },
               {
+                key: "expiring",
                 title: "Cận date",
                 value: expiringCount,
                 sub: "≤ 3 ngày",
@@ -378,16 +395,29 @@ function PantryContent({initialSearch}:{initialSearch:string}) {
                 color: C.orange,
               },
               {
+                key: "expired",
                 title: "Hết hạn",
                 value: expiredCount,
                 sub: "cần xử lý",
                 bg: C.redLight,
                 color: C.red,
               },
-            ].map((stat) => (
-              <View
+            ].map((stat) => {
+              const active = statusFilter === stat.key;
+              return <Pressable
                 key={stat.title}
-                style={[styles.statCard, { backgroundColor: stat.bg }]}
+                accessibilityRole="button"
+                accessibilityState={{ selected: active }}
+                style={[
+                  styles.statCard,
+                  { backgroundColor: stat.bg },
+                  active && styles.statCardActive,
+                ]}
+                onPress={() =>
+                  setStatusFilter((current) =>
+                    current === stat.key && stat.key !== "all" ? "all" : stat.key as StatusFilter,
+                  )
+                }
               >
                 <Text style={[styles.statTitle, { color: stat.color }]}>
                   {stat.title}
@@ -400,39 +430,11 @@ function PantryContent({initialSearch}:{initialSearch:string}) {
                 <Text style={[styles.statSub, { color: stat.color }]}>
                   {stat.sub}
                 </Text>
-              </View>
-            ))}
+              </Pressable>;
+            })}
           </View>
         </View>
 
-        {/* AI ALERT */}
-        <View style={styles.aiCard}>
-          <View style={styles.aiIcon}>
-            <Sparkles size={21} color={C.white} />
-          </View>
-
-          <View style={styles.aiContent}>
-            <Text style={styles.aiEyebrow}>TRỢ LÝ KHO AI</Text>
-
-            <Text style={styles.aiTitle}>
-              {expiringCount > 0
-                ? `Có ${expiringCount} nguyên liệu sắp hết hạn`
-                : "Kho thực phẩm đang được bảo quản tốt"}
-            </Text>
-
-            <Text style={styles.aiDescription}>
-              {expiringCount > 0
-                ? "Ưu tiên sử dụng thực phẩm gần hết hạn để tránh lãng phí."
-                : "Hãy tiếp tục kiểm tra và cập nhật kho thường xuyên."}
-            </Text>
-
-            <Pressable style={styles.aiButton} onPress={() => goTo("/recipes")}>
-              <ChefHat size={14} color={C.white} />
-              <Text style={styles.aiButtonText}>Xem công thức gợi ý</Text>
-              <ChevronRight size={14} color={C.white} />
-            </Pressable>
-          </View>
-        </View>
 
         {/* LOCATION */}
         <View style={styles.sectionHeader}>
@@ -503,7 +505,11 @@ function PantryContent({initialSearch}:{initialSearch:string}) {
               <Pressable
                 key={item.key}
                 style={[styles.filterChip, active && styles.filterChipActive]}
-                onPress={() => setStatusFilter(item.key as StatusFilter)}
+                onPress={() =>
+                  setStatusFilter((current) =>
+                    current === item.key && item.key !== "all" ? "all" : item.key as StatusFilter,
+                  )
+                }
               >
                 <Text
                   style={[styles.filterText, active && styles.filterTextActive]}
@@ -831,6 +837,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     alignItems: "center",
     minHeight: 77,
+  },
+
+  statCardActive: {
+    borderWidth: 2,
+    borderColor: C.orange,
   },
 
   statTitle: {

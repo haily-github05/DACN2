@@ -1,6 +1,6 @@
 import RequireLogin from "../components/RequireLogin";
-// Trang: Quét nguyên liệu — chọn ảnh để xem luồng nhận diện mẫu.
-import React, { useState } from "react";
+// Trang: Quét nguyên liệu — chọn ảnh, gửi model và chuyển kết quả nhận diện sang màn xác nhận.
+import React, { useEffect, useRef, useState } from "react";
 import AppHeader from "../components/AppHeader";
 import BottomNav from "../components/BottomNav";
 import {
@@ -11,10 +11,12 @@ import {
   Pressable,
   StyleSheet,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
+import {analyzePhoto} from "../lib/scanApi";
 
 import {
   ArrowLeft,
@@ -23,11 +25,6 @@ import {
   ImageUp,
   Lightbulb,
   Sparkles,
-  House,
-  Package,
-  Compass,
-  CalendarDays,
-  UserRound,
   RotateCcw,
 } from "lucide-react-native";
 
@@ -42,6 +39,10 @@ const COLORS = {
 };
 
 function ScanScreen() {
+  const [analyzing,setAnalyzing]=useState(false);
+  const analyzeLock=useRef(false),controller=useRef<AbortController|null>(null);
+  useEffect(()=>()=>{const current=controller.current;controller.current=null;current?.abort();},[]);
+
   const router = useRouter();
 
   const [photo, setPhoto] = useState<string | null>(null);
@@ -90,29 +91,21 @@ function ScanScreen() {
     }
   };
 
-  // Chưa có backend AI
-  const handleAnalyze = () => {
-    if (!photo) {
-      Alert.alert("Chưa có ảnh", "Vui lòng chọn ảnh nguyên liệu.");
-      return;
-    }
-
-    Alert.alert(
-      "Xem kết quả mẫu",
-      "Chức năng AI chưa kết nối. Trang tiếp theo hiển thị 3 nguyên liệu mẫu từ Figma, không phải kết quả nhận diện ảnh.",
-      [
-        { text: "Hủy", style: "cancel" },
-        {
-          text: "Tiếp tục",
-          onPress: () => router.push("/scan-result"),
-        },
-      ],
-    );
+  // Gửi ảnh đến model; không dùng kết quả mẫu khi model lỗi hoặc chưa chạy.
+  const handleAnalyze = async () => {
+    if(!photo||analyzeLock.current)return;
+    analyzeLock.current=true;setAnalyzing(true);
+    const request=new AbortController();controller.current=request;
+    const timeout=setTimeout(()=>request.abort(),60000);
+    try{
+      const detections=await analyzePhoto(photo,request.signal);
+      if(!request.signal.aborted)router.push({pathname:"/scan-result",params:{photo,detections:JSON.stringify(detections)}});
+    }catch(error){
+      if(controller.current===request)Alert.alert("Không thể phân tích",request.signal.aborted?"Yêu cầu đã hết thời gian. Hãy thử lại.":error instanceof Error?error.message:"Không kết nối được dịch vụ nhận diện. Kiểm tra địa chỉ và máy chủ model.");
+    }finally{clearTimeout(timeout);if(controller.current===request){controller.current=null;analyzeLock.current=false;setAnalyzing(false);}}
   };
 
-  const notReady = (name: string) => {
-    Alert.alert(name, "Màn hình này sẽ được hoàn thiện ở bước tiếp theo.");
-  };
+
 
   return (
     <SafeAreaView style={styles.container} edges={[]}>
@@ -153,6 +146,7 @@ function ScanScreen() {
 
               <Pressable
                 style={styles.changePhoto}
+                disabled={analyzing}
                 onPress={() => setPhoto(null)}
               >
                 <RotateCcw size={15} color={COLORS.primary} />
@@ -185,22 +179,22 @@ function ScanScreen() {
         </View>
 
         {/* NÚT CHỤP ẢNH */}
-        <Pressable style={styles.cameraButton} onPress={takePhoto}>
+        <Pressable style={styles.cameraButton} onPress={takePhoto} disabled={analyzing}>
           <Camera size={21} color="#FFFFFF" />
           <Text style={styles.cameraButtonText}>Chụp ảnh</Text>
         </Pressable>
 
         {/* NÚT CHỌN ẢNH */}
-        <Pressable style={styles.libraryButton} onPress={choosePhoto}>
+        <Pressable style={styles.libraryButton} onPress={choosePhoto} disabled={analyzing}>
           <ImageUp size={21} color={COLORS.primary} />
           <Text style={styles.libraryButtonText}>Chọn ảnh từ thư viện</Text>
         </Pressable>
 
         {/* NÚT PHÂN TÍCH */}
         {photo && (
-          <Pressable style={styles.analyzeButton} onPress={handleAnalyze}>
-            <Sparkles size={18} color="#FFFFFF" />
-            <Text style={styles.analyzeText}>Phân tích nguyên liệu</Text>
+          <Pressable style={[styles.analyzeButton,analyzing&&{opacity:0.65}]} onPress={handleAnalyze} disabled={analyzing} accessibilityState={{busy:analyzing}}>
+            {analyzing?<ActivityIndicator color="#FFFFFF"/>:<Sparkles size={18} color="#FFFFFF"/>}
+            <Text style={styles.analyzeText}>{analyzing?"Đang phân tích…":"Phân tích nguyên liệu"}</Text>
           </Pressable>
         )}
 

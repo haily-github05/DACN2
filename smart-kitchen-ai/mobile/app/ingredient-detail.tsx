@@ -96,7 +96,7 @@ function IngredientDetailScreen() {
               await deleteIngredient(ingredient.id);
               router.replace("/pantry");
             } catch (e) {
-              Alert.alert("Lỗi", "Không thể xóa nguyên liệu.");
+              Alert.alert("Không thể xóa", e instanceof Error ? e.message : "Vui lòng thử lại.");
             }
           },
         },

@@ -1,4 +1,8 @@
 const db = require('../config/db');
+const fs = require('node:fs');
+const path = require('node:path');
+
+const aiModelPath = path.resolve(__dirname, '../../model/best.pt');
 
 async function getOverview(days) {
   const windowDays = days - 1;
@@ -64,7 +68,9 @@ async function getOverview(days) {
     categories: groups.map(row => ({ name: row.category_name, count: Number(row.count), percent: totalRecipes ? Math.round(Number(row.count) / totalRecipes * 1000) / 10 : 0 })),
     recipes: recipes.map(row => ({ id: String(row.recipe_id), name: row.name, description: row.description || '', image: row.image_url || '', category: row.cuisine_type || row.region || 'Chưa phân loại', active: Number(row.is_active) === 1, createdAt: row.created_at, ingredientCount: Number(row.ingredient_count) })),
     events: events.map(row => ({ ...row, id: String(row.id) })),
-    ai: { configured: false, message: 'Chưa cấu hình' },
+    ai: fs.existsSync(aiModelPath)
+      ? { configured: true, message: 'Đã cấu hình model' }
+      : { configured: false, message: 'Chưa có model' },
   };
 }
 module.exports = { getOverview };

@@ -1,0 +1,2 @@
+const db=require('../src/config/db');
+db.query('CREATE TABLE IF NOT EXISTS pantry_scan_batches (user_id BIGINT NOT NULL, request_id VARCHAR(80) NOT NULL, payload_hash CHAR(64) NOT NULL, result_json JSON NULL, created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY(user_id,request_id), FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE)').then(()=>console.log('Đã tạo bảng chống lưu trùng kết quả quét.')).catch(e=>{console.error(e.code);process.exitCode=1;}).finally(()=>db.end());

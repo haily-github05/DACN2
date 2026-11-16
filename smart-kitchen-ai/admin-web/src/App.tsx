@@ -9,6 +9,7 @@ import AdminAvatar from "./components/AdminAvatar";
 import Modal from "./components/Modal";
 import AdminSearch from "./components/AdminSearch";
 import TongQuan from "./pages/TongQuan";
+import QuanLyAI from "./pages/QuanLyAI";
 import QuanLyNguoiDung from "./pages/QuanLyNguoiDung";
 import QuanLyNguyenLieu from "./pages/QuanLyNguyenLieu";
 import BaiDangCongDong from "./pages/BaiDangCongDong";
@@ -176,8 +177,8 @@ export default function App() {
               }}
             />
             <span
-              className="server-status unconfigured"
-              title="Chưa có dịch vụ nhận diện ảnh được kết nối."
+              className={`server-status ${data?.ai.configured ? "configured" : "unconfigured"}`}
+              title={data?.ai.configured ? "Đã tìm thấy model nhận diện ảnh." : "Chưa tìm thấy file model nhận diện ảnh."}
             >
               <i />
               <span>AI nhận diện ảnh:</span>
@@ -257,6 +258,16 @@ export default function App() {
             />
           ) : active === 6 ? (
             <CaiDatHeThong token={session.token} onChanged={()=>setRevision(value=>value+1)} onUnauthorized={message=>{logout();setAuthMessage(message);}} onLogout={()=>setConfirmLogout(true)}/>
+          ) : active === 5 ? (
+            <QuanLyAI
+              token={session.token}
+              revision={revision}
+              onUnauthorized={(message) => {
+                logout();
+                setAuthMessage(message);
+              }}
+              onOpenCommunity={() => navigate(4)}
+            />
           ) : active === 4 ? (
             <BaiDangCongDong
               token={session.token}

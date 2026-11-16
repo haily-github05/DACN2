@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import Modal from "../components/Modal";
 import PostCover from "../components/PostCover";
+import AIModerationQueue from "../components/AIModerationQueue";
 import { ApiError, apiRequest, formatDate } from "../lib/adminApi";
 import type { AdminPost } from "../lib/adminApi";
 
@@ -85,6 +86,7 @@ export default function BaiDangCongDong({
   const [detailLoading, setDetailLoading] = useState(false);
   const [detailError, setDetailError] = useState("");
   const [reload, setReload] = useState(0);
+  const [activeTab, setActiveTab] = useState<"POSTS" | "AI">("POSTS");
   const lock = useRef(false);
   const detailController = useRef<AbortController | null>(null);
   const unauthorized = useRef(onUnauthorized);
@@ -314,6 +316,11 @@ export default function BaiDangCongDong({
           <RefreshCw size={17} />
         </button>
       </div>
+      <div className="community-page-tabs" role="tablist" aria-label="Các chế độ quản lý cộng đồng">
+        <button role="tab" aria-selected={activeTab === "POSTS"} className={activeTab === "POSTS" ? "active" : ""} onClick={() => setActiveTab("POSTS")}><MessageSquare size={15} />Bài đăng cộng đồng</button>
+        <button role="tab" aria-selected={activeTab === "AI"} className={activeTab === "AI" ? "active" : ""} onClick={() => setActiveTab("AI")}><ShieldAlert size={15} />Kiểm duyệt AI</button>
+      </div>
+      {activeTab === "POSTS" ? <>
       <section className="community-stats" aria-label="Thống kê bài công khai">
         <button
           className={`community-stat ${filter === "ALL" ? "is-active" : ""}`}
@@ -831,6 +838,7 @@ export default function BaiDangCongDong({
           </div>
         </Modal>
       )}
+      </> : <AIModerationQueue token={token} revision={revision + reload} onChanged={onChanged} onUnauthorized={onUnauthorized} />}
     </div>
   );
 }

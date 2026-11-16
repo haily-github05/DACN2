@@ -18,7 +18,7 @@ export const sidebarItems: { label: string; icon: LucideIcon }[] = [
   { label: "Quản lý Nguyên liệu", icon: Warehouse },
   { label: "Quản lý Công thức nấu ăn", icon: BookOpen },
   { label: "Quản lý Bài đăng cộng đồng ", icon: MessageSquare },
-  { label: "Quản lý AI & Kiểm duyệt", icon: FileCheck2 },
+  { label: "Quản lý AI", icon: FileCheck2 },
   { label: "Cài đặt hệ thống", icon: Settings },
 ];
 type SidebarProps = {

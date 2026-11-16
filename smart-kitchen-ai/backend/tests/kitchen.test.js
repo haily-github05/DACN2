@@ -272,11 +272,12 @@ for (const merge of [true, false]) {
 test('meal plan API returns all dishes in the same meal', async () => {
  queryImpl=async sql=>{
   if(sql.startsWith('SELECT ri.recipe_id')) return [[]];
-  return [[1,2].map(id=>({day:'2026-11-05',type:'lunch',recipe_id:id,name:`Món ${id}`,calories:100,prep_time:5,cook_time:10}))];
+  return [[1,2].map(id=>({day:'2026-11-05',type:'lunch',servings:4,recipe_id:id,name:`Món ${id}`,calories:100,prep_time:5,cook_time:10}))];
  };
  const {result,error}=await request('/:userId/plans','get');
  assert.equal(error,undefined);
  assert.equal(result.data['2026-11-05'].lunch.length,2);
+ assert.equal(result.data['2026-11-05'].lunch[0].servings,4);
 });
 test('meal plan saves every dish and accepts empty meal arrays', async () => {
  const inserts=[];
@@ -288,9 +289,9 @@ test('meal plan saves every dish and accepts empty meal arrays', async () => {
   if(sql.startsWith('INSERT INTO meal_plan_items')) inserts.push(values);
   return [{affectedRows:1}];
  };
- const {error}=await request('/:userId/plans','put',{'2026-11-05':{breakfast:[],lunch:[{id:'1'},{id:'2'}],dinner:[]}});
+ const {error}=await request('/:userId/plans','put',{'2026-11-05':{breakfast:[],lunch:[{id:'1',servings:4},{id:'2'}],dinner:[]}});
  assert.equal(error,undefined);
- assert.deepEqual(inserts,[[99,'2026-11-05','LUNCH',1],[99,'2026-11-05','LUNCH',2]]);
+ assert.deepEqual(inserts,[[99,'2026-11-05','LUNCH',1,4],[99,'2026-11-05','LUNCH',2,1]]);
 });
 
 for (const affectedRows of [0, 1]) {
@@ -417,3 +418,11 @@ test('new public submissions cannot set their own approval status',async()=>{
  const {result,error}=await request('/:userId/posts','post',{title:'Bài mới',description:'Nội dung',category:'Món ăn',moderationStatus:'APPROVED',reviewed_by:7});
  assert.equal(error,undefined);assert.equal(result.data.moderationStatus,'PENDING');
 });
+
+ test('meal plan rejects invalid servings before database access', async () => {
+  queryImpl=()=>assert.fail('must not query');
+  for (const servings of [0,-1,21,1.5,'4']) {
+   const {error}=await request('/:userId/plans','put',{'2026-11-05':{lunch:[{id:'1',servings}]}});
+   assert.equal(error.status,400);
+  }
+ });

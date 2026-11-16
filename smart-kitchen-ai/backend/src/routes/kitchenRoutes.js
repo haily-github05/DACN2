@@ -1,6 +1,8 @@
 const { requirePostUser } = require("../services/sessionService");
 // Backend: API công thức, kho, mua sắm, thực đơn, cộng đồng và lưu món đã nấu.
 const { getRecommendations } = require("../services/recipeRecommendationService");
+const { recordAIActivity } = require("../services/aiActivityService");
+const { queueCommunityContent, communityContentType } = require("../services/communityModerationService");
 const express = require("express");
 const db = require("../config/db");
 const router = express.Router();
@@ -41,6 +43,63 @@ async function ingredient(conn, item) {
     if (!existing.length) throw error;
     return existing[0].ingredient_id;
   }
+}
+async function syncMealPlanShoppingItems(conn, userId) {
+  const [previousItems] = await conn.query(`SELECT s.ingredient_id,s.unit,s.quantity_to_buy,s.is_purchased
+    FROM shopping_list_items s JOIN shopping_lists l ON l.shopping_list_id=s.shopping_list_id
+    WHERE l.user_id=? AND s.source_type='MEAL_PLAN'`, [userId]);
+  const previousByKey = new Map(previousItems.map(item => [`${item.ingredient_id}:${item.unit}`, item]));
+  const [demand] = await conn.query(`SELECT ri.ingredient_id,i.name,i.category,i.image_url,ri.unit,
+      SUM(ri.quantity * mpi.servings / COALESCE(NULLIF(r.default_servings,0),1)) AS required_quantity,
+      r.name AS recipe_name,DATE_FORMAT(mpi.meal_date,'%d/%m/%Y') AS meal_date_label,mpi.meal_date,mpi.meal_type,
+      COALESCE((SELECT SUM(pi.quantity) FROM pantry_items pi
+        WHERE pi.user_id=? AND pi.ingredient_id=ri.ingredient_id AND pi.unit=ri.unit
+          AND pi.quantity>0 AND (pi.expiry_date IS NULL OR pi.expiry_date>=CURDATE())),0) AS pantry_quantity
+    FROM meal_plan_items mpi
+    JOIN meal_plans mp ON mp.meal_plan_id=mpi.meal_plan_id
+    JOIN recipes r ON r.recipe_id=mpi.recipe_id
+    JOIN recipe_ingredients ri ON ri.recipe_id=r.recipe_id
+    JOIN ingredients i ON i.ingredient_id=ri.ingredient_id
+    WHERE mp.user_id=? AND mpi.meal_date>=CURDATE()
+    GROUP BY ri.ingredient_id,i.name,i.category,i.image_url,ri.unit,r.recipe_id,r.name,mpi.meal_date,mpi.meal_type`, [userId,userId]);
+  const byIngredient = new Map();
+  for (const row of demand) {
+    const key = `${row.ingredient_id}:${row.unit}`;
+    const item = byIngredient.get(key) || { ...row, required: 0, contexts: new Set() };
+    item.required += Number(row.required_quantity || 0);
+    const meal = ({ BREAKFAST: "bữa sáng", LUNCH: "bữa trưa", DINNER: "bữa tối" })[String(row.meal_type).toUpperCase()] || String(row.meal_type).toLowerCase();
+    item.contexts.add(`${row.recipe_name} · ${row.meal_date_label} · ${meal}`);
+    byIngredient.set(key, item);
+  }
+  const needed = [...byIngredient.values()].map(row => {
+    const available = Number(row.pantry_quantity || 0);
+    const quantityToBuy = Number(Math.max(0, row.required - available).toFixed(3));
+    const context = [...row.contexts].join("; ");
+    return { ...row, quantityToBuy, note: `Thiếu cho thực đơn đã lưu: ${context}`.slice(0, 255) };
+  }).filter(row => row.quantityToBuy > 0);
+
+  await conn.query(`DELETE s FROM shopping_list_items s
+    JOIN shopping_lists l ON l.shopping_list_id=s.shopping_list_id
+    WHERE l.user_id=? AND s.source_type='MEAL_PLAN'`, [userId]);
+
+  if (needed.length) {
+    const [lists] = await conn.query(`SELECT shopping_list_id FROM shopping_lists
+      WHERE user_id=? AND status='ACTIVE' ORDER BY shopping_list_id LIMIT 1 FOR UPDATE`, [userId]);
+    let listId = lists[0]?.shopping_list_id;
+    if (!listId) {
+      const [created] = await conn.query("INSERT INTO shopping_lists (user_id,list_name) VALUES (?,?)", [userId,"Danh sách mua sắm"]);
+      listId = created.insertId;
+    }
+    for (const item of needed) {
+      const previous = previousByKey.get(`${item.ingredient_id}:${item.unit}`);
+      const keepChecked = Boolean(previous?.is_purchased) && Number(previous.quantity_to_buy) >= item.quantityToBuy;
+      await conn.query(`INSERT INTO shopping_list_items
+        (shopping_list_id,ingredient_id,required_quantity,quantity_to_buy,unit,note,is_purchased,source_type)
+        VALUES (?,?,?,?,?,?,?,'MEAL_PLAN')`, [listId,item.ingredient_id,item.required,item.quantityToBuy,item.unit,item.note,keepChecked]);
+    }
+  }
+  await conn.query(`INSERT INTO meal_plan_shopping_sync (user_id,synced_at) VALUES (?,NOW())
+    ON DUPLICATE KEY UPDATE synced_at=NOW()`, [userId]);
 }
 // All user resources are scoped using the same user identifier as the existing profile API.
 router.param("userId", (req, res, next, value) => { try { req.userId = id(value); next(); } catch (err) { next(err); } });
@@ -100,14 +159,21 @@ router.get("/:userId/ingredients",route(async(req,res)=>{
   res.json({success:true,data:rows.map(i=>({id:String(i.ingredient_id),name:i.name,category:i.category||"Khác",unit:i.default_unit,image:i.image_url||"",inPantry:Number(i.pantry_count)>0}))});
 }));
 async function recipeList(req, res) {
+  const startedAt = Date.now();
+  try {
   const [recipes] = await db.query("SELECT * FROM recipes WHERE is_active = 1 ORDER BY recipe_id DESC");
   const [ingredients] = await db.query(`SELECT ri.*, i.name, COALESCE((SELECT SUM(p.quantity) FROM pantry_items p WHERE p.user_id=? AND p.ingredient_id=ri.ingredient_id AND p.unit=ri.unit AND (p.expiry_date IS NULL OR p.expiry_date >= CURDATE())),0) AS available_quantity FROM recipe_ingredients ri JOIN ingredients i ON i.ingredient_id=ri.ingredient_id`, [req.userId || 0]);
   const [steps] = await db.query("SELECT * FROM recipe_steps ORDER BY step_number");
   const recommended = req.userId ? await getRecommendations(req.userId, recipes, ingredients) : recipes;
+  if (req.userId) await recordAIActivity({type:"RECIPE_SUGGESTION",status:"SUCCESS",model:"recipe-recommendation-rules",durationMs:Date.now()-startedAt,userId:req.userId});
   res.json({ success: true, data: recommended.map(r => {
     const items = ingredients.filter(i => i.recipe_id === r.recipe_id).map(i => ({ id: String(i.ingredient_id), name: i.name, amount: Number(i.quantity), unit: i.unit, available: Number(i.available_quantity) >= Number(i.quantity) }));
     return { preferenceInfo: r.preferenceInfo, id: String(r.recipe_id), name: r.name, description: r.description || "", image: r.image_url || "", minutes: Number(r.prep_time || 0) + Number(r.cook_time || 0), calories: r.calories == null ? null : Number(r.calories), defaultServings: Number(r.default_servings || 1), category: r.cuisine_type || r.region || "Khác", region: r.region || "", match: items.length ? Math.round(items.filter(i=>i.available).length / items.length * 100) : 0, ingredients: items, steps: steps.filter(s => s.recipe_id === r.recipe_id).map(s => ({ title: `Bước ${s.step_number}`, description: s.instruction })) };
   }) });
+  } catch (error) {
+    if (req.userId) await recordAIActivity({type:"RECIPE_SUGGESTION",status:"FAILURE",model:"recipe-recommendation-rules",durationMs:Date.now()-startedAt,errorCode:error.code||error.status||"REQUEST_FAILED",userId:req.userId});
+    throw error;
+  }
 }
 router.get("/public-recipes", route(recipeList));
 router.get("/:userId/recipes", route(recipeList));
@@ -117,8 +183,14 @@ router.get("/public-ingredients", route(async (req,res)=>{
 }));
 
 router.get("/:userId/shopping", route(async (req, res) => {
-  const [rows] = await db.query(`SELECT s.shopping_item_id AS id, i.name, i.category, s.quantity_to_buy, s.unit, s.is_purchased, s.note FROM shopping_list_items s JOIN shopping_lists l ON l.shopping_list_id=s.shopping_list_id JOIN ingredients i ON i.ingredient_id=s.ingredient_id WHERE l.user_id=? AND l.status='ACTIVE' ORDER BY s.shopping_item_id`, [req.userId]);
-  res.json({ success: true, data: rows.map(r=>({ id:String(r.id), name:r.name, category:r.category || "Khác", quantity:`${Number(r.quantity_to_buy)} ${r.unit}`, checked:!!r.is_purchased, reason:r.note || "" })) });
+  await transaction(async conn => {
+    const [users] = await conn.query("SELECT user_id FROM users WHERE user_id=? FOR UPDATE", [req.userId]);
+    if (!users.length) throw fail("Không tìm thấy người dùng");
+    // Rebuild from saved plans each time so legacy generic notes and pantry changes are refreshed.
+    await syncMealPlanShoppingItems(conn, req.userId);
+  });
+  const [rows] = await db.query(`SELECT s.shopping_item_id AS id, i.name, i.category, i.image_url, s.quantity_to_buy, s.unit, s.is_purchased, s.note FROM shopping_list_items s JOIN shopping_lists l ON l.shopping_list_id=s.shopping_list_id JOIN ingredients i ON i.ingredient_id=s.ingredient_id WHERE l.user_id=? AND l.status='ACTIVE' ORDER BY s.shopping_item_id`, [req.userId]);
+  res.json({ success: true, data: rows.map(r=>({ id:String(r.id), name:r.name, category:r.category || "Khác", image:r.image_url || "", quantity:`${Number(r.quantity_to_buy)} ${r.unit}`, checked:!!r.is_purchased, reason:r.note || "" })) });
 }));
 router.post("/:userId/shopping", route(async (req, res) => {
   const item=req.body, match=String(item.quantity).trim().match(/^(\d+(?:[.,]\d+)?)\s*(.*)$/);
@@ -145,11 +217,42 @@ router.delete("/:userId/shopping/:itemId",route(async(req,res)=>{
   await db.query("DELETE s FROM shopping_list_items s JOIN shopping_lists l ON l.shopping_list_id=s.shopping_list_id WHERE l.user_id=? AND s.shopping_item_id=?",[req.userId,id(req.params.itemId)]);
   res.json({success:true,data:null});
 }));
+router.post("/:userId/plans/generate", requirePostUser, route(async(req,res)=>{
+  const startedAt = Date.now();
+  const dates = req.body?.dates;
+  const people = req.body?.people ?? 2;
+  const excludeRecipeIds = req.body?.excludeRecipeIds ?? [];
+  if (!Number.isInteger(people) || people < 1 || people > 20) throw fail("Số người phải từ 1 đến 20");
+  if (!Array.isArray(dates) || !dates.length || dates.length > 7 || new Set(dates).size !== dates.length) throw fail("Chọn từ 1 đến 7 ngày khác nhau");
+  if (!Array.isArray(excludeRecipeIds) || excludeRecipeIds.length > 36 || excludeRecipeIds.some(value => !/^\d+$/.test(String(value)))) throw fail("Danh sách món cần giữ không hợp lệ");
+  dates.forEach(date);
+  const [recipes] = await db.query("SELECT * FROM recipes WHERE is_active=1 ORDER BY recipe_id");
+  const [ingredients] = await db.query("SELECT ri.recipe_id, ri.ingredient_id, ri.note, i.name FROM recipe_ingredients ri JOIN ingredients i ON i.ingredient_id=ri.ingredient_id");
+  let permitted = await getRecommendations(req.userId, recipes, ingredients);
+  const excluded = new Set(excludeRecipeIds.map(String));
+  if (excluded.size) permitted = permitted.filter(recipe => !excluded.has(String(recipe.recipe_id)));
+  const liked = permitted.filter(r => !r.preferenceInfo.dislikedIngredients.length);
+  if (liked.length) permitted = liked;
+  const [[preferences], [pantry]] = await Promise.all([
+    db.query("SELECT diet_type, allergies, disliked_ingredients FROM users WHERE user_id=?", [req.userId]),
+    db.query("SELECT i.name,p.quantity,p.unit,DATE_FORMAT(p.expiry_date,'%Y-%m-%d') AS expiry_date FROM pantry_items p JOIN ingredients i ON i.ingredient_id=p.ingredient_id WHERE p.user_id=? AND p.quantity>0 AND (p.expiry_date IS NULL OR p.expiry_date>=CURDATE()) ORDER BY p.expiry_date LIMIT 100", [req.userId]),
+  ]);
+  const {generateMealPlan} = require("../services/geminiMealPlanService");
+  let data;
+  try {
+    data = await generateMealPlan({dates, people, recipes:permitted.slice(0,200).map(r => ({...r, ingredients:ingredients.filter(i => String(i.recipe_id)===String(r.recipe_id)).map(i => i.name)})), preferences:preferences[0], pantry});
+    await recordAIActivity({type:"MEAL_PLAN",status:"SUCCESS",model:process.env.GEMINI_MEAL_PLAN_MODEL||process.env.GEMINI_MODEL||"gemini-flash-latest",durationMs:Date.now()-startedAt,userId:req.userId});
+  } catch (error) {
+    await recordAIActivity({type:"MEAL_PLAN",status:"FAILURE",model:process.env.GEMINI_MEAL_PLAN_MODEL||process.env.GEMINI_MODEL||"gemini-flash-latest",durationMs:Date.now()-startedAt,errorCode:error.status||error.name||"REQUEST_FAILED",userId:req.userId});
+    throw error;
+  }
+  res.json({success:true,data});
+}));
 router.get("/:userId/plans",route(async(req,res)=>{
-  const [rows]=await db.query(`SELECT DATE_FORMAT(i.meal_date,'%Y-%m-%d') AS day, LOWER(i.meal_type) AS type, r.recipe_id, r.name, r.prep_time, r.cook_time, r.calories FROM meal_plan_items i JOIN meal_plans p ON p.meal_plan_id=i.meal_plan_id JOIN recipes r ON r.recipe_id=i.recipe_id WHERE p.user_id=? ORDER BY i.plan_item_id`,[req.userId]);
+  const [rows]=await db.query(`SELECT DATE_FORMAT(i.meal_date,'%Y-%m-%d') AS day, LOWER(i.meal_type) AS type, i.servings, r.recipe_id, r.name, r.prep_time, r.cook_time, r.calories FROM meal_plan_items i JOIN meal_plans p ON p.meal_plan_id=i.meal_plan_id JOIN recipes r ON r.recipe_id=i.recipe_id WHERE p.user_id=? ORDER BY i.plan_item_id`,[req.userId]);
   const data={};
   const permitted = await getRecommendations(req.userId, rows);
-  for(const r of permitted) { data[r.day] ||= {breakfast:[],lunch:[],dinner:[]}; data[r.day][r.type].push({id:String(r.recipe_id),name:r.name,minutes:Number(r.prep_time||0)+Number(r.cook_time||0),calories:r.calories == null ? null : Number(r.calories)}); }
+  for(const r of permitted) { data[r.day] ||= {breakfast:[],lunch:[],dinner:[]}; data[r.day][r.type].push({servings:Number(r.servings || 1),id:String(r.recipe_id),name:r.name,minutes:Number(r.prep_time||0)+Number(r.cook_time||0),calories:r.calories == null ? null : Number(r.calories)}); }
   res.json({success:true,data});
 }));
 router.put("/:userId/plans",route(async(req,res)=>{
@@ -162,6 +265,10 @@ router.put("/:userId/plans",route(async(req,res)=>{
     for (const type of ["breakfast","lunch","dinner"]) {
       const items = mealItems(plan[type]);
       if (items.length > 6) throw fail("Mỗi buổi tối đa 6 món");
+      for (const item of items) {
+        const servings = item?.servings ?? 1;
+        if (!Number.isInteger(servings) || servings < 1 || servings > 20) throw fail("Số người phải từ 1 đến 20");
+      }
       const ids = items.map(item => id(item?.id));
       if (new Set(ids).size !== ids.length) throw fail("Món ăn bị trùng trong cùng buổi");
     }
@@ -178,8 +285,9 @@ router.put("/:userId/plans",route(async(req,res)=>{
     const [p]=await conn.query("INSERT INTO meal_plans (user_id,plan_name,start_date,end_date) VALUES (?,?,?,?)",[req.userId,"Thực đơn",sorted[0],sorted[sorted.length-1]]);
     for(const [day,plan] of days) {
       await conn.query("DELETE i FROM meal_plan_items i JOIN meal_plans p ON p.meal_plan_id=i.meal_plan_id WHERE p.user_id=? AND i.meal_date=?",[req.userId,day]);
-      for(const type of ["breakfast","lunch","dinner"]) for (const item of mealItems(plan[type])) await conn.query("INSERT INTO meal_plan_items (meal_plan_id,meal_date,meal_type,recipe_id) VALUES (?,?,?,?)",[p.insertId,day,type.toUpperCase(),id(item.id)]);
+      for(const type of ["breakfast","lunch","dinner"]) for (const item of mealItems(plan[type])) await conn.query("INSERT INTO meal_plan_items (meal_plan_id,meal_date,meal_type,recipe_id,servings) VALUES (?,?,?,?,?)",[p.insertId,day,type.toUpperCase(),id(item.id),item.servings ?? 1]);
     }
+    await syncMealPlanShoppingItems(conn, req.userId);
   });
   res.json({success:true,data:null});
 }));
@@ -242,6 +350,7 @@ router.post("/:userId/posts",route(async(req,res)=>{
     }
   }
   const [r]=await db.query("INSERT INTO community_posts (user_id,title,description,category,image_url,visibility,moderation_status) VALUES (?,?,?,?,?,?,'PENDING')",[req.userId,title,description,category,image,visibility]);
+  if (visibility === "PUBLIC") await queueCommunityContent({type:communityContentType(title,description),contentId:r.insertId,postId:r.insertId,authorId:req.userId,title,content:description,image});
   res.json({success:true,data:{id:String(r.insertId),moderationStatus:"PENDING"}});
 }));
 router.delete("/:userId/posts/:postId",route(async(req,res)=>{
@@ -262,7 +371,7 @@ router.put("/:userId/posts/:postId/reactions",route(async(req,res)=>{
 // Kiểm tra quyền xem bài cho mọi thao tác bình luận/theo dõi.
 async function visiblePost(userId, postId) {
   userId ||= 0;
-  const [rows] = await db.query("SELECT post_id,user_id FROM community_posts WHERE post_id=? AND ((visibility='PUBLIC' AND moderation_status='APPROVED') OR user_id=?)", [id(postId), userId]);
+  const [rows] = await db.query("SELECT post_id,user_id,title,image_url,visibility,moderation_status FROM community_posts WHERE post_id=? AND ((visibility='PUBLIC' AND moderation_status='APPROVED') OR user_id=?)", [id(postId), userId]);
   if (!rows.length) throw Object.assign(new Error("Không tìm thấy bài viết"), {status:404});
   return rows[0];
 }
@@ -272,9 +381,9 @@ async function listComments(req,res) {
   const before = req.query.before === undefined ? null : id(req.query.before);
   const parentId = req.query.parentId === undefined ? null : id(req.query.parentId);
   const [rows] = await db.query(`SELECT c.*,u.full_name AS author,u.avatar_url,
-    (SELECT COUNT(*) FROM community_comments reply WHERE reply.parent_comment_id=c.comment_id) AS reply_count
+    (SELECT COUNT(*) FROM community_comments reply WHERE reply.parent_comment_id=c.comment_id AND reply.moderation_status='APPROVED') AS reply_count
     FROM community_comments c JOIN users u ON u.user_id=c.user_id
-    WHERE c.post_id=? AND ${parentId ? 'c.parent_comment_id=?' : 'c.parent_comment_id IS NULL'}
+    WHERE c.post_id=? AND c.moderation_status='APPROVED' AND ${parentId ? 'c.parent_comment_id=?' : 'c.parent_comment_id IS NULL'}
     ${before ? 'AND c.comment_id<?' : ''} ORDER BY c.comment_id DESC LIMIT 21`, [id(req.params.postId), ...(parentId ? [parentId] : []), ...(before ? [before] : [])]);
   res.json({success:true,data:{items:rows.slice(0,20).map(r=>commentData(r,req.userId)),hasMore:rows.length>20}});
 }
@@ -283,19 +392,22 @@ router.get("/:userId/posts/:postId/comments",route(listComments));
 
 router.post("/:userId/posts/:postId/comments",route(async(req,res)=>{
   const content = text(req.body.content,2000), postId = id(req.params.postId);
+  const visible = await visiblePost(req.userId, postId);
   if (req.body.parentId != null) {
-    await visiblePost(req.userId, postId);
     const parentId = id(req.body.parentId);
-    const [parents] = await db.query("SELECT comment_id,parent_comment_id FROM community_comments WHERE comment_id=? AND post_id=?",[parentId,postId]);
+    const [parents] = await db.query("SELECT comment_id,parent_comment_id,moderation_status FROM community_comments WHERE comment_id=? AND post_id=?",[parentId,postId]);
     if (!parents.length) throw Object.assign(new Error("Bình luận đã bị xoá hoặc không thuộc bài viết này"),{status:404});
+    if (parents[0].moderation_status === "HIDDEN") throw Object.assign(new Error("Không thể trả lời bình luận đã bị ẩn"),{status:404});
     const rootId = parents[0].parent_comment_id || parents[0].comment_id;
     const [insert] = await db.query("INSERT INTO community_comments (post_id,user_id,content,parent_comment_id) SELECT p.post_id,?,?,c.comment_id FROM community_posts p JOIN community_comments c ON c.post_id=p.post_id WHERE p.post_id=? AND c.comment_id=? AND ((p.visibility='PUBLIC' AND p.moderation_status='APPROVED') OR p.user_id=?)",[req.userId,content,postId,rootId,req.userId]);
     if (!insert.affectedRows) throw Object.assign(new Error("Bình luận không còn tồn tại"),{status:404});
+    if (visible.visibility === "PUBLIC" && visible.moderation_status === "APPROVED") await queueCommunityContent({type:"COMMENT",contentId:insert.insertId,postId,authorId:req.userId,title:`Bình luận về: ${visible.title}`,content,image:visible.image_url||""});
     const [rows] = await db.query("SELECT c.*,u.full_name AS author,u.avatar_url FROM community_comments c JOIN users u ON u.user_id=c.user_id WHERE c.comment_id=?",[insert.insertId]);
     return res.json({success:true,data:commentData(rows[0],req.userId)});
   }
   const [result] = await db.query("INSERT INTO community_comments (post_id,user_id,content) SELECT post_id,?,? FROM community_posts WHERE post_id=? AND ((visibility='PUBLIC' AND moderation_status='APPROVED') OR user_id=?)",[req.userId,content,postId,req.userId]);
   if (!result.affectedRows) throw Object.assign(new Error("Không tìm thấy bài viết"),{status:404});
+  if (visible.visibility === "PUBLIC" && visible.moderation_status === "APPROVED") await queueCommunityContent({type:"COMMENT",contentId:result.insertId,postId,authorId:req.userId,title:`Bình luận về: ${visible.title}`,content,image:visible.image_url||""});
   const [rows] = await db.query("SELECT c.*,u.full_name AS author,u.avatar_url FROM community_comments c JOIN users u ON u.user_id=c.user_id WHERE c.comment_id=?",[result.insertId]);
   res.json({success:true,data:commentData(rows[0],req.userId)});
 }));
@@ -330,17 +442,39 @@ router.post("/:userId/cooking",route(async(req,res)=>{
   if(!r.affectedRows) throw fail("Không tìm thấy công thức");
   res.json({success:true,data:{id:r.insertId}});
 }));
-router.post("/:userId/pantry/batch",route(async(req,res)=>{
+router.post("/:userId/pantry/batch",requirePostUser,route(async(req,res)=>{
   const items=req.body.items;
   if(!Array.isArray(items)||!items.length||items.length>100) throw fail("Danh sách nguyên liệu không hợp lệ");
-  for(const i of items) { text(i.name,100); text(i.unit,20); amount(i.quantity); }
-  await transaction(async conn=>{
-    for(const i of items) {
-      const ingredientId=await ingredient(conn,{...i,category:"Khác"});
-      await conn.query("INSERT INTO pantry_items (user_id,ingredient_id,quantity,unit,storage_location,purchase_date) VALUES (?,?,?,?,?,CURDATE())",[req.userId,ingredientId,amount(i.quantity),text(i.unit,20),"Ngăn mát"]);
-    }
+  const validated=items.map(i=>{
+    text(i.name,100);text(i.unit,20);amount(i.quantity);text(i.category,50);
+    const purchased=date(i.purchaseDate),expiry=date(i.expiryDate);
+    if(expiry<purchased)throw fail("Hạn sử dụng phải sau hoặc cùng ngày mua");
+    if(!['Ngăn mát','Ngăn đông','Bên ngoài'].includes(i.location))throw fail("Nơi bảo quản không hợp lệ");
+    if(typeof i.note!=='string'||i.note.length>2000)throw fail("Ghi chú không hợp lệ");
+    return {...i,purchaseDate:purchased,expiryDate:expiry};
   });
-  res.json({success:true,data:{count:items.length}});
+  const requestId=req.body.requestId;
+  if(requestId!==undefined&&(typeof requestId!=='string'||!/^[-a-zA-Z0-9]{10,80}$/.test(requestId)))throw fail('Mã lần lưu không hợp lệ');
+  const hash=require('node:crypto').createHash('sha256').update(JSON.stringify(validated)).digest('hex');
+  const result=await transaction(async conn=>{
+    if(requestId){
+      await conn.query('INSERT IGNORE INTO pantry_scan_batches(user_id,request_id,payload_hash) VALUES(?,?,?)',[req.userId,requestId,hash]);
+      const [batches]=await conn.query('SELECT payload_hash,result_json FROM pantry_scan_batches WHERE user_id=? AND request_id=? FOR UPDATE',[req.userId,requestId]);
+      if(batches[0].payload_hash!==hash)throw Object.assign(new Error('Lần quét này đã được lưu với thông tin khác. Hãy kiểm tra kho trước khi lưu lại.'),{status:409});
+      if(batches[0].result_json)return typeof batches[0].result_json==='string'?JSON.parse(batches[0].result_json):batches[0].result_json;
+    }
+    const saved=[];
+    for(const i of validated){
+      const ingredientId=await ingredient(conn,i);
+      const [insert]=await conn.query("INSERT INTO pantry_items (user_id,ingredient_id,quantity,unit,storage_location,purchase_date,expiry_date,note) VALUES (?,?,?,?,?,?,?,?)",[req.userId,ingredientId,amount(i.quantity),text(i.unit,20),i.location,i.purchaseDate,i.expiryDate,i.note.trim()]);
+      saved.push({id:String(insert.insertId),purchaseDate:i.purchaseDate,expiryDate:i.expiryDate,location:i.location});
+    }
+    const [stored]=await conn.query(`SELECT pantry_item_id,DATE_FORMAT(purchase_date,'%Y-%m-%d') AS purchaseDate,DATE_FORMAT(expiry_date,'%Y-%m-%d') AS expiryDate,storage_location AS location FROM pantry_items WHERE user_id=? AND pantry_item_id IN (${saved.map(()=>'?').join(',')})`,[req.userId,...saved.map(i=>i.id)]);
+    const value={count:stored.length,items:saved.map(i=>{const row=stored.find(r=>String(r.pantry_item_id)===i.id);if(!row)throw fail('Không xác nhận được nguyên liệu đã lưu');return {id:i.id,purchaseDate:row.purchaseDate,expiryDate:row.expiryDate,location:row.location};})};
+    if(requestId)await conn.query('UPDATE pantry_scan_batches SET result_json=? WHERE user_id=? AND request_id=?',[JSON.stringify(value),req.userId,requestId]);
+    return value;
+  });
+  res.json({success:true,data:result});
 }));
 router.use((err,req,res,next)=>{
   console.error("Kitchen API:",err.message);
